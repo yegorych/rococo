@@ -10,6 +10,7 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -32,20 +33,17 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
     @Override
     public void getArtists(ArtistRequest request, StreamObserver<ArtistsResponse> responseObserver) {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-        List<Artist> artists = new ArrayList<>();
+        Page<Artist> artists;
         if (request.getName().isEmpty()) {
-            artists.addAll(artistRepository.findAll(pageable)
-                    .map(ArtistEntity::toGrpcMessage)
-                    .getContent());
+            artists = artistRepository.findAll(pageable)
+                    .map(ArtistEntity::toGrpcMessage);
         } else {
-            artists.addAll(artistRepository.findAllByNameContainsIgnoreCase(request.getName(), pageable)
-                    .stream()
-                    .map(ArtistEntity::toGrpcMessage)
-                    .toList());
+            artists = artistRepository.findAllByNameContainsIgnoreCase(request.getName(), pageable)
+                    .map(ArtistEntity::toGrpcMessage);
         }
         responseObserver.onNext(ArtistsResponse.newBuilder()
                 .addAllArtists(artists)
-                .setTotalCount(artists.size())
+                .setTotalCount((int) artists.getTotalElements())
                 .build());
         responseObserver.onCompleted();
 
@@ -56,7 +54,7 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
     public void getArtist(IdRequest request, StreamObserver<Artist> responseObserver) {
         Artist artist = artistRepository.findById(UUID.fromString(request.getId()))
                 .map(ArtistEntity::toGrpcMessage)
-                .orElseThrow(() -> new ArtistNotFoundException("Художник не найдена"));
+                .orElseThrow(() -> new ArtistNotFoundException("Художник не найден"));
         responseObserver.onNext(artist);
         responseObserver.onCompleted();
     }
@@ -66,7 +64,7 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
         if (!request.getId().isEmpty()) {
             responseObserver.onError(
                     Status.INVALID_ARGUMENT
-                            .withDescription("Id не должен быть задан при создании худождника")
+                            .withDescription("Id не должен быть задан при создании художника")
                             .asRuntimeException()
             );
             return;

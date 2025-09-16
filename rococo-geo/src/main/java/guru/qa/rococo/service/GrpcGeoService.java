@@ -9,6 +9,7 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -31,16 +32,15 @@ public class GrpcGeoService extends RococoGeoServiceGrpc.RococoGeoServiceImplBas
     public void getCountries(CountriesRequest request, StreamObserver<CountriesResponse> responseObserver) {
         try {
             Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-            List<Country> countries = countryRepository.findAll(pageable)
+            Page<Country> countries = countryRepository.findAll(pageable)
                     .map(ce -> Country.newBuilder()
                             .setId(ce.getId().toString())
                             .setName(ce.getName())
-                            .build())
-                    .toList();
+                            .build());
 
             responseObserver.onNext(CountriesResponse.newBuilder()
                     .addAllCountries(countries)
-                    .setTotalCount(countries.size())
+                    .setTotalCount((int) countries.getTotalElements())
                     .build()
             );
             responseObserver.onCompleted();

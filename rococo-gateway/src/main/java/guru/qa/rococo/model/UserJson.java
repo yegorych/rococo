@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.userdata.UserInfo;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 import java.nio.charset.StandardCharsets;
@@ -14,16 +16,17 @@ import java.util.UUID;
 public record UserJson(
     @JsonProperty("id")
     UUID id,
+    @Size(min = 3, max = 50, message = "Allowed username length should be from 3 to 50 characters")
     @JsonProperty("username")
     String username,
     @JsonProperty("firstname")
-    @Size(max = 30, message = "First name can`t be longer than 30 characters")
+    @Size(max = 255, message = "Имя не может быть длиннее 255 символов")
     String firstname,
     @JsonProperty("lastname")
-    @Size(max = 50, message = "Surname can`t be longer than 50 characters")
+    @Size(max = 255, message = "Фамилия не может быть длиннее 30 символов")
     String lastname,
     @JsonProperty("avatar")
-    @Size(max = RococoGatewayServiceConfig.ONE_MB)
+    @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Фото профиля не может превышать 4 MB")
     String photo) {
 
     public static UserJson fromGrpcMessage(UserInfo userInfo) {

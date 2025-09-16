@@ -1,4 +1,4 @@
-package guru.qa.rococo;
+package guru.qa.rococo.ex;
 
 public class AccessDeniedException extends RuntimeException {
     public AccessDeniedException(String message) {

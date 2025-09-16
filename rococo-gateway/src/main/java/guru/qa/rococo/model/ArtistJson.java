@@ -3,6 +3,8 @@ package guru.qa.rococo.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.artist.Artist;
+import guru.qa.rococo.config.RococoGatewayServiceConfig;
+import jakarta.validation.constraints.Size;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -11,9 +13,12 @@ public record ArtistJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("name")
+        @Size(max = 255, message = "Имя не может быть длиннее 255 символов")
         String name,
+        @Size(max = 2000, message = "Биография не может быть длиннее 2000 символов")
         @JsonProperty("biography")
         String biography,
+        @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Размер фото не может превышать 4 MB")
         @JsonProperty("photo")
         String photo
 ) {

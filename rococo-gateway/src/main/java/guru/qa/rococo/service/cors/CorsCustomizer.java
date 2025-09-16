@@ -30,7 +30,6 @@ public class CorsCustomizer {
         cc.setAllowedMethods(List.of("*"));
         return cc;
       };
-
       c.configurationSource(source);
     });
   }

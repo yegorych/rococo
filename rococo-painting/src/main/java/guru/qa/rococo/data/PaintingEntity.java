@@ -27,10 +27,10 @@ public class PaintingEntity implements Serializable {
   @Column(length = 1000)
   private String description;
 
-  @Column(nullable = false, name = "artist_id")
+  @Column(nullable = false, name = "artist_id", columnDefinition = "BINARY(16)")
   private UUID artistId;
 
-  @Column(name = "museum_id")
+  @Column(name = "museum_id", columnDefinition = "BINARY(16)")
   private UUID museumId;
 
   @Lob

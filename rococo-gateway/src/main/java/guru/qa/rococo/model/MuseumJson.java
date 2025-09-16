@@ -13,15 +13,15 @@ public record MuseumJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("title")
-        @Size(max = 255, message = "Title can`t be longer than 255 characters")
+        @Size(max = 255, message = "Название музея не может быть длиннее 255 символов")
         String title,
         @JsonProperty("description")
-        @Size(max = 1000, message = "Description can`t be longer than 1000 characters")
+        @Size(max = 1000, message = "Описание музея не может быть длиннее 1000 символов")
         String description,
         @JsonProperty("geo")
         GeoJson geo,
         @JsonProperty("photo")
-        @Size(max = RococoGatewayServiceConfig.ONE_MB)
+        @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Размер фото не может превышать 4 MB")
         String photo
 ) {
 

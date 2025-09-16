@@ -9,6 +9,7 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -29,13 +30,12 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
     @Override
     public void getMuseums(MuseumsRequest request, StreamObserver<MuseumsResponse> responseObserver) {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-        List<Museum> museums = museumRepository.findAll(pageable)
-                .map(MusuemEntity::toGrpcMessage)
-                .toList();
+        Page<Museum> museums = museumRepository.findAll(pageable)
+                .map(MusuemEntity::toGrpcMessage);
 
         responseObserver.onNext(MuseumsResponse.newBuilder()
                 .addAllMuseum(museums)
-                .setTotalCount(museums.size())
+                .setTotalCount((int) museums.getTotalElements())
                 .build());
         responseObserver.onCompleted();
     }

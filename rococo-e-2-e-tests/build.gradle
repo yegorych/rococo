@@ -1,0 +1,140 @@
+buildscript {
+    ext {
+        junitVersion = '5.13.0'
+        allureVersion = '2.29.0'
+        selenideVersion = '7.9.3'
+        okhttp3Version = '4.12.0'
+        retrofitVersion = '2.11.0'
+        apollographqlVersion = '0.0.2'
+        logbackVersion = '1.4.11'
+        slf4jVersion = '2.0.9'
+        springJdbcVersion = '6.1.12'
+        springCryptoVersion = '6.3.1'
+        p6spyVersion = '3.9.1'
+        hibernateVersion = '6.6.0.Final'
+        kafkaClientsVersion = '3.8.0'
+        saajVersion = '3.0.4'
+        jakartaJaxbVersion = '4.0.2'
+        springDataCommonsVersion = '3.3.3'
+        atomicosVersion = '6.0.0'
+        wiremockVersion = '3.0.1'
+        fakerVersion = '1.0.2'
+        ashotVersion = '1.5.4'
+
+    }
+}
+
+plugins {
+    id 'io.qameta.allure' version '2.12.0'
+    id 'io.qameta.allure-adapter' version '2.12.0'
+}
+
+group = 'guru.qa'
+version = '2.0.1'
+
+allure {
+    version.set("${allureVersion}")
+    adapter {
+        aspectjVersion.set("1.9.22")
+        aspectjWeaver.set(true)
+    }
+}
+
+
+sourceSets {
+    test {
+        java {
+            srcDir('src/test/java')
+        }
+    }
+}
+
+dependencies {
+    implementation 'ru.yandex.qatools.ashot:ashot:1.5.4'
+    // Logs
+    testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
+    testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    // JUnit
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    // REST
+    testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
+    testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
+    testImplementation "com.squareup.okhttp3:okhttp:${okhttp3Version}"
+    testImplementation("com.squareup.retrofit2:retrofit:${retrofitVersion}") {
+        exclude group: "com.squareup.okhttp3"
+    }
+    testImplementation "com.squareup.retrofit2:converter-scalars:${retrofitVersion}"
+    testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
+        exclude group: "com.squareup.okhttp3"
+    }
+    testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    // DB
+    testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
+    testImplementation "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
+    testImplementation "com.atomikos:transactions-jta:${atomicosVersion}:jakarta"
+    testImplementation "com.atomikos:transactions-hibernate4:${atomicosVersion}:jakarta"
+    testImplementation "com.atomikos:transactions-jdbc:${atomicosVersion}"
+    testImplementation "p6spy:p6spy:${p6spyVersion}"
+    testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
+    testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
+    // Allure
+    //testImplementation "io.qameta.allure:allure-commandline:2.30.0"
+    testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
+    testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
+        exclude group: "org.junit.jupiter"
+    }
+    testImplementation("io.qameta.allure:allure-selenide:${allureVersion}") {
+        exclude group: 'com.codeborne'
+    }
+    testImplementation "io.qameta.allure:allure-okhttp3:${allureVersion}"
+    testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
+    // WEB
+    testImplementation "com.codeborne:selenide:${selenideVersion}"
+    // Utils
+    testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
+        exclude group: 'org.yaml'
+    }
+    testImplementation 'commons-io:commons-io:2.16.1'
+    testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
+    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
+    testImplementation 'com.github.h-thurow:simple-jndi:0.24.0'
+
+    // gRPC
+    testImplementation "io.grpc:grpc-api:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-netty:${project.ext.grpcVersion}"
+    testImplementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
+    testImplementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
+    compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5' // Java 9+ compatibility - Do NOT update to 2.0.0
+
+    testImplementation project(':rococo-grpc-common')
+    // Kafka
+    testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
+    // Wiremock
+    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
+    testImplementation "com.github.tomakehurst:wiremock-standalone:${wiremockVersion}"
+    // Lombok
+    testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println project.version
+    }
+}
+
+test {
+    options {
+        systemProperties(System.getProperties())
+    }
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
+    useJUnitPlatform()
+}
+
+

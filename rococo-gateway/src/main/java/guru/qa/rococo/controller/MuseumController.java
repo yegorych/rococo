@@ -4,6 +4,7 @@ import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.service.orchestration.MuseumOrchestrationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,12 @@ public class MuseumController {
     }
 
     @PostMapping
-    public MuseumJson create(@RequestBody MuseumJson museumJson) {
+    public MuseumJson create(@Valid @RequestBody MuseumJson museumJson) {
         return museumService.createMuseum(museumJson);
     }
 
     @PatchMapping
-    public MuseumJson update(@RequestBody MuseumJson museumJson) {
+    public MuseumJson update(@Valid @RequestBody MuseumJson museumJson) {
         return museumService.updateMuseum(museumJson);
     }
 

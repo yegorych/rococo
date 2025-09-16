@@ -5,6 +5,7 @@ import guru.qa.rococo.model.PaintingJson;
 import guru.qa.rococo.service.grpc.GrpcPaintingService;
 import guru.qa.rococo.service.orchestration.PaintingOrchestrationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,12 @@ public class PaintingController {
     }
 
     @PostMapping
-    public PaintingJson create(@RequestBody PaintingJson painting) {
+    public PaintingJson create(@Valid @RequestBody PaintingJson painting) {
         return paintingService.createPainting(painting);
     }
 
     @PatchMapping
-    public PaintingJson update(@RequestBody PaintingJson painting) {
+    public PaintingJson update(@Valid @RequestBody PaintingJson painting) {
         return paintingService.updatePainting(painting);
     }
 

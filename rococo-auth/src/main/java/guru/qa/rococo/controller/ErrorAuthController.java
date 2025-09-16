@@ -24,7 +24,8 @@ public class ErrorAuthController implements ErrorController {
     int status = response.getStatus();
     Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
     model.addAttribute("status", status);
-    model.addAttribute("frontUri", rococoFrontUri + "/main");
+    //model.addAttribute("frontUri", rococoFrontUri + "/main");
+    model.addAttribute("frontUri", rococoFrontUri);
     model.addAttribute("error", throwable != null ? throwable.getMessage() : "Unknown error");
     return ERROR_VIEW_NAME;
   }

@@ -40,11 +40,13 @@ public class MuseumOrchestrationService {
     }
 
     public MuseumJson createMuseum(@Nonnull MuseumJson museumJson){
-        return MuseumJson.fromGrpcMessage(museumService.createMuseum(museumJson.toGrpcMessage()));
+        return MuseumJson.fromGrpcMessage(museumService.createMuseum(museumJson.toGrpcMessage()))
+                .addCountry(geoService.getCountry(museumJson.geo().country().id().toString()));
     }
 
     public MuseumJson updateMuseum(@Nonnull MuseumJson museumJson){
-        return MuseumJson.fromGrpcMessage(museumService.updateMuseum(museumJson.toGrpcMessage()));
+        return MuseumJson.fromGrpcMessage(museumService.updateMuseum(museumJson.toGrpcMessage()))
+                .addCountry(geoService.getCountry(museumJson.geo().country().id().toString()));
     }
 
     public MuseumJson getMuseum(@Nonnull String id){

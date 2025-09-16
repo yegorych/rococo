@@ -46,12 +46,4 @@ public class ArtistOrchestrationService {
     public ArtistJson getArtist(@Nonnull String id){
         return ArtistJson.fromGrpcMessage(artistService.getArtistById(id));
     }
-
-//    public @Nonnull UserJson getUser(String username){
-//        return UserJson.fromGrpcMessage(userdataClient.getUser(username));
-//    }
-//
-//    public @Nonnull UserJson updateUser(@Nonnull UserJson userJson){
-//        return UserJson.fromGrpcMessage(userdataClient.updateUser(userJson));
-//    }
 }

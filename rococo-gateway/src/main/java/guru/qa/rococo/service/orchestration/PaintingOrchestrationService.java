@@ -2,11 +2,10 @@ package guru.qa.rococo.service.orchestration;
 
 import guru.qa.grpc.rococo.painting.PaintingsResponse;
 import guru.qa.rococo.model.ArtistJson;
+import guru.qa.rococo.model.CountryJson;
+import guru.qa.rococo.model.MuseumJson;
 import guru.qa.rococo.model.PaintingJson;
-import guru.qa.rococo.service.grpc.GrpcArtistService;
-import guru.qa.rococo.service.grpc.GrpcGeoService;
-import guru.qa.rococo.service.grpc.GrpcPaintingService;
-import guru.qa.rococo.service.grpc.GrpcUserdataClient;
+import guru.qa.rococo.service.grpc.*;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +20,15 @@ import java.util.List;
 public class PaintingOrchestrationService {
     private final GrpcPaintingService paintingService;
     private final GrpcArtistService artistService;
+    private final GrpcMuseumService museumService;
+    private final GrpcGeoService geoService;
 
     @Autowired
-    public PaintingOrchestrationService(GrpcPaintingService paintingService, GrpcArtistService artistService, GrpcGeoService geoService, GrpcUserdataClient userdataClient) {
+    public PaintingOrchestrationService(GrpcPaintingService paintingService, GrpcArtistService artistService, GrpcMuseumService museumService, GrpcGeoService geoService) {
         this.paintingService = paintingService;
         this.artistService = artistService;
+        this.museumService = museumService;
+        this.geoService = geoService;
     }
 
     public Page<PaintingJson> getPaintings(@Nullable String title, @Nullable String artistId, @Nonnull Pageable pageable) {
@@ -33,12 +36,22 @@ public class PaintingOrchestrationService {
         List<PaintingJson> paintingList = response.getPaintingsList()
                 .stream()
                 .map(PaintingJson::fromGrpcMessage)
-                .map(paintingJson ->
-                        paintingJson.addArtist(
+                .map(pj ->
+                        pj.addArtist(
                                 ArtistJson.fromGrpcMessage(artistService.getArtistById(
-                                        paintingJson.artist().id().toString()
+                                        pj.artist().id().toString()
                                 ))
                         )
+                )
+                .map(pj -> {
+                        if (pj.museum().id() != null) {
+                            MuseumJson museumJson =  MuseumJson.fromGrpcMessage(museumService.getMuseum(pj.museum().id().toString()));
+                            return pj.addMuseum(museumJson.addCountry(
+                                    CountryJson.fromGrpcMessage(geoService.getCountry(museumJson.geo().country().id().toString())))
+                            );
+                        }
+                        return pj;
+                    }
                 )
                 .toList();
 
@@ -50,16 +63,30 @@ public class PaintingOrchestrationService {
     }
 
     public PaintingJson updatePainting(@Nonnull PaintingJson paintingJson){
-        return PaintingJson.fromGrpcMessage(paintingService.updatePainting(paintingJson.toGrpcMessage()));
+        return PaintingJson.fromGrpcMessage(paintingService.updatePainting(paintingJson.toGrpcMessage()))
+                .addArtist(ArtistJson.fromGrpcMessage(
+                        artistService.getArtistById(paintingJson.artist().id().toString())
+                )
+        );
     }
 
     public PaintingJson getPainting(@Nonnull String id){
         PaintingJson paintingJson = PaintingJson.fromGrpcMessage(paintingService.getPaintingById(id));
-        return paintingJson.addArtist(
-                ArtistJson.fromGrpcMessage(
-                        artistService.getArtistById(paintingJson.artist().id().toString())
-                )
-        );
+
+        ArtistJson artistJson = paintingJson.getArtistId()
+                .map(artistId -> ArtistJson.fromGrpcMessage(artistService.getArtistById(artistId)))
+                .orElseThrow(() -> new IllegalArgumentException("Художник не найден"));
+
+        paintingJson = paintingJson.addArtist(artistJson);
+
+        if (paintingJson.getMuseumId().isPresent()) {
+            MuseumJson museumJson = MuseumJson.fromGrpcMessage(
+                    museumService.getMuseum(paintingJson.getMuseumId().get()));
+            CountryJson countryJson = CountryJson.fromGrpcMessage(
+                    geoService.getCountry(museumJson.geo().country().id().toString()));
+            paintingJson = paintingJson.addMuseum(museumJson.addCountry(countryJson));
+        }
+        return paintingJson;
     }
 
 

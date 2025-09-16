@@ -1,0 +1,73 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    <persistence-unit name="rococo-auth" transaction-type="JTA">
+        <jta-data-source>java:comp/env/jdbc/rococo-auth</jta-data-source>
+        <class>guru.qa.rococo.data.entity.auth.AuthorityEntity</class>
+        <class>guru.qa.rococo.data.entity.auth.AuthUserEntity</class>
+
+        <properties>
+            <property name="hibernate.transaction.jta.platform" value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="rococo-userdata" transaction-type="JTA">
+        <jta-data-source>java:comp/env/jdbc/rococo-userdata</jta-data-source>
+        <class>guru.qa.rococo.data.entity.userdata.UserEntity</class>
+
+        <properties>
+            <property name="hibernate.transaction.jta.platform" value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="rococo-museum" transaction-type="JTA">
+        <jta-data-source>java:comp/env/jdbc/rococo-museum</jta-data-source>
+        <class>guru.qa.rococo.data.entity.museum.MuseumEntity</class>
+
+        <properties>
+            <property name="hibernate.transaction.jta.platform" value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="rococo-geo" transaction-type="JTA">
+        <jta-data-source>java:comp/env/jdbc/rococo-geo</jta-data-source>
+        <class>guru.qa.rococo.data.entity.geo.CountryEntity</class>
+
+        <properties>
+            <property name="hibernate.transaction.jta.platform" value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="rococo-artist" transaction-type="JTA">
+        <jta-data-source>java:comp/env/jdbc/rococo-artist</jta-data-source>
+        <class>guru.qa.rococo.data.entity.artist.ArtistEntity</class>
+
+        <properties>
+            <property name="hibernate.transaction.jta.platform" value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="rococo-painting" transaction-type="JTA">
+        <jta-data-source>java:comp/env/jdbc/rococo-painting</jta-data-source>
+        <class>guru.qa.rococo.data.entity.painting.PaintingEntity</class>
+
+        <properties>
+            <property name="hibernate.transaction.jta.platform" value="com.atomikos.icatch.jta.hibernate4.AtomikosPlatform"/>
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+
+
+</persistence>

@@ -16,7 +16,7 @@ public interface ArtistRepository extends JpaRepository<ArtistEntity, UUID> {
     Optional<ArtistEntity> findById(@Nonnull UUID id);
 
     @Nonnull
-    List<ArtistEntity> findAllByNameContainsIgnoreCase(
+    Page<ArtistEntity> findAllByNameContainsIgnoreCase(
             @Nonnull String title, @Nonnull Pageable pageable
     );
 

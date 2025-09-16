@@ -30,7 +30,7 @@ public class MusuemEntity implements Serializable {
   @Column
   private String city;
 
-  @Column(nullable = false, name = "country_id")
+  @Column(nullable = false, name = "country_id", columnDefinition = "BINARY(16)")
   private UUID countryId;
 
   @Lob

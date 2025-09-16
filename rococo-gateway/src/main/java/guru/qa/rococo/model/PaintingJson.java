@@ -1,29 +1,33 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.painting.Painting;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.UUID;
 
 public record PaintingJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("title")
-        @Size(max = 255, message = "Title can`t be longer than 255 characters")
+        @Size(max = 255, message = "Название картины не может быть длиннее 255 символов")
         String title,
         @JsonProperty("description")
-        @Size(max = 1000, message = "Description can`t be longer than 1000 characters")
+        @Size(max = 1000, message = "Описание картины не может быть длиннее 1000 символов")
         String description,
         @JsonProperty("museum")
         MuseumJson museum,
         @JsonProperty("artist")
+        @NotNull(message = "Художник должен быть задан")
         ArtistJson artist,
         @JsonProperty("content")
-        //@Size(max = RococoGatewayServiceConfig.ONE_MB)
+        @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Размер фото не может превышать 4 MB")
         String content
 ) {
         public static PaintingJson fromGrpcMessage(Painting painting) {
@@ -56,6 +60,26 @@ public record PaintingJson(
         public PaintingJson addArtist(ArtistJson artistJson) {
                 return new PaintingJson(id, title, description, museum, artistJson, content);
         }
+
+        public PaintingJson addMuseum(MuseumJson museumJson) {
+                return new PaintingJson(id, title, description, museumJson, artist, content);
+        }
+
+        @JsonIgnore
+        public Optional<String> getArtistId() {
+                return artist() != null && artist().id() != null
+                        ? Optional.of(artist().id().toString())
+                        : Optional.empty();
+        }
+
+        @JsonIgnore
+        public Optional<String> getMuseumId() {
+                return museum() != null && museum().id() != null
+                        ? Optional.of(museum().id().toString())
+                        : Optional.empty();
+        }
+
+
 
 
 }

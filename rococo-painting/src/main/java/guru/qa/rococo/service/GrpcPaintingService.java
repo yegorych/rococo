@@ -10,10 +10,10 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 
@@ -30,39 +30,13 @@ public class GrpcPaintingService extends RococoPaintingServiceGrpc.RococoPaintin
     @Override
     public void getPaintings(PaintingRequest request, StreamObserver<PaintingsResponse> responseObserver) {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-        List<Painting> paintings = paintingRepository.findAll(
+        Page<Painting> paintings = paintingRepository.findAll(
                 PaintingSpecifications.withFilter(request.getTitle(), request.getArtistId()), pageable)
-                .map(PaintingEntity::toGrpcMessage)
-                .toList();
-
-//        if (request.getTitle().isEmpty() && request.getArtistId().isEmpty()) {
-//            paintings.addAll(paintingRepository.findAll(pageable)
-//                    .map(PaintingEntity::toGrpcPainting)
-//                    .getContent());
-//
-//        } else if (!request.getTitle().isEmpty() && request.getArtistId().isEmpty()) {
-//            paintings.addAll(paintingRepository.findAllByTitleContainsIgnoreCase(request.getTitle(), pageable)
-//                    .stream()
-//                    .map(PaintingEntity::toGrpcPainting)
-//                    .toList());
-//        } else if (request.getTitle().isEmpty() && !request.getArtistId().isEmpty() ){
-//            paintings.addAll(paintingRepository.findAllByArtistId(UUID.fromString(request.getArtistId()), pageable)
-//                    .stream()
-//                    .map(PaintingEntity::toGrpcPainting)
-//                    .toList());
-//        } else {
-//            paintings.addAll(paintingRepository.findAllByArtistIdAndTitleContainingIgnoreCase(
-//                    UUID.fromString(request.getArtistId()),
-//                            request.getTitle(),
-//                            pageable)
-//                    .stream()
-//                    .map(PaintingEntity::toGrpcPainting)
-//                    .toList());
-//        }
+                .map(PaintingEntity::toGrpcMessage);
 
         responseObserver.onNext(PaintingsResponse.newBuilder()
                 .addAllPaintings(paintings)
-                .setTotalCount(paintings.size())
+                .setTotalCount((int) paintings.getTotalElements())
                 .build());
         responseObserver.onCompleted();
     }

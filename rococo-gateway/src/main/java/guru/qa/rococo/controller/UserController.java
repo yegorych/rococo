@@ -1,10 +1,9 @@
 package guru.qa.rococo.controller;
 
 
-import guru.qa.rococo.AccessDeniedException;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
+import guru.qa.rococo.ex.AccessDeniedException;
 import guru.qa.rococo.model.UserJson;
-import guru.qa.rococo.service.grpc.GrpcUserdataClient;
 import guru.qa.rococo.service.orchestration.UserdataOrchestrationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

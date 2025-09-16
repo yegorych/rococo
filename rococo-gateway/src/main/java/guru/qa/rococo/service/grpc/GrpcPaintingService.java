@@ -26,12 +26,6 @@ public class GrpcPaintingService {
                 .build()
         );
 
-//        return response.getPaintingsList()
-//                .stream()
-//                .map(PaintingJson::fromGrpcMessage)
-//                .toList();
-        //return new PageImpl<>(paintingJsonList, pageable, response.getTotalCount());
-        //добавить сюда музеи гео и художники из соответствующих сервисов
     }
 
     public Painting createPainting(@Nonnull Painting painting) {

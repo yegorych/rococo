@@ -4,11 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.painting.Painting;
+import guru.qa.rococo.condition.PaintingConditions;
 import guru.qa.rococo.data.entity.painting.PaintingEntity;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+
+import static guru.qa.rococo.utils.RandomDataUtils.randomName;
+import static guru.qa.rococo.utils.RandomDataUtils.randomSentence;
 
 public record PaintingJson(
         @JsonProperty("id")
@@ -93,6 +99,38 @@ public record PaintingJson(
                 return museum() != null && museum().id() != null
                         ? Optional.of(museum().id().toString())
                         : Optional.empty();
+        }
+
+        @Nonnull
+        public static PaintingJson randomPainting() {
+                return new PaintingJson(
+                        null,
+                        randomName(),
+                        randomSentence(20),
+                        MuseumJson.randomMuseum(),
+                        ArtistJson.randomArtist(),
+                        null
+                );
+        }
+
+        public PaintingConditions.PaintingFront toPaintingFront() {
+                return new PaintingConditions.PaintingFront(
+                       title,
+                       description,
+                       artist.name(),
+                       museum!= null ? museum.title() : ""
+                );
+        }
+
+        public static PaintingJson emptyPainting() {
+                return new PaintingJson(
+                        null,
+                        "",
+                        "",
+                        MuseumJson.emptyMuseum(),
+                        ArtistJson.emptyArtist(),
+                        null
+                );
         }
 
 

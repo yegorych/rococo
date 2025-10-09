@@ -8,14 +8,17 @@ import org.apache.commons.lang.NotImplementedException;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
 public class RegisterPage extends BasePage<RegisterPage> {
     private static final String USERNAME_LENGTH_ERROR_MESSAGE = "Allowed username length should be from 3 to 50 characters";
-    private static final String USERNAME_EXISTS_ERROR_MESSAGE = "Username `%s` already exists";
     private static final String PASSWORD_LENGTH_ERROR_MESSAGE = "Allowed password length should be from 3 to 12 characters";
+    private static final String USERNAME_EXISTS_ERROR_MESSAGE = "Username `%s` already exists";
+    private static final String BLANK_USERNAME_ERROR_MESSAGE = "Username can not be blank";
+    private static final String BLANK_PASSWORD_ERROR_MESSAGE = "Password can not be blank";
     private static final String PASSWORD_EQUAL_ERROR_MESSAGE = "Passwords should be equal";
 
     public static final String URL = CFG.authUrl() + "register";
@@ -25,6 +28,7 @@ public class RegisterPage extends BasePage<RegisterPage> {
     private final SelenideElement submitBtn = $("button.form__submit");
     private final SelenideElement loginBtnOnSignup = $("a.form__link");
     private final SelenideElement loginBtnAfterSignup = $("a.form__submit");
+    private final SelenideElement registerForm = $("form[action='/register']");
 
 
     @Nonnull
@@ -63,31 +67,51 @@ public class RegisterPage extends BasePage<RegisterPage> {
         loginBtnAfterSignup.should(Condition.visible);
     }
 
-//    @Nonnull
-//    @Step("check username length")
-//    public RegisterPage assertUsernameLength(){
-//        return checkFormErrorMessage(USERNAME_LENGTH_ERROR_MESSAGE);
-//    }
+    @Nonnull
+    @Step("check that this is Registration page")
+    public RegisterPage isRegistrationPage(){
+        registerForm.should(visible);
+        return this;
+    }
 
-    @Step("check username uniq")
-    public void assertUsernameUniq(String username){
+    @Nonnull
+    @Step("check username length")
+    public RegisterPage checkUsernameLength() {
+        $(byText(USERNAME_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+        return this;
+    }
+
+    @Step("check that user already exists")
+    public void checkUserExists(String username){
         $(byText(USERNAME_EXISTS_ERROR_MESSAGE.formatted(username))).should(Condition.visible);
     }
 
-    @Step("check password length")
-    public void assertPasswordLength(){
-        $(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+    @Step("check that the username cannot be blank")
+    public void checkUsernameCannotBeBlank(){
+        $(byText(BLANK_USERNAME_ERROR_MESSAGE)).should(Condition.visible);
+    }
 
+    @Step("check that the password cannot be blank")
+    public void checkPasswordCannotBeBlank(){
+        $(byText(BLANK_PASSWORD_ERROR_MESSAGE)).should(Condition.visible);
+    }
+
+
+    @Step("check password length")
+    public RegisterPage checkPasswordLength(){
+        $(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+        return this;
     }
 
     @Step("check error about password mismatch is visible")
-    public void assertPasswordEqual(){
+    public void checkPasswordEqual(){
         $(byText(PASSWORD_EQUAL_ERROR_MESSAGE)).should(Condition.visible);
     }
 
 
     @Override
     public RegisterPage checkThatPageLoaded() {
-        throw new NotImplementedException("This method has not been implemented yet");
+        registerForm.should(visible);
+        return this;
     }
 }

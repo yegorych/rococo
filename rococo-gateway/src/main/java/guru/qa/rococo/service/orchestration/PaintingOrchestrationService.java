@@ -1,6 +1,7 @@
 package guru.qa.rococo.service.orchestration;
 
 import guru.qa.grpc.rococo.painting.PaintingsResponse;
+import guru.qa.rococo.ex.NotFoundException;
 import guru.qa.rococo.model.ArtistJson;
 import guru.qa.rococo.model.CountryJson;
 import guru.qa.rococo.model.MuseumJson;
@@ -75,7 +76,7 @@ public class PaintingOrchestrationService {
 
         ArtistJson artistJson = paintingJson.getArtistId()
                 .map(artistId -> ArtistJson.fromGrpcMessage(artistService.getArtistById(artistId)))
-                .orElseThrow(() -> new IllegalArgumentException("Художник не найден"));
+                .orElseThrow(() -> new NotFoundException("Художник не найден"));
 
         paintingJson = paintingJson.addArtist(artistJson);
 

@@ -33,34 +33,16 @@ enum LocalConfig implements Config {
 
   @NotNull
   @Override
-  public String artistUrl() {
-    return "http://127.0.0.1:8086/";
-  }
-
-  @NotNull
-  @Override
   public String artistJdbcUrl() {
     return "jdbc:mysql://127.0.0.1:3306/rococo-artist";
   }
 
-  @NotNull
-  @Override
-  public String museumUrl() {
-    return "http://127.0.0.1:8085/";
-  }
 
   @NotNull
   @Override
   public String museumJdbcUrl() {
     return "jdbc:mysql://127.0.0.1:3306/rococo-museum";
   }
-
-  @NotNull
-  @Override
-  public String paintingUrl() {
-    return "http://127.0.0.1:8088/";
-  }
-
   @NotNull
   @Override
   public String paintingJdbcUrl() {
@@ -87,7 +69,7 @@ enum LocalConfig implements Config {
 
   @Nonnull
   @Override
-  public String  screenshotBaseDir() {
+  public String screenshotBaseDir() {
     return "screenshots/local/";
   }
 
@@ -113,5 +95,11 @@ enum LocalConfig implements Config {
   @Override
   public String paintingGrpcAddress() {
     return "127.0.0.1";
+  }
+
+  @Nonnull
+  @Override
+  public String allureDockerUrl() {
+    return "http://allure:5050/";
   }
 }

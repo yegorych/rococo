@@ -47,6 +47,8 @@ spring:
 
 
 logging:
+  file:
+    path: ./logs/rococo-museum
   level:
     root: INFO
     io.grpc.netty.NettyServerHandler: ERROR
@@ -88,7 +90,5 @@ spring:
     url: 'jdbc:mysql://rococo-all-db:3306/rococo-museum'
     username: root
     password: secret
-  rococo-museum:
-    base-uri: 'http://museum.rococo.dc:8085'
 
 

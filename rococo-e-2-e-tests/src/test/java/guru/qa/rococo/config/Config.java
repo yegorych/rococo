@@ -10,6 +10,8 @@ public interface Config {
         : LocalConfig.instance;
   }
 
+  String projectId = "rococo";
+
   @Nonnull
   String frontUrl();
   @Nonnull
@@ -23,15 +25,9 @@ public interface Config {
   @Nonnull
   String gatewayUrl();
   @Nonnull
-  String artistUrl();
-  @Nonnull
   String artistJdbcUrl();
   @Nonnull
-  String museumUrl();
-  @Nonnull
   String museumJdbcUrl();
-  @Nonnull
-  String paintingUrl();
   @Nonnull
   String paintingJdbcUrl();
   @Nonnull
@@ -49,6 +45,8 @@ public interface Config {
   String geoGrpcAddress();
   @Nonnull
   String paintingGrpcAddress();
+  @Nonnull
+  String allureDockerUrl();
 
   default int museumGrpcPort() {
     return 9095;

@@ -8,7 +8,7 @@ import guru.qa.rococo.jupiter.annotation.ApiLogin;
 import guru.qa.rococo.jupiter.annotation.Token;
 import guru.qa.rococo.model.rest.UserJson;
 import guru.qa.rococo.page.MainPage;
-import guru.qa.rococo.service.impl.AuthApiClient;
+import guru.qa.rococo.service.impl.api.AuthApiClient;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
@@ -39,7 +39,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
   }
 
   @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
+  public void beforeEach(ExtensionContext context) {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), ApiLogin.class)
         .ifPresent(apiLogin -> {
           final UserJson userToLogin;
@@ -63,6 +63,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
               userToLogin.username(),
               userToLogin.password()
           );
+
           setToken(token);
           if (setupBrowser) {
             Selenide.open(CFG.frontUrl());

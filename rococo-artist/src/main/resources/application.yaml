@@ -44,9 +44,9 @@ spring:
     generate-ddl: true
     open-in-view: false
 
-
-
 logging:
+  file:
+    path: ./logs/rococo-artist
   level:
     root: INFO
     io.grpc.netty.NettyServerHandler: ERROR

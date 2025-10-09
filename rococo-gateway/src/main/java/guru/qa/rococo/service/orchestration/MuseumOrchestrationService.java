@@ -29,8 +29,8 @@ public class MuseumOrchestrationService {
     }
 
     @Nonnull
-    public Page<MuseumJson> getMuseums(@Nonnull Pageable pageable) {
-        MuseumsResponse response = museumService.getMuseums(pageable);
+    public Page<MuseumJson> getMuseums(@Nullable String title, @Nonnull Pageable pageable) {
+        MuseumsResponse response = museumService.getMuseums(title, pageable);
         List<MuseumJson> museumList = response.getMuseumList()
                 .stream()
                 .map(MuseumJson::fromGrpcMessage)
@@ -40,6 +40,7 @@ public class MuseumOrchestrationService {
     }
 
     public MuseumJson createMuseum(@Nonnull MuseumJson museumJson){
+
         return MuseumJson.fromGrpcMessage(museumService.createMuseum(museumJson.toGrpcMessage()))
                 .addCountry(geoService.getCountry(museumJson.geo().country().id().toString()));
     }

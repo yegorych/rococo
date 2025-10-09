@@ -19,4 +19,9 @@ public interface MuseumRepository extends JpaRepository<MusuemEntity, UUID>{
             @Nonnull Pageable pageable
     );
 
+    @Nonnull
+    Page<MusuemEntity> findAllByTitleContainsIgnoreCase(
+            @Nonnull String title, @Nonnull Pageable pageable
+    );
+
 }

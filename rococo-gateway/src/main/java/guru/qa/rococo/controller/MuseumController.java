@@ -27,8 +27,9 @@ public class MuseumController {
     }
 
     @GetMapping
-    public Page<MuseumJson> getAll(@PageableDefault(size = 15) Pageable pageable) {
-        return museumService.getMuseums(pageable);
+    public Page<MuseumJson> getAll(@RequestParam(required = false) String title,
+            @PageableDefault(size = 15) Pageable pageable) {
+        return museumService.getMuseums(title, pageable);
     }
 
     @PostMapping

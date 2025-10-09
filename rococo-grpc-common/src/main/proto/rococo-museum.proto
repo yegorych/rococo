@@ -15,6 +15,7 @@ service RococoMuseumService {
 message MuseumsRequest {
   int32 page = 1;
   int32 size = 2;
+  string title = 3;
 }
 
 message IdRequest {

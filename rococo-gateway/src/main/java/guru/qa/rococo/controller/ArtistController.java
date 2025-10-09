@@ -2,7 +2,6 @@ package guru.qa.rococo.controller;
 
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.service.grpc.GrpcArtistService;
 import guru.qa.rococo.service.orchestration.ArtistOrchestrationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

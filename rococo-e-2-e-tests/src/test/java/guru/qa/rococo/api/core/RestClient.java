@@ -33,6 +33,10 @@ public abstract class RestClient {
     this(baseUrl, false, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.BODY);
   }
 
+  public RestClient(String baseUrl, HttpLoggingInterceptor.Level level) {
+    this(baseUrl, false, JacksonConverterFactory.create(), level);
+  }
+
   public RestClient(String baseUrl, boolean followRedirect) {
     this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.BODY);
   }
@@ -77,7 +81,7 @@ public abstract class RestClient {
   }
 
   @Nullable
-  protected  <T> T executeCall(Call<T> call){
+  protected  <T> T executeAndExtractBody(Call<T> call){
     final Response<T> response;
     try {
       response = call.execute();
@@ -87,16 +91,16 @@ public abstract class RestClient {
     Assertions.assertTrue(response.isSuccessful() || (response.code() >= 300 && response.code() < 400));
     return response.body();
   }
+  
 
   @Nullable
-  protected <T> Response<T> executeCallFullResponse(Call<T> call){
+  protected <T> Response<T> execute(Call<T> call){
     final Response<T> response;
     try {
       response = call.execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
-    Assertions.assertTrue(response.isSuccessful() || (response.code() >= 300 && response.code() < 400));
     Assertions.assertNotNull(response);
     return response;
   }

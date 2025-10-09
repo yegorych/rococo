@@ -13,12 +13,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @ExtendWith({
         BrowserExtension.class,
-        AllureJunit5.class,
         UserExtension.class,
-        ApiLoginExtension.class,
+        AllureJunit5.class,
+        TestDataExtension.class,
         MuseumExtension.class,
         ArtistExtension.class,
-        PaintingExtension.class
+        PaintingExtension.class,
+        ApiLoginExtension.class,
+        ScreenShotTestExtension.class,
 })
 public @interface WebTest {
 }

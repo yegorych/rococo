@@ -1,5 +1,6 @@
 FROM eclipse-temurin:21-jdk
 
+
 WORKDIR /rococo
 ENV TZ=Europe/Moscow
 COPY ./gradle ./gradle
@@ -9,5 +10,9 @@ COPY ./gradlew ./
 COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
+
+
+# Кешируем зависимости (ВАЖНО!)
+RUN ./gradlew --no-daemon build -x test
 
 CMD ./gradlew test -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow

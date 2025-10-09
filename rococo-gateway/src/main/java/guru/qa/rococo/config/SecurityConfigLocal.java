@@ -1,5 +1,6 @@
 package guru.qa.rococo.config;
 
+import guru.qa.rococo.security.CustomAuthEntryPoint;
 import guru.qa.rococo.service.cors.CorsCustomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,9 @@ public class SecurityConfigLocal {
   private final CorsCustomizer corsCustomizer;
 
   @Autowired
+  private CustomAuthEntryPoint customAuthEntryPoint;
+
+  @Autowired
   public SecurityConfigLocal(CorsCustomizer corsCustomizer) {
     this.corsCustomizer = corsCustomizer;
   }
@@ -42,14 +46,13 @@ public class SecurityConfigLocal {
                     antMatcher(HttpMethod.GET, "/api/artist/**"),
                     antMatcher(HttpMethod.GET, "/api/museum/**"),
                     antMatcher("/actuator/health"),
-                    antMatcher("/swagger-ui/**"),
-                    antMatcher("/v3/api-docs/**"),
-                    antMatcher("/graphiql/**"),
-                    antMatcher(HttpMethod.POST, "/graphql"))
+                    antMatcher("/v3/api-docs/**"))
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+        ).oauth2ResourceServer(oauth2 ->
+                    oauth2.jwt(Customizer.withDefaults())
+                            .authenticationEntryPoint(customAuthEntryPoint));
     return http.build();
   }
 }

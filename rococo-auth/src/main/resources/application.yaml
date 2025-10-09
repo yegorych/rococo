@@ -39,6 +39,8 @@ spring:
 
 
 logging:
+  file:
+    path: ./logs/rococo-auth
   level:
     root: INFO
     org.springframework.web: DEBUG

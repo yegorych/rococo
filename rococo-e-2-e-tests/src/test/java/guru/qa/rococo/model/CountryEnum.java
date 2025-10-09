@@ -1,9 +1,9 @@
 package guru.qa.rococo.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @Getter
 public enum CountryEnum {
@@ -214,6 +214,16 @@ public enum CountryEnum {
                 .filter(c -> c.countryName.equalsIgnoreCase(name))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public static CountryEnum randomCountry() {
+        CountryEnum[] countries = values();
+        return countries[(int) (Math.random() * countries.length)];
+    }
+
+    @JsonCreator
+    public static CountryEnum fromJson(String name) {
+        return fromName(name);
     }
 
 }

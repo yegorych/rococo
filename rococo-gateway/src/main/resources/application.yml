@@ -46,6 +46,8 @@ spring:
     open-in-view: false
 
 logging:
+  file:
+    path: ./logs/rococo-gateway
   level:
     root: INFO
     org.springframework.web: DEBUG
@@ -124,6 +126,19 @@ grpc:
     grpcUserdataClient:
       address: 'static://userdata.rococo.dc:9090'
       negotiationType: PLAINTEXT
+    grpcPaintingClient:
+      address: 'static://painting.rococo.dc:9091'
+      negotiationType: PLAINTEXT
+    grpcGeoClient:
+      address: 'static://geo.rococo.dc:9094'
+      negotiationType: PLAINTEXT
+    grpcArtistClient:
+      address: 'static://artist.rococo.dc:9093'
+      negotiationType: PLAINTEXT
+    grpcMuseumClient:
+      address: 'static://museum.rococo.dc:9095'
+      negotiationType: PLAINTEXT
+
 
 rococo-userdata:
   base-uri: 'http://userdata.rococo.dc:8089'

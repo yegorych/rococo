@@ -60,7 +60,7 @@ public class PaintingEntity implements Serializable {
     pe.setId(json.id());
     pe.setTitle(json.title());
     pe.setDescription(json.description());
-    pe.setMuseumId(json.museum().id());
+    pe.setMuseumId(json.museum() != null ? json.museum().id() : null);
     pe.setArtistId(json.artist().id());
     pe.setContent(json.content() != null ? json.content().getBytes(StandardCharsets.UTF_8) : null);
     return pe;

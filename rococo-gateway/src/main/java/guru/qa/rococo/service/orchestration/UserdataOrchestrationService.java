@@ -1,5 +1,6 @@
 package guru.qa.rococo.service.orchestration;
 
+import guru.qa.rococo.ex.ValidationException;
 import guru.qa.rococo.model.UserJson;
 import guru.qa.rococo.service.grpc.GrpcUserdataClient;
 import jakarta.annotation.Nonnull;
@@ -20,6 +21,10 @@ public class UserdataOrchestrationService {
     }
 
     public @Nonnull UserJson updateUser(@Nonnull UserJson userJson){
+        if ((!userJson.firstname().isEmpty() && userJson.firstname().isBlank()) ||
+                (!userJson.lastname().isEmpty() && userJson.lastname().isBlank())) {
+            throw new ValidationException("Имя и фамилия не могут состоять из пробелов");
+        }
         return UserJson.fromGrpcMessage(userdataClient.updateUser(userJson.toGrpcMessage()));
     }
 }

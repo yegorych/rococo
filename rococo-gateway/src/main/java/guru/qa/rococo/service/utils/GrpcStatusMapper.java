@@ -11,6 +11,7 @@ public class GrpcStatusMapper {
         return switch (status.getCode()) {
             case NOT_FOUND -> HttpStatus.NOT_FOUND;
             case INVALID_ARGUMENT -> HttpStatus.BAD_REQUEST;
+            case ALREADY_EXISTS -> HttpStatus.CONFLICT;
             default -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
     }

@@ -26,7 +26,7 @@ public class ArtistEntity implements Serializable {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false, length = 2000)
+  @Column(length = 2000)
   private String biography;
 
   @Lob

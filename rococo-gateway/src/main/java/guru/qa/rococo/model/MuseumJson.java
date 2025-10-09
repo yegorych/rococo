@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.museum.Museum;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,7 @@ public record MuseumJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("title")
+        @NotBlank(message = "Название не может быть пустым или состоять только из пробелов")
         @Size(max = 255, message = "Название музея не может быть длиннее 255 символов")
         String title,
         @JsonProperty("description")
@@ -62,4 +64,6 @@ public record MuseumJson(
                         photo
                 );
         }
+
+
 }

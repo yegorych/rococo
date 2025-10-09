@@ -7,20 +7,15 @@ import guru.qa.rococo.ex.MuseumNotFoundException;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 
 @GrpcService
 public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServiceImplBase {
-    private final static Logger log = LoggerFactory.getLogger(GrpcMuseumService.class);
-
     private final MuseumRepository museumRepository;
 
     public GrpcMuseumService(MuseumRepository museumRepository) {
@@ -30,7 +25,7 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
     @Override
     public void getMuseums(MuseumsRequest request, StreamObserver<MuseumsResponse> responseObserver) {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-        Page<Museum> museums = museumRepository.findAll(pageable)
+        Page<Museum> museums = museumRepository.findAllByTitleContainsIgnoreCase(request.getTitle(), pageable)
                 .map(MusuemEntity::toGrpcMessage);
 
         responseObserver.onNext(MuseumsResponse.newBuilder()

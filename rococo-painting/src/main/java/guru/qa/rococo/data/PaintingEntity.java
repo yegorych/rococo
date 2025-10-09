@@ -18,7 +18,7 @@ import java.util.UUID;
 public class PaintingEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id", nullable = false, columnDefinition = "BINARY(16)")
+  @Column(name = "id", nullable = false, unique = true, columnDefinition = "BINARY(16)")
   private UUID id;
 
   @Column(nullable = false)

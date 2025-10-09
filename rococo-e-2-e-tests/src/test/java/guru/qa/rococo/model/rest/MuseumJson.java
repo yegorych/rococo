@@ -3,7 +3,10 @@ package guru.qa.rococo.model.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.museum.Museum;
+import guru.qa.rococo.condition.MuseumConditions.MuseumFront;
 import guru.qa.rococo.data.entity.museum.MuseumEntity;
+import guru.qa.rococo.model.CountryEnum;
+import guru.qa.rococo.utils.RandomDataUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -53,6 +56,15 @@ public record MuseumJson(
                         .build();
         }
 
+        public MuseumFront toMuseumFront(){
+                return new MuseumFront(
+                        title,
+                        description,
+                        geo.city(),
+                        geo.country().name() != null ? geo.country().name().getCountryName() : ""
+                );
+        }
+
         public MuseumJson addCountry(CountryJson country) {
                 return new MuseumJson(
                         id,
@@ -78,5 +90,29 @@ public record MuseumJson(
                         entity.getPhoto() != null ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : ""
                 );
         }
+
+        public static MuseumJson randomMuseum() {
+                return new MuseumJson(
+                        null,
+                        RandomDataUtils.randomMuseumTitle(),
+                        RandomDataUtils.randomSentence(30),
+                        new GeoJson(
+                                RandomDataUtils.randomCity(),
+                                new CountryJson(null, CountryEnum.randomCountry())
+                        ),
+                        null
+                );
+        }
+
+        public static MuseumJson emptyMuseum(){
+                return new MuseumJson(
+                        null,
+                        "",
+                        "",
+                        new GeoJson("", new CountryJson(null, null)),
+                        null
+                );
+        }
+
 
 }

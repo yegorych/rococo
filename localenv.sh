@@ -3,7 +3,7 @@
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
-docker run --name rococo-all \
+docker run --name rococo-all-db \
 --network rococo-net \
   -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=secret \

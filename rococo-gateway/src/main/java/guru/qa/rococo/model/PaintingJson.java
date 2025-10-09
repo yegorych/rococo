@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.painting.Painting;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -16,6 +17,7 @@ public record PaintingJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("title")
+        @NotBlank(message = "Название картины не может быть пустым или состоять только из пробелов")
         @Size(max = 255, message = "Название картины не может быть длиннее 255 символов")
         String title,
         @JsonProperty("description")

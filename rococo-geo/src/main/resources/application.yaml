@@ -47,6 +47,8 @@ spring:
 
 
 logging:
+  file:
+    path: ./logs/rococo-geo
   level:
     root: INFO
     io.grpc.netty.NettyServerHandler: ERROR

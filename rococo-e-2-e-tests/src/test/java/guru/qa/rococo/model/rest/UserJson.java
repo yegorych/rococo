@@ -8,6 +8,7 @@ import guru.qa.grpc.rococo.userdata.UserInfo;
 import guru.qa.rococo.data.entity.userdata.UserEntity;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -63,5 +64,18 @@ public record UserJson(
 
     public UserJson withPassword(String password) {
         return new UserJson(id, username, firstname, lastname, photo, password);
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserJson userJson = (UserJson) o;
+        return Objects.equals(id, userJson.id) && Objects.equals(photo, userJson.photo) && Objects.equals(username, userJson.username) && Objects.equals(lastname, userJson.lastname) && Objects.equals(firstname, userJson.firstname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, firstname, lastname, photo);
     }
 }

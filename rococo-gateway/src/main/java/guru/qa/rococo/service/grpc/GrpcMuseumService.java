@@ -2,6 +2,7 @@ package guru.qa.rococo.service.grpc;
 
 import guru.qa.grpc.rococo.museum.*;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,11 @@ public class GrpcMuseumService {
     private RococoMuseumServiceGrpc.RococoMuseumServiceBlockingStub rococoMuseumServiceBlockingStub;
 
     @Nonnull
-    public MuseumsResponse getMuseums(@Nonnull Pageable pageable) {
+    public MuseumsResponse getMuseums(@Nullable String title, @Nonnull Pageable pageable) {
         return rococoMuseumServiceBlockingStub.getMuseums(MuseumsRequest.newBuilder()
                 .setPage(pageable.getPageNumber())
                 .setSize(pageable.getPageSize())
+                .setTitle(title != null ? title : "")
                 .build());
     }
 

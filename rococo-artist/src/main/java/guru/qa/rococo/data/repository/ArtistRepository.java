@@ -1,6 +1,7 @@
 package guru.qa.rococo.data.repository;
 
 
+import com.fasterxml.jackson.databind.introspect.AnnotationCollector;
 import guru.qa.rococo.data.ArtistEntity;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ public interface ArtistRepository extends JpaRepository<ArtistEntity, UUID> {
 
     @Nonnull
     Page<ArtistEntity> findAllByNameContainsIgnoreCase(
-            @Nonnull String title, @Nonnull Pageable pageable
+            @Nonnull String name, @Nonnull Pageable pageable
     );
 
     @Nonnull
@@ -25,4 +26,7 @@ public interface ArtistRepository extends JpaRepository<ArtistEntity, UUID> {
             @Nonnull Pageable pageable
     );
 
+    AnnotationCollector existsArtistEntityByName(String name);
+
+    boolean existsByName(String name);
 }

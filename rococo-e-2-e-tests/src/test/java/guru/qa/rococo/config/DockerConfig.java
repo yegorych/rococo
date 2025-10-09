@@ -4,14 +4,14 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-//доделать !!!!
+
 enum DockerConfig implements Config {
   instance;
 
   @Nonnull
   @Override
   public String frontUrl() {
-    return "http://frontend.rococo.dc:3000/";
+    return "http://frontend.rococo.dc/";
   }
 
   @Nonnull
@@ -23,8 +23,7 @@ enum DockerConfig implements Config {
   @Nonnull
   @Override
   public String authJdbcUrl() {
-    //return "jdbc:postgresql://rococo-all-db:3306/rococo-auth";
-    return "";
+    return "jdbc:mysql://rococo-all-db:3306/rococo-auth";
   }
 
   @Nonnull
@@ -35,44 +34,27 @@ enum DockerConfig implements Config {
 
   @NotNull
   @Override
-  public String artistUrl() {
-    return "";
-  }
-
-  @NotNull
-  @Override
   public String artistJdbcUrl() {
-    return "";
+    return "jdbc:mysql://rococo-all-db:3306/rococo-artist";
   }
 
-  @NotNull
-  @Override
-  public String museumUrl() {
-    return "";
-  }
 
   @NotNull
   @Override
   public String museumJdbcUrl() {
-    return "";
-  }
-
-  @NotNull
-  @Override
-  public String paintingUrl() {
-    return "";
+    return "jdbc:mysql://rococo-all-db:3306/rococo-museum";
   }
 
   @NotNull
   @Override
   public String paintingJdbcUrl() {
-    return "";
+    return "jdbc:mysql://rococo-all-db:3306/rococo-painting";
   }
 
   @NotNull
   @Override
   public String geoJdbcUrl() {
-    return "";
+    return "jdbc:mysql://rococo-all-db:3306/rococo-geo";
   }
 
   @Nonnull
@@ -84,7 +66,7 @@ enum DockerConfig implements Config {
   @NotNull
   @Override
   public String userdataJdbcUrl() {
-    return "";
+    return "jdbc:mysql://rococo-all-db:3306/rococo-userdata";
   }
 
   @Nonnull
@@ -102,18 +84,27 @@ enum DockerConfig implements Config {
   @NotNull
   @Override
   public String artistGrpcAddress() {
-    return "";
+    return "artist.rococo.dc";
   }
 
   @NotNull
   @Override
   public String geoGrpcAddress() {
-    return "";
+    return "geo.rococo.dc";
   }
 
   @NotNull
   @Override
   public String paintingGrpcAddress() {
-    return "";
+    return "painting.rococo.dc";
+  }
+
+  @Nonnull
+  @Override
+  public String allureDockerUrl() {
+    final String allureDockerApiFromEnv = System.getenv("ALLURE_DOCKER_API");
+    return allureDockerApiFromEnv != null
+            ? allureDockerApiFromEnv
+            : "http://allure:5050/";
   }
 }

@@ -2,6 +2,8 @@ package guru.qa.rococo.service;
 
 
 import guru.qa.rococo.ex.AccessDeniedException;
+import guru.qa.rococo.ex.NotFoundException;
+import guru.qa.rococo.ex.ValidationException;
 import guru.qa.rococo.service.utils.GrpcStatusMapper;
 import io.grpc.StatusRuntimeException;
 import jakarta.annotation.Nonnull;
@@ -53,9 +55,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(StatusRuntimeException.class)
   public ResponseEntity<Map<String, List<String>>> handleGrpcException(StatusRuntimeException ex) {
     LOG.error("==== ERROR ==== {}", ex.getMessage(), ex);
-    return ResponseEntity
+      assert ex.getStatus().getDescription() != null;
+      return ResponseEntity
             .status(GrpcStatusMapper.map(ex.getStatus()))
-            .body(Map.of("errors", List.of(ex.getMessage())));
+            .body(Map.of("errors", List.of(ex.getStatus().getDescription())));
   }
 
   @ExceptionHandler(AccessDeniedException.class)
@@ -65,6 +68,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .status(HttpStatus.FORBIDDEN)
             .body(Map.of("errors", List.of(ex.getMessage())));
   }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<Map<String, List<String>>> handleNotFoundException(NotFoundException ex) {
+    LOG.error("==== ERROR ==== {}", ex.getMessage(), ex);
+    return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(Map.of("errors", List.of(ex.getMessage())));
+  }
+
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<Map<String, List<String>>> handleValidationException(ValidationException ex) {
+    LOG.error("==== ERROR ==== {}", ex.getMessage(), ex);
+    return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(Map.of("errors", List.of(ex.getMessage())));
+  }
+
+
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, List<String>>> handleException(Exception ex) {

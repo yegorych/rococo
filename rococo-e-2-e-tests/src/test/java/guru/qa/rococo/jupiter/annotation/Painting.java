@@ -1,15 +1,16 @@
 package guru.qa.rococo.jupiter.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import guru.qa.rococo.jupiter.annotation.container.Paintings;
 
+import java.lang.annotation.*;
+
+@Repeatable(Paintings.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Painting {
     String title() default "";
     String description() default "";
+    String photo() default "";
     Artist artist() default @Artist;
-    Museum museum() default @Museum;
+    Museum museum() default @Museum(createMuseum = false);
 }

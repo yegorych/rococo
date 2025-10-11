@@ -58,24 +58,34 @@ public class GrpcGeoService extends RococoGeoServiceGrpc.RococoGeoServiceImplBas
 
     @Override
     public void getCounty(IdRequest request, StreamObserver<Country> responseObserver) {
+        UUID id;
         try {
-            Country country = countryRepository.findById(UUID.fromString(request.getId()))
-                    .map(CountryEntity::toGrpcMessage)
-                    .orElseThrow();
-            responseObserver.onNext(country);
-            responseObserver.onCompleted();
-        } catch (Exception e) {
-            log.error("Country not found", e);
+            id = UUID.fromString(request.getId());
+        } catch (IllegalArgumentException e) {
             responseObserver.onError(
-                    Status.NOT_FOUND
-                            .withDescription("Страна с таким ID не найдена")
+                    Status.INVALID_ARGUMENT
+                            .withDescription("Некорректный UUID string: " + request.getId())
                             .withCause(e)
                             .asRuntimeException()
             );
+            return;
         }
 
-
-
+        countryRepository.findById(id)
+                .map(CountryEntity::toGrpcMessage)
+                .ifPresentOrElse(
+                        country -> {
+                            responseObserver.onNext(country);
+                            responseObserver.onCompleted();
+                        },
+                        () -> {
+                            responseObserver.onError(
+                                    Status.NOT_FOUND
+                                            .withDescription(String.format("Страна с ID %s не найдена", id))
+                                            .asRuntimeException()
+                            );
+                        }
+                );
     }
 }
 

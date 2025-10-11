@@ -17,11 +17,11 @@ public record PaintingJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("title")
-        @NotBlank(message = "Название картины не может быть пустым или состоять только из пробелов")
-        @Size(max = 255, message = "Название картины не может быть длиннее 255 символов")
+        @NotBlank(message = "Название не может быть пустым или состоять только из пробелов")
+        @Size(max = 255, message = "Название не может быть длиннее 255 символов")
         String title,
         @JsonProperty("description")
-        @Size(max = 1000, message = "Описание картины не может быть длиннее 1000 символов")
+        @Size(max = 1000, message = "Описание не может быть длиннее 1000 символов")
         String description,
         @JsonProperty("museum")
         MuseumJson museum,
@@ -55,7 +55,7 @@ public record PaintingJson(
                         .setDescription(description)
                         .setMuseumId(museum.id() != null ? museum.id().toString() : "")
                         .setArtistId(artist.id() != null ? artist.id().toString() : "")
-                        .setContent(ByteString.copyFromUtf8(content))
+                        .setContent(content != null ? ByteString.copyFromUtf8(content) : ByteString.empty())
                         .build();
         }
 

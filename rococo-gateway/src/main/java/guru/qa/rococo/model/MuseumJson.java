@@ -15,10 +15,10 @@ public record MuseumJson(
         UUID id,
         @JsonProperty("title")
         @NotBlank(message = "Название не может быть пустым или состоять только из пробелов")
-        @Size(max = 255, message = "Название музея не может быть длиннее 255 символов")
+        @Size(max = 255, message = "Название не может быть длиннее 255 символов")
         String title,
         @JsonProperty("description")
-        @Size(max = 1000, message = "Описание музея не может быть длиннее 1000 символов")
+        @Size(max = 1000, message = "Описание не может быть длиннее 1000 символов")
         String description,
         @JsonProperty("geo")
         GeoJson geo,
@@ -51,7 +51,7 @@ public record MuseumJson(
                         .setDescription(description)
                         .setCity(geo().city())
                         .setCountryId(geo().country().id().toString())
-                        .setPhoto(ByteString.copyFromUtf8(photo))
+                        .setPhoto(photo != null ? ByteString.copyFromUtf8(photo) : ByteString.empty())
                         .build();
         }
 

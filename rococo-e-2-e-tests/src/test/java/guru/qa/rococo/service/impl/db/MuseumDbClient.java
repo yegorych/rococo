@@ -42,6 +42,10 @@ public class MuseumDbClient implements MuseumClient {
                                 countryJson.name().getCountryName())
                                 .orElseThrow();
                         museumEntity.setCountryId(country.getId());
+                        countryJson = new CountryJson(
+                                country.getId(),
+                                countryJson.name()
+                        );
                     }
                     return MuseumJson.fromEntity(museumRepository.create(museumEntity)).addCountry(countryJson);
                 })

@@ -73,8 +73,8 @@ public record PaintingJson(
                         .setId(id != null ? id.toString() : "")
                         .setTitle(title)
                         .setDescription(description)
-                        .setMuseumId(museum.id() != null ? museum.id().toString() : "")
-                        .setArtistId(artist.id() != null ? artist.id().toString() : "")
+                        .setMuseumId(museum != null && museum.id() != null ? museum.id().toString() : "")
+                        .setArtistId(artist != null && artist.id() != null ? artist.id().toString() : "")
                         .setContent(ByteString.copyFromUtf8(content))
                         .build();
         }
@@ -87,19 +87,10 @@ public record PaintingJson(
                 return new PaintingJson(id, title, description, museumJson, artist, content);
         }
 
-        @JsonIgnore
-        public Optional<String> getArtistId() {
-                return artist() != null && artist().id() != null
-                        ? Optional.of(artist().id().toString())
-                        : Optional.empty();
+        public PaintingJson addId(UUID id) {
+                return new PaintingJson(id, title, description, museum, artist, content);
         }
 
-        @JsonIgnore
-        public Optional<String> getMuseumId() {
-                return museum() != null && museum().id() != null
-                        ? Optional.of(museum().id().toString())
-                        : Optional.empty();
-        }
 
         @Nonnull
         public static PaintingJson randomPainting() {

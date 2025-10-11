@@ -3,6 +3,7 @@ package guru.qa.rococo.service;
 import guru.qa.grpc.rococo.museum.*;
 import guru.qa.rococo.data.MusuemEntity;
 import guru.qa.rococo.data.repository.MuseumRepository;
+import guru.qa.rococo.ex.InvalidUUIDException;
 import guru.qa.rococo.ex.MuseumNotFoundException;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -37,9 +38,12 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
 
     @Override
     public void getMuseum(IdRequest request, StreamObserver<Museum> responseObserver) {
-        Museum museum = museumRepository.findById(UUID.fromString(request.getId()))
+        UUID id = parseUuidOrThrow(request.getId());
+        Museum museum = museumRepository.findById(UUID.fromString(id.toString()))
                 .map(MusuemEntity::toGrpcMessage)
-                .orElseThrow(() -> new MuseumNotFoundException("Музей не найден"));
+                .orElseThrow(() -> new MuseumNotFoundException(
+                        String.format("Музей с ID %s не найден", id))
+                );
         responseObserver.onNext(museum);
         responseObserver.onCompleted();
     }
@@ -54,6 +58,17 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
             );
             return;
         }
+
+        boolean exists = museumRepository.existsByTitle(request.getTitle());
+        if (exists) {
+            responseObserver.onError(
+                    Status.ALREADY_EXISTS
+                            .withDescription("Музей с таким названием уже существует")
+                            .asRuntimeException()
+            );
+            return;
+        }
+
         MusuemEntity createdPainting = museumRepository.save(MusuemEntity.fromGrpcMessage(request));
         responseObserver.onNext(createdPainting.toGrpcMessage());
         responseObserver.onCompleted();
@@ -61,13 +76,35 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
 
     @Override
     public void updateMuseum(Museum request, StreamObserver<Museum> responseObserver) {
+        UUID id = parseUuidOrThrow(request.getId());
+
+        boolean exists = museumRepository.existsByTitle(request.getTitle());
+        if (exists) {
+            responseObserver.onError(
+                    Status.ALREADY_EXISTS
+                            .withDescription("Музей с таким названием уже существует")
+                            .asRuntimeException()
+            );
+            return;
+        }
+
         MusuemEntity pe = museumRepository
-                .findById(UUID.fromString(request.getId()))
-                .orElseThrow(() -> new MuseumNotFoundException("Музей не найден"));
+                .findById(UUID.fromString(id.toString()))
+                .orElseThrow(() -> new MuseumNotFoundException(
+                        String.format("Музей с ID %s не найден", id))
+                );
 
         MusuemEntity updatedPainting = museumRepository.save(MusuemEntity.fromGrpcMessage(request, pe));
         responseObserver.onNext(updatedPainting.toGrpcMessage());
         responseObserver.onCompleted();
+    }
+
+    private UUID parseUuidOrThrow(String uuidString) {
+        try {
+            return UUID.fromString(uuidString);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUUIDException("Некорректный UUID string: " + uuidString);
+        }
     }
 }
 

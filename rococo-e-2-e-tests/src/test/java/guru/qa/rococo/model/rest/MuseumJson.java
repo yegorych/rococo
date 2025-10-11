@@ -104,6 +104,10 @@ public record MuseumJson(
                 );
         }
 
+        public MuseumJson addId(UUID id) {
+                return new MuseumJson(id, title, description, geo, photo);
+        }
+
         public static MuseumJson emptyMuseum(){
                 return new MuseumJson(
                         null,

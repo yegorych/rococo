@@ -4,6 +4,7 @@ import guru.qa.grpc.rococo.painting.*;
 import guru.qa.rococo.data.PaintingEntity;
 import guru.qa.rococo.data.PaintingSpecifications;
 import guru.qa.rococo.data.repository.PaintingRepository;
+import guru.qa.rococo.ex.InvalidUUIDException;
 import guru.qa.rococo.ex.PaintingNotFoundException;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -43,9 +44,10 @@ public class GrpcPaintingService extends RococoPaintingServiceGrpc.RococoPaintin
 
     @Override
     public void getPainting(IdRequest request, StreamObserver<Painting> responseObserver) {
-        Painting painting = paintingRepository.findById(UUID.fromString(request.getId()))
+        UUID id = parseUuidOrThrow(request.getId());
+        Painting painting = paintingRepository.findById(id)
                 .map(PaintingEntity::toGrpcMessage)
-                .orElseThrow(() -> new PaintingNotFoundException("Картина не найдена"));
+                .orElseThrow(() -> new PaintingNotFoundException(String.format("Картина с ID %s не найдена", id)));
         responseObserver.onNext(painting);
         responseObserver.onCompleted();
 
@@ -68,13 +70,22 @@ public class GrpcPaintingService extends RococoPaintingServiceGrpc.RococoPaintin
 
     @Override
     public void updatePainting(Painting request, StreamObserver<Painting> responseObserver) {
+        UUID id = parseUuidOrThrow(request.getId());
         PaintingEntity pe = paintingRepository
-                    .findById(UUID.fromString(request.getId()))
-                    .orElseThrow(() -> new PaintingNotFoundException("Картина не найдена"));
+                    .findById(id)
+                    .orElseThrow(() -> new PaintingNotFoundException(String.format("Картина с ID %s не найдена", id)));
 
         PaintingEntity updatedPainting = paintingRepository.save(PaintingEntity.fromGrpcMessage(request, pe));
         responseObserver.onNext(updatedPainting.toGrpcMessage());
         responseObserver.onCompleted();
+    }
+
+    public UUID parseUuidOrThrow(String uuidString) {
+        try {
+            return UUID.fromString(uuidString);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUUIDException("Некорректный UUID string: " + uuidString);
+        }
     }
 }
 

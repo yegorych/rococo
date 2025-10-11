@@ -24,4 +24,5 @@ public interface MuseumRepository extends JpaRepository<MusuemEntity, UUID>{
             @Nonnull String title, @Nonnull Pageable pageable
     );
 
+    boolean existsByTitle(String title);
 }

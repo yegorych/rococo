@@ -1,6 +1,7 @@
 package guru.qa.rococo.service;
 
 
+import guru.qa.rococo.ex.InvalidUUIDException;
 import guru.qa.rococo.ex.PaintingNotFoundException;
 import io.grpc.StatusRuntimeException;
 import net.devh.boot.grpc.server.advice.GrpcAdvice;
@@ -17,6 +18,11 @@ public class GlobalExceptionHandler{
     @GrpcExceptionHandler(PaintingNotFoundException.class)
     public StatusRuntimeException handlePaintingNotFound(PaintingNotFoundException e) {
         return Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e).asRuntimeException();
+    }
+
+    @GrpcExceptionHandler(InvalidUUIDException.class)
+    public StatusRuntimeException handleInvalidUUIDException(InvalidUUIDException e) {
+        return Status.INVALID_ARGUMENT.withDescription(e.getMessage()).withCause(e).asRuntimeException();
     }
 
 

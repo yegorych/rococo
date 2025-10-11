@@ -28,7 +28,6 @@ public class MuseumExtension implements
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MuseumExtension.class);
 
     private final MuseumClient museumClient = new MuseumDbClient();
-    private static final Base64.Encoder encoder = Base64.getEncoder();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {

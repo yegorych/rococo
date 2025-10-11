@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -27,6 +28,7 @@ public class GeoRestTest {
   void countriesShouldBeReturnedFromGateway() {
     final Response<RestResponsePage<CountryJson>> response = geoApiClient.getCountryPage(0, 10);
     Assertions.assertTrue(response.isSuccessful());
+    Assertions.assertNotNull(response.body());
     Assertions.assertEquals(10, response.body().getSize());
   }
 
@@ -39,6 +41,7 @@ public class GeoRestTest {
     while (!last) {
       Response<RestResponsePage<CountryJson>> response = geoApiClient.getCountryPage(page, size);
       Assertions.assertTrue(response.isSuccessful());
+      Assertions.assertNotNull(response.body());
       countries.addAll(response.body().getContent());
       page++;
       last = response.body().isLast();

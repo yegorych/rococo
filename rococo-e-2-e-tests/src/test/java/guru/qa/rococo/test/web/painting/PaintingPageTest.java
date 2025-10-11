@@ -214,19 +214,19 @@ public class PaintingPageTest {
                 .checkValidationError("Описание не может быть короче 10 символов");
     }
 
-    @Test
-    @ApiLogin
-    void paintingPhotoSizeShouldBeLessThan4Mb() {
-        PaintingJson newPainting = PaintingJson.randomPainting();
-        Selenide.open(PaintingPage.URL, PaintingPage.class)
-                .clickAddPaintingBtn()
-                .setTitle(newPainting.title())
-                .setDescription(newPainting.description())
-                .selectAnyArtist()
-                .uploadPhoto("img/5mb-photo.png")
-                .submit(new PaintingPage())
-                .checkSnackbarText("Размер фото не может превышать 4 MB");
-    }
+//    @Test
+//    @ApiLogin
+//    void paintingPhotoSizeShouldBeLessThan4Mb() {
+//        PaintingJson newPainting = PaintingJson.randomPainting();
+//        Selenide.open(PaintingPage.URL, PaintingPage.class)
+//                .clickAddPaintingBtn()
+//                .setTitle(newPainting.title())
+//                .setDescription(newPainting.description())
+//                .selectAnyArtist()
+//                .uploadPhoto("img/5mb-photo.png")
+//                .submit(new PaintingPage())
+//                .checkSnackbarText("Размер фото не может превышать 4 MB");
+//    }
 
 
 

@@ -11,28 +11,29 @@ export ARCH=$(uname -m)
 docker compose down
 docker_containers=$(docker ps -a -q)
 docker_images=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'rococo')
+e2e_container=$(docker ps -a -q --filter "ancestor=${PREFIX}/rococo-e-2-e:latest")
 
 
-MODE=$1
-if [ "$MODE" = "test-only" ]; then
-  echo "### Running in TEST-ONLY mode ###"
-  autotest_container=$(docker ps -a -q --filter "ancestor=${PREFIX}/rococo-e-2-e-tests:latest")
-  if [ -n "$autotest_container" ]; then
-    echo "### Stop old autotest container: $autotest_container ###"
-    docker stop $autotest_container
-    docker rm $autotest_container
-  fi
-
-  echo "### Rebuilding e2e tests image ###"
-  ./gradlew :rococo-e-2-e-tests:clean
-  docker build -t ${PREFIX}/rococo-e-2-e-tests:latest -f ./rococo-e-2-e-tests/Dockerfile .
-
-  echo "### Starting test profile containers ###"
-  docker compose --profile test up -d
-  docker ps -a
-  exit 0
+if [ "$1" = "firefox" ]; then
+  export BROWSER="firefox"
+  docker pull selenoid/vnc_firefox:125.0
+else
+  export BROWSER="chrome"
+  docker pull selenoid/vnc_chrome:127.0
 fi
 
+#MODE=$1
+#if [ "$MODE" = "test-only" ]; then
+#  if [ -n "$e2e_container" ]; then
+#    docker stop $e2e_container
+#    docker rm $e2e_container
+#  fi
+#  ./gradlew :rococo-e-2-e-tests:clean
+#  docker build -t ${PREFIX}/rococo-e-2-e-tests:latest -f ./rococo-e-2-e-tests/Dockerfile .
+#  docker compose --profile test up -d
+#  docker ps -a
+#  exit 0
+#fi
 
 if [ ! -z "$docker_containers" ]; then
   echo "### Stop containers: $docker_containers ###"

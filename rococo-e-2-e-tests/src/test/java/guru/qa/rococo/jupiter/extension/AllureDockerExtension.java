@@ -5,8 +5,6 @@ import guru.qa.rococo.model.allure.AllureResults;
 import guru.qa.rococo.model.allure.DecodedAllureFile;
 import guru.qa.rococo.service.impl.api.AllureDockerApiClient;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,8 +15,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class AllureDockerExtension implements SuiteExtension {
-
-  private static final Logger LOG = LoggerFactory.getLogger(AllureDockerExtension.class);
 
   private static final boolean inDocker = "docker".equals(System.getProperty("test.env"));
   private static final Base64.Encoder encoder = Base64.getEncoder();

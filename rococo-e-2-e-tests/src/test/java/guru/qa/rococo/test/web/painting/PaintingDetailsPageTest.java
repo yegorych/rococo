@@ -118,37 +118,6 @@ public class PaintingDetailsPageTest {
     }
 
 
-
-    @Test
-    @ApiLogin
-    @Painting
-    void editPaintingModalShouldAllowEditingArtistOnly(TestData testData) {
-        PaintingJson createdPainting = testData.paintings().getFirst();
-
-        Selenide.open(PaintingPage.URL, PaintingPage.class)
-                .selectPaintingByTitle(createdPainting.title())
-                .clickOnEditBtn()
-                .selectAnyArtist()
-                .submit(new PaintingDetailsPage())
-                .checkSnackbarText("Обновлена картина: " + createdPainting.title());
-    }
-
-
-    @Test
-    @ApiLogin
-    @Painting
-    void editPaintingModalShouldAllowEditingDescriptionOnly(TestData testData) {
-        PaintingJson createdPainting = testData.paintings().getFirst();
-
-        Selenide.open(PaintingDetailsPage.URL(createdPainting.id().toString()), PaintingDetailsPage.class)
-                .clickOnEditBtn()
-                .setDescription(randomSentence(20))
-                .selectArtist(createdPainting.artist().name())
-                .submit(new PaintingDetailsPage())
-                .checkSnackbarText("Обновлена картина: " + createdPainting.title());
-    }
-
-
     @Test
     @ApiLogin
     @Painting

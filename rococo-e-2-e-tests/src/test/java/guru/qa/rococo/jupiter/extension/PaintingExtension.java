@@ -83,55 +83,78 @@ public class PaintingExtension implements
                                     .stream().filter(a ->
                                             paintingAnno.artist().name().equals(a.name()))
                                     .findFirst().orElseThrow(()-> new IllegalArgumentException("Artist not found"));
+
+
+                            MuseumJson museumJson = null;
+                            if (paintingAnno.museum().createMuseum()){
+                                final Museum museum = paintingAnno.museum();
+                                final String desc = museum.description().isEmpty()
+                                        ? randomSentence(10)
+                                        : museum.description();
+
+                                final String photo = museum.photo().isEmpty()
+                                        ? null
+                                        : ImgBase64Utils.imageToBase64(museum.photo());
+
+                                museumJson = paintingAnno.museum().title().isEmpty()
+                                        ? museumClient.createMuseum(
+                                        new MuseumJson(
+                                                null,
+                                                RandomDataUtils.randomMuseumTitle(),
+                                                desc,
+                                                new GeoJson(
+                                                        museum.city().isEmpty() ? randomCity() : museum.city(),
+                                                        new CountryJson(
+                                                                null,
+                                                                paintingAnno.museum().country()
+                                                        )
+                                                ),
+                                                photo
+                                        ))
+                                        : MuseumExtension.createdMuseums()
+                                        .stream().filter(m ->
+                                                paintingAnno.museum().title().equals(m.title()))
+                                        .findFirst().orElseThrow(()-> new IllegalArgumentException("Museum not found"));
+
+                            }
+
+
+//                            final String museumTitle = paintingAnno.museum().title().isEmpty()
+//                                    ? RandomDataUtils.randomMuseumTitle()
+//                                    : paintingAnno.museum().title();
+//
+//                            MuseumJson museumJson = paintingAnno.museum().createMuseum()
+//                                    ? MuseumExtension.createdMuseums()
+//                                    .stream().filter(m -> museumTitle.equals(m.title()))
+//                                    .findFirst()
 //                                    .orElseGet(() -> {
-//                                        ArtistJson a = artistClient.createArtist(
-//                                                new ArtistJson(
+//                                        final Museum museum = paintingAnno.museum();
+//                                        final String desc = museum.description().isEmpty()
+//                                                ? randomSentence(10)
+//                                                : museum.description();
+//
+//                                        final String photo = museum.photo().isEmpty()
+//                                                ? null
+//                                                : ImgBase64Utils.imageToBase64(museum.photo());
+//
+//                                        MuseumJson m = museumClient.createMuseum(
+//                                                new MuseumJson(
 //                                                        null,
-//                                                        paintingAnno.artist().name(),
-//                                                        paintingAnno.artist().biography(),
-//                                                        null
-//                                                )
-//                                        );
-//                                        ArtistExtension.createdArtists().add(a);
-//                                        return a;}
-//                                    );
-
-                            final String museumTitle = paintingAnno.museum().title().isEmpty()
-                                    ? RandomDataUtils.randomMuseumTitle()
-                                    : paintingAnno.museum().title();
-
-                            MuseumJson museumJson = paintingAnno.museum().createMuseum()
-                                    ? MuseumExtension.createdMuseums()
-                                    .stream().filter(m -> museumTitle.equals(m.title()))
-                                    .findFirst()
-                                    .orElseGet(() -> {
-                                        final Museum museum = paintingAnno.museum();
-                                        final String desc = museum.description().isEmpty()
-                                                ? randomSentence(10)
-                                                : museum.description();
-
-                                        final String photo = museum.photo().isEmpty()
-                                                ? null
-                                                : ImgBase64Utils.imageToBase64(museum.photo());
-
-                                        MuseumJson m = museumClient.createMuseum(
-                                                new MuseumJson(
-                                                        null,
-                                                        museumTitle,
-                                                        desc,
-                                                        new GeoJson(
-                                                                museum.city().isEmpty() ? randomCity() : museum.city(),
-                                                                new CountryJson(
-                                                                        null,
-                                                                        paintingAnno.museum().country()
-                                                                )
-                                                        ),
-                                                        photo
-                                                ));
-                                        MuseumExtension.createdMuseums().add(m);
-                                        return m;
-                                    })
-                                    : null;
+//                                                        museumTitle,
+//                                                        desc,
+//                                                        new GeoJson(
+//                                                                museum.city().isEmpty() ? randomCity() : museum.city(),
+//                                                                new CountryJson(
+//                                                                        null,
+//                                                                        paintingAnno.museum().country()
+//                                                                )
+//                                                        ),
+//                                                        photo
+//                                                ));
+//                                        MuseumExtension.createdMuseums().add(m);
+//                                        return m;
+//                                    })
+//                                    : null;
 
                             return paintingClient.createPainting(
                                     new PaintingJson(

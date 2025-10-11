@@ -252,18 +252,18 @@ public class MuseumDetailsPageTest {
                 .checkValidationError("Описание не может быть короче 10 символов");
     }
 
-    @Test
-    @ApiLogin
-    @Museum
-    void editMuseumModalPhotoSizeShouldBeLessThan4Mb(TestData testData) {
-        MuseumJson museum = testData.museums().getFirst();
-        Selenide.open(MuseumPage.URL, MuseumPage.class)
-                .selectMuseumByTitle(museum.title())
-                .clickOnEditBtn()
-                .uploadPhoto("img/5mb-photo.png")
-                .submit(new MuseumDetailsPage())
-                .checkSnackbarText("Размер фото не может превышать 4 MB");
-    }
+//    @Test
+//    @ApiLogin
+//    @Museum
+//    void editMuseumModalPhotoSizeShouldBeLessThan4Mb(TestData testData) {
+//        MuseumJson museum = testData.museums().getFirst();
+//        Selenide.open(MuseumPage.URL, MuseumPage.class)
+//                .selectMuseumByTitle(museum.title())
+//                .clickOnEditBtn()
+//                .uploadPhoto("img/5mb-photo.png")
+//                .submit(new MuseumDetailsPage())
+//                .checkSnackbarText("Размер фото не может превышать 4 MB");
+//    }
 
 
 

@@ -18,6 +18,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -68,12 +70,27 @@ public abstract class RestClient {
             )
         )
     );
-    this.okHttpClient = builder.build();
+    this.okHttpClient = builder
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build();
     this.retrofit = new Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)
         .addConverterFactory(factory)
         .build();
+  }
+
+  public  <T> T attempt(int retries, Supplier<T> action) {
+    for (int i = 0; i < retries; i++) {
+      try {
+        return action.get();
+      } catch (Exception e) {
+        if (i == retries - 1) throw e;
+      }
+    }
+    throw new RuntimeException("Should not reach here");
   }
 
   public <T> T create(final Class<T> service) {

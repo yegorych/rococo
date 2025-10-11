@@ -51,7 +51,7 @@ public class Selection<T extends BaseModal<T>> extends BaseComponent<Selection<T
     @Nonnull
     @Step("select element by name {0}")
     public T selectOption(String name) {
-        self.selectOptionContainingText(name);
+        self.getOptions().findBy(text(name)).scrollIntoView(true).click();
         return modal;
     }
 
@@ -59,7 +59,8 @@ public class Selection<T extends BaseModal<T>> extends BaseComponent<Selection<T
     @Step("select any option")
     public T selectAnyOption() {
         if (!options.isEmpty()){
-            self.selectOption(0);
+            options.first().scrollIntoView(true).click();
+            //self.selectOption(0);
         }
         return modal;
     }

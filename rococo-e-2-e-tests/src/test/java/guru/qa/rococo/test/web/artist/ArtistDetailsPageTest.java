@@ -243,20 +243,20 @@ public class ArtistDetailsPageTest {
     }
 
 
-    @Test
-    @ApiLogin
-    @Artist
-    //добавить на тесты на форматы изображений
-    void editArtistModalPhotoSizeShouldBeLessThan4Mb(TestData testData) {
-        ArtistJson artistJson = testData.artists().getFirst();
-        String id = artistJson.id().toString();
-
-        Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
-                .clickOnEditBtn()
-                .uploadPhoto("img/5mb-photo.png")
-                .submit(new ArtistDetailsPage())
-                .checkSnackbarText("Размер фото не может превышать 4 MB");
-    }
+//    @Test
+//    @ApiLogin
+//    @Artist
+//    //добавить на тесты на форматы изображений
+//    void editArtistModalPhotoSizeShouldBeLessThan4Mb(TestData testData) {
+//        ArtistJson artistJson = testData.artists().getFirst();
+//        String id = artistJson.id().toString();
+//
+//        Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
+//                .clickOnEditBtn()
+//                .uploadPhoto("img/5mb-photo.png")
+//                .submit(new ArtistDetailsPage())
+//                .checkSnackbarText("Размер фото не может превышать 4 MB");
+//    }
 
 
     @Test

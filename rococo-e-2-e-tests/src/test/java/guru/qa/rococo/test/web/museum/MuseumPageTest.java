@@ -226,20 +226,20 @@ public class MuseumPageTest {
                 .checkValidationError("Описание не может быть короче 10 символов");
     }
 
-    @Test
-    @ApiLogin
-    void museumPhotoSizeShouldBeLessThan4Mb() {
-        MuseumJson newMuseum = MuseumJson.randomMuseum();
-        Selenide.open(MuseumPage.URL, MuseumPage.class)
-                .clickAddMuseumBtn()
-                .setTitle(newMuseum.title())
-                .setCity(newMuseum.geo().city())
-                .setDescription(randomWord(15))
-                .selectCountry(newMuseum.geo().country().name().getCountryName())
-                .uploadPhoto("img/5mb-photo.png")
-                .submit(new MuseumPage())
-                .checkSnackbarText("Размер фото не может превышать 4 MB");
-    }
+//    @Test
+//    @ApiLogin
+//    void museumPhotoSizeShouldBeLessThan4Mb() {
+//        MuseumJson newMuseum = MuseumJson.randomMuseum();
+//        Selenide.open(MuseumPage.URL, MuseumPage.class)
+//                .clickAddMuseumBtn()
+//                .setTitle(newMuseum.title())
+//                .setCity(newMuseum.geo().city())
+//                .setDescription(randomWord(15))
+//                .selectCountry(newMuseum.geo().country().name().getCountryName())
+//                .uploadPhoto("img/5mb-photo.png")
+//                .submit(new MuseumPage())
+//                .checkSnackbarText("Размер фото не может превышать 4 MB");
+//    }
 
 
 

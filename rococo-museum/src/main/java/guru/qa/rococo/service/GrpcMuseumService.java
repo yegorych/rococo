@@ -99,11 +99,10 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
         List<MusuemEntity> museumsEntities =  museumRepository.findByTitle(request.getTitle());
         boolean nameConflict = museumsEntities.stream()
                 .anyMatch(entity -> !entity.getId().equals(id));
-
         if (nameConflict) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
-                            .withDescription("Музей с таким именем уже существует")
+                            .withDescription("Музей с таким названием уже существует")
                             .asRuntimeException()
             );
             return;

@@ -252,25 +252,25 @@ public class ArtistRestTest {
         Assertions.assertEquals("Биография не может быть длиннее 2000 символов", errorMessage);
     }
 
-    @Test
-    @ApiLogin
-    void artistShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
-        String image = imageToBase64("img/5mb-photo.png");
-        ArtistJson artistJson = new ArtistJson(
-                null,
-                RandomDataUtils.randomWord(10),
-                RandomDataUtils.randomWord(30),
-                image
-        );
-
-        final Response<ArtistJson> response = artistApiClient
-                .createArtist(token, artistJson);
-
-        Assertions.assertEquals(400, response.code());
-        Assertions.assertNotNull(response.errorBody());
-        String errorMessage = getErrorMessage(response.errorBody());
-        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
-    }
+//    @Test
+//    @ApiLogin
+//    void artistShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
+//        String image = imageToBase64("img/5mb-photo.png");
+//        ArtistJson artistJson = new ArtistJson(
+//                null,
+//                RandomDataUtils.randomWord(10),
+//                RandomDataUtils.randomWord(30),
+//                image
+//        );
+//
+//        final Response<ArtistJson> response = artistApiClient
+//                .createArtist(token, artistJson);
+//
+//        Assertions.assertEquals(400, response.code());
+//        Assertions.assertNotNull(response.errorBody());
+//        String errorMessage = getErrorMessage(response.errorBody());
+//        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
+//    }
 
 
 

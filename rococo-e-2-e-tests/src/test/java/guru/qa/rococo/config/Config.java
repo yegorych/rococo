@@ -10,7 +10,7 @@ public interface Config {
         : LocalConfig.instance;
   }
 
-  String projectId = "rococo";
+  String projectId = "rococo-yegorych";
 
   @Nonnull
   String frontUrl();

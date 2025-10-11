@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -105,8 +106,22 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
                         String.format("Художник с ID %s не найден", request.getId()))
                 );
 
-        boolean exists = artistRepository.existsByName(((request.getName())));
-        if (exists) {
+          List<ArtistEntity> artistEntities = artistRepository.findByName(request.getName());
+//        if (!artistEntities.isEmpty()) {
+//            if (!id.equals(artistEntities.getFirst().getId())){
+//                responseObserver.onError(
+//                        Status.ALREADY_EXISTS
+//                                .withDescription("Художник с таким именем уже существует")
+//                                .asRuntimeException()
+//                );
+//                return;
+//            }
+//        }
+
+        boolean nameConflict = artistEntities.stream()
+                .anyMatch(entity -> !entity.getId().equals(id));
+
+        if (nameConflict) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
                             .withDescription("Художник с таким именем уже существует")
@@ -114,6 +129,7 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
             );
             return;
         }
+
 
         ArtistEntity updatedArtist = artistRepository.save(ArtistEntity.fromGrpcMessage(request, ae));
         responseObserver.onNext(updatedArtist.toGrpcMessage());

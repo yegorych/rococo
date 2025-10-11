@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -78,21 +79,35 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
     public void updateMuseum(Museum request, StreamObserver<Museum> responseObserver) {
         UUID id = parseUuidOrThrow(request.getId());
 
-        boolean exists = museumRepository.existsByTitle(request.getTitle());
-        if (exists) {
-            responseObserver.onError(
-                    Status.ALREADY_EXISTS
-                            .withDescription("Музей с таким названием уже существует")
-                            .asRuntimeException()
-            );
-            return;
-        }
-
         MusuemEntity pe = museumRepository
                 .findById(UUID.fromString(id.toString()))
                 .orElseThrow(() -> new MuseumNotFoundException(
                         String.format("Музей с ID %s не найден", id))
                 );
+
+
+//        boolean exists = museumRepository.existsByTitle(request.getTitle());
+//        if (exists) {
+//            responseObserver.onError(
+//                    Status.ALREADY_EXISTS
+//                            .withDescription("Музей с таким названием уже существует")
+//                            .asRuntimeException()
+//            );
+//            return;
+//        }
+
+        List<MusuemEntity> museumsEntities =  museumRepository.findByTitle(request.getTitle());
+        boolean nameConflict = museumsEntities.stream()
+                .anyMatch(entity -> !entity.getId().equals(id));
+
+        if (nameConflict) {
+            responseObserver.onError(
+                    Status.ALREADY_EXISTS
+                            .withDescription("Музей с таким именем уже существует")
+                            .asRuntimeException()
+            );
+            return;
+        }
 
         MusuemEntity updatedPainting = museumRepository.save(MusuemEntity.fromGrpcMessage(request, pe));
         responseObserver.onNext(updatedPainting.toGrpcMessage());

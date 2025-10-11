@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,13 +36,17 @@ public class PaintingController {
     }
 
     @PostMapping
-    public PaintingJson create(@Valid @RequestBody PaintingJson painting) {
-        return paintingService.createPainting(painting);
+    public PaintingJson create(@AuthenticationPrincipal Jwt principal,
+                               @Valid @RequestBody PaintingJson painting) {
+        String username = principal.getClaim("sub");
+        return paintingService.createPainting(username, painting);
     }
 
     @PatchMapping
-    public PaintingJson update(@Valid @RequestBody PaintingJson painting) {
-        return paintingService.updatePainting(painting);
+    public PaintingJson update(@AuthenticationPrincipal Jwt principal,
+                               @Valid @RequestBody PaintingJson painting) {
+        String username = principal.getClaim("sub");
+        return paintingService.updatePainting(username, painting);
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package guru.qa.rococo.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.rococo.jupiter.annotation.ApiLogin;
 import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.page.MainPage;
 import org.junit.jupiter.api.Test;
@@ -14,5 +15,7 @@ public class MainPageTest {
                 .header()
                 .checkLoginBtnIsVisible();
     }
+
+
 
 }

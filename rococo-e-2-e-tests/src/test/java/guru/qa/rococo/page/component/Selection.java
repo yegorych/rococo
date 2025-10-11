@@ -59,7 +59,7 @@ public class Selection<T extends BaseModal<T>> extends BaseComponent<Selection<T
     @Step("select any option")
     public T selectAnyOption() {
         if (!options.isEmpty()){
-            options.first().click();//.selectOption(0);
+            self.selectOption(0);
         }
         return modal;
     }

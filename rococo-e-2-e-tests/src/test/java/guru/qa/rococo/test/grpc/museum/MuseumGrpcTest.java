@@ -2,17 +2,25 @@ package guru.qa.rococo.test.grpc.museum;
 
 import guru.qa.grpc.rococo.museum.*;
 import guru.qa.grpc.rococo.museum.IdRequest;
+import guru.qa.rococo.jupiter.annotation.container.Museums;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
 import guru.qa.rococo.model.TestData;
+import guru.qa.rococo.model.rest.CountryJson;
+import guru.qa.rococo.model.rest.MuseumJson;
+import guru.qa.rococo.service.CountryClient;
+import guru.qa.rococo.service.impl.db.CountryDbClient;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 @GrpcTest
 public class MuseumGrpcTest extends BaseGrpcTest {
+    private static final CountryClient countryClient = new CountryDbClient();
+
 
     @Test
     void allMuseumsShouldBeReturned() {
@@ -23,10 +31,11 @@ public class MuseumGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @Museums(count = 7)
     void museumsShouldBePaginated() {
         int size = 7;
         MuseumsResponse resp = museumStub.getMuseums(
-                MuseumsRequest.newBuilder().setPage(1).setSize(size).build()
+                MuseumsRequest.newBuilder().setPage(0).setSize(size).build()
         );
         Assertions.assertEquals(size, resp.getMuseumCount());
     }
@@ -64,7 +73,7 @@ public class MuseumGrpcTest extends BaseGrpcTest {
     void createMuseum_shouldSucceed() {
         Museum req = Museum.newBuilder()
                 .setTitle("New Museum " + UUID.randomUUID())
-                .setCountryId("") // optional; can be empty
+                .setCountryId(countryClient.findAll().getFirst().id().toString())// optional; can be empty
                 .build();
         Museum created = museumStub.createMuseum(req);
         Assertions.assertFalse(created.getId().isEmpty());
@@ -100,6 +109,9 @@ public class MuseumGrpcTest extends BaseGrpcTest {
         Museum req = Museum.newBuilder()
                 .setId(existing.id().toString())
                 .setTitle(existing.title() + " updated")
+                .setDescription(existing.description())
+                .setCity("Minsk")
+                .setCountryId(existing.geo().country().id().toString())
                 .build();
         Museum updated = museumStub.updateMuseum(req);
         Assertions.assertEquals(req.getTitle(), updated.getTitle());
@@ -128,13 +140,11 @@ public class MuseumGrpcTest extends BaseGrpcTest {
     @Test
     @guru.qa.rococo.jupiter.annotation.Museum
     void updateMuseum_whenDuplicateTitle_shouldFail(TestData data) {
-        var existing = data.museums().getFirst();
-        // create another museum
-        Museum created = museumStub.createMuseum(Museum.newBuilder().setTitle("temp-" + UUID.randomUUID()).build());
-
+        MuseumJson existing = data.museums().getFirst();
         Museum req = Museum.newBuilder()
-                .setId(created.getId())
+                .setId(existing.id().toString())
                 .setTitle(existing.title())
+                .setCountryId(countryClient.findAll().getFirst().id().toString())
                 .build();
 
         StatusRuntimeException ex = Assertions.assertThrows(

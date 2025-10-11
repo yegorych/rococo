@@ -62,12 +62,12 @@ public class MuseumRestTest {
     }
 
     @Test
-    @Museum(title = "Museum lalo 1")
-    @Museum(title = "Museum lalo 2")
-    @Museum(title = "Museum lalo 3")
+    @Museum(title = "Museum bnvkfg 1")
+    @Museum(title = "Museum bnvkfg 2")
+    @Museum(title = "Museum bnvkfg 3")
     void shouldReturnFilteredMuseumsPageByTitle() {
         final Response<RestResponsePage<MuseumJson>> response = museumApiClient
-                .getMuseumPage("Museum ror", 0, 10);
+                .getMuseumPage("Museum bnvkfg", 0, 10);
 
         Assertions.assertTrue(response.isSuccessful());
         Assertions.assertNotNull(response.body());

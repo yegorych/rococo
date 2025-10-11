@@ -29,4 +29,6 @@ public interface ArtistRepository extends JpaRepository<ArtistEntity, UUID> {
     AnnotationCollector existsArtistEntityByName(String name);
 
     boolean existsByName(String name);
+
+    List<ArtistEntity> findByName(String name);
 }

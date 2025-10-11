@@ -12,9 +12,14 @@ import guru.qa.rococo.service.impl.api.AuthApiClient;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import java.util.List;
+import java.util.Map;
+
+import static com.codeborne.selenide.Selenide.executeJavaScript;
 import static guru.qa.rococo.jupiter.extension.TestsMethodContextExtension.context;
 
 @ParametersAreNonnullByDefault
@@ -75,6 +80,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
           }
         });
   }
+
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {

@@ -99,15 +99,16 @@ public class GeoGrpcTest extends BaseGrpcTest {
 
     @Test
     void countryByRandomIdShouldNotBeReturned() {
+        String id = UUID.randomUUID().toString();
         IdRequest request = IdRequest.newBuilder()
-                        .setId(UUID.randomUUID().toString())
+                        .setId(id)
                         .build();
         StatusRuntimeException ex = Assertions.assertThrows(
                 StatusRuntimeException.class,
                 ()-> geoStub.getCounty(request)
         );
         Assertions.assertEquals("NOT_FOUND", ex.getStatus().getCode().toString());
-        Assertions.assertEquals("Страна с таким ID не найдена", ex.getStatus().getDescription());
+        Assertions.assertEquals("Страна с ID " + id + " не найдена", ex.getStatus().getDescription());
     }
 
 

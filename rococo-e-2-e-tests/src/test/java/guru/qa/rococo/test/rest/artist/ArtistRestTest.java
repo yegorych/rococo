@@ -60,16 +60,16 @@ public class ArtistRestTest {
     }
 
     @Test
-    @Artist(name = "Artist yeg 1")
-    @Artist(name = "Artist yeg 2")
-    @Artist(name = "Artist yeg 3")
+    @Artist(name = "Artist loalal 1")
+    @Artist(name = "Artist loalal 2")
+    @Artist(name = "Artist loalal 3")
     void shouldReturnFilteredArtistsPageByName() {
         final Response<RestResponsePage<ArtistJson>> response = artistApiClient
-                .getArtistPage("Artist yeg", 0, 10);
+                .getArtistPage("Artist loalal", 0, 10);
 
         Assertions.assertTrue(response.isSuccessful());
         Assertions.assertNotNull(response.body());
-        Assertions.assertEquals(2, response.body().getContent().size());
+        Assertions.assertEquals(3, response.body().getContent().size());
     }
 
     @Test

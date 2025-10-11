@@ -4,6 +4,7 @@ import guru.qa.grpc.rococo.artist.Artist;
 import guru.qa.grpc.rococo.artist.ArtistRequest;
 import guru.qa.grpc.rococo.artist.ArtistsResponse;
 import guru.qa.grpc.rococo.artist.IdRequest;
+import guru.qa.rococo.jupiter.annotation.container.Artists;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
 import guru.qa.rococo.model.TestData;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
@@ -29,11 +30,12 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @Artists(count = 5)
     void artistsShouldBePaginated() {
         int size = 5;
         ArtistsResponse response = artistStub.getArtists(
                 ArtistRequest.newBuilder()
-                        .setPage(1)
+                        .setPage(0)
                         .setSize(size)
                         .build()
         );

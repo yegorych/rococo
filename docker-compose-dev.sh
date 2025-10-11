@@ -18,17 +18,17 @@ if [ ! -z "$docker_images" ]; then
   docker rmi $docker_images
 fi
 
-#echo '### Java version ###'
-#java --version
-#bash ./gradlew clean
-#if [ "$1" = "push" ]; then
-#  echo "### Build & push images ###"
-#  bash ./gradlew jib -x :rococo-e-2-e-tests:test
-#  docker compose push frontend.rococo.dc
-#else
-#  echo "### Build images ###"
-#  bash ./gradlew jibDockerBuild -x :rococo-e-2-e-tests:test
-#fi
-#
-#docker compose up -d
-#docker ps -a
+echo '### Java version ###'
+java --version
+bash ./gradlew clean
+if [ "$1" = "push" ]; then
+  echo "### Build & push images ###"
+  bash ./gradlew jib -x :rococo-e-2-e-tests:test
+  docker compose push frontend.rococo.dc
+else
+  echo "### Build images ###"
+  bash ./gradlew jibDockerBuild -x :rococo-e-2-e-tests:test
+fi
+
+docker compose up -d
+docker ps -a

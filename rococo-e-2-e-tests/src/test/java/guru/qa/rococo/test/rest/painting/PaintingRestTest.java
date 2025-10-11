@@ -1,7 +1,6 @@
 package guru.qa.rococo.test.rest.painting;
 
 import guru.qa.rococo.jupiter.annotation.*;
-import guru.qa.rococo.jupiter.annotation.container.Artists;
 import guru.qa.rococo.jupiter.annotation.container.Paintings;
 import guru.qa.rococo.jupiter.annotation.meta.RestTest;
 import guru.qa.rococo.jupiter.extension.ApiLoginExtension;
@@ -276,15 +275,15 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
-    @Painting
+    @Painting(museum = @Museum)
     void paintingShouldBeUpdated(@Token String token, TestData testData) {
         PaintingJson createdPainting = testData.paintings().getFirst();
         PaintingJson expectedPainting = new PaintingJson(
                 createdPainting.id(),
                 randomName(),
                 randomSentence(20),
-                MuseumJson.randomMuseum(),
-                ArtistJson.randomArtist(),
+                new MuseumJson(createdPainting.museum().id()),
+                new ArtistJson(createdPainting.artist().id()),
                 ""
         );
 

@@ -171,25 +171,4 @@ public class PaintingDetailsPageTest {
                 .submit(new PaintingModal())
                 .checkValidationError("Описание не может быть короче 10 символов");
     }
-//
-//    @Test
-//    @ApiLogin
-//    @Painting
-//    @Museum
-//    void editPaintingModalPhotoSizeShouldBeLessThan4Mb(TestData testData) {
-//        PaintingJson painting = testData.paintings().getFirst();
-//
-//        Selenide.open(PaintingDetailsPage.URL(painting.id().toString()), PaintingDetailsPage.class)
-//                .clickOnEditBtn()
-//                .selectAnyArtist()
-//                .uploadPhoto("img/5mb-photo.png")
-//                .submit(new PaintingDetailsPage())
-//                .checkSnackbarText("Размер фото не может превышать 4 MB");
-//    }
-
-
-
-
-
-
 }

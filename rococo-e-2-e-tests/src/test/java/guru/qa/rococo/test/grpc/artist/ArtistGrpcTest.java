@@ -7,6 +7,7 @@ import guru.qa.grpc.rococo.artist.IdRequest;
 import guru.qa.rococo.jupiter.annotation.container.Artists;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
 import guru.qa.rococo.model.TestData;
+import guru.qa.rococo.model.rest.ArtistJson;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
@@ -18,14 +19,14 @@ import java.util.UUID;
 public class ArtistGrpcTest extends BaseGrpcTest {
 
     @Test
+    @Artists(count = 10)
     void allArtistsShouldBeReturned() {
         ArtistsResponse response = artistStub.getArtists(
                 ArtistRequest.newBuilder()
                         .setPage(0)
-                        .setSize(1000)
+                        .setSize(50)
                         .build()
         );
-        // Если сервис содержит какие-то артисты, totalCount >= возвращенного списка
         Assertions.assertTrue(response.getTotalCount() >= response.getArtistsCount());
     }
 
@@ -43,15 +44,18 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @guru.qa.rococo.jupiter.annotation.Artist(name = "filterName_1")
+    @guru.qa.rococo.jupiter.annotation.Artist(name = "filterName__2")
     void getArtists_shouldReturnFilteredByName() {
         ArtistsResponse response = artistStub.getArtists(
                 ArtistRequest.newBuilder()
-                        .setName("a") // просто проверка фильтра — сервер не должен падать
+                        .setName("filterName")
                         .setPage(0)
                         .setSize(10)
                         .build()
         );
         Assertions.assertNotNull(response);
+        Assertions.assertEquals(2, response.getArtistsCount());
     }
 
     @Test
@@ -119,7 +123,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     @Test
     @guru.qa.rococo.jupiter.annotation.Artist
     void artistShouldBeUpdated(TestData data) {
-        var existing = data.artists().getFirst();
+        ArtistJson existing = data.artists().getFirst();
         Artist request = Artist.newBuilder()
                 .setId(existing.id().toString())
                 .setName(existing.name() + " updated")
@@ -154,12 +158,9 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     @Test
     @guru.qa.rococo.jupiter.annotation.Artist
     void updateArtist_whenDuplicateName_shouldFail(TestData data) {
-        // подготовим два артиста: первый создан аннотацией, второй создаём вручную
         var a1 = data.artists().getFirst();
         Artist a2 = Artist.newBuilder().setName("duplicate-" + UUID.randomUUID()).build();
         Artist created = artistStub.createArtist(a2);
-
-        // попробуем обновить created, установив имя существующего (a1)
         Artist updateReq = Artist.newBuilder()
                 .setId(created.getId())
                 .setName(a1.name())

@@ -4,6 +4,7 @@ import guru.qa.grpc.rococo.geo.CountriesRequest;
 import guru.qa.grpc.rococo.geo.CountriesResponse;
 import guru.qa.grpc.rococo.geo.Country;
 import guru.qa.grpc.rococo.geo.IdRequest;
+import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
 import guru.qa.rococo.model.rest.CountryJson;
 import guru.qa.rococo.service.CountryClient;
 import guru.qa.rococo.service.impl.db.CountryDbClient;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+@GrpcTest
 public class GeoGrpcTest extends BaseGrpcTest {
 
     private static final CountryClient countryClient = new CountryDbClient();

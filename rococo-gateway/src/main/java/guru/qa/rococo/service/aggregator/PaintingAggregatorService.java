@@ -1,4 +1,4 @@
-package guru.qa.rococo.service.orchestration;
+package guru.qa.rococo.service.aggregator;
 
 import guru.qa.grpc.rococo.painting.PaintingsResponse;
 import guru.qa.rococo.ex.NotFoundException;
@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class PaintingOrchestrationService {
-    private static final Logger LOG = LoggerFactory.getLogger(PaintingOrchestrationService.class);
+public class PaintingAggregatorService {
+    private static final Logger LOG = LoggerFactory.getLogger(PaintingAggregatorService.class);
     private final GrpcPaintingService paintingService;
     private final GrpcArtistService artistService;
     private final GrpcMuseumService museumService;
@@ -30,7 +30,7 @@ public class PaintingOrchestrationService {
     private final KafkaTemplate<String, Event> kafkaTemplate;
 
     @Autowired
-    public PaintingOrchestrationService(GrpcPaintingService paintingService, GrpcArtistService artistService, GrpcMuseumService museumService, GrpcGeoService geoService, KafkaTemplate<String, Event> kafkaTemplate) {
+    public PaintingAggregatorService(GrpcPaintingService paintingService, GrpcArtistService artistService, GrpcMuseumService museumService, GrpcGeoService geoService, KafkaTemplate<String, Event> kafkaTemplate) {
         this.paintingService = paintingService;
         this.artistService = artistService;
         this.museumService = museumService;

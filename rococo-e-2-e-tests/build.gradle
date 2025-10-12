@@ -78,7 +78,6 @@ dependencies {
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
     // Allure
-    //testImplementation "io.qameta.allure:allure-commandline:2.30.0"
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
     testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
         exclude group: "org.junit.jupiter"
@@ -90,6 +89,8 @@ dependencies {
     testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
     // WEB
     testImplementation "com.codeborne:selenide:${selenideVersion}"
+    //для тестов с использованием прокси
+    testImplementation "com.codeborne:selenide-proxy:${selenideVersion}"
     // Utils
     testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
         exclude group: 'org.yaml'

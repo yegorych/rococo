@@ -1,11 +1,12 @@
 package guru.qa.rococo.test.grpc.museum;
 
-import guru.qa.grpc.rococo.museum.*;
 import guru.qa.grpc.rococo.museum.IdRequest;
+import guru.qa.grpc.rococo.museum.Museum;
+import guru.qa.grpc.rococo.museum.MuseumsRequest;
+import guru.qa.grpc.rococo.museum.MuseumsResponse;
 import guru.qa.rococo.jupiter.annotation.container.Museums;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
 import guru.qa.rococo.model.TestData;
-import guru.qa.rococo.model.rest.CountryJson;
 import guru.qa.rococo.model.rest.MuseumJson;
 import guru.qa.rococo.service.CountryClient;
 import guru.qa.rococo.service.impl.db.CountryDbClient;
@@ -14,7 +15,6 @@ import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.UUID;
 
 @GrpcTest
@@ -23,6 +23,7 @@ public class MuseumGrpcTest extends BaseGrpcTest {
 
 
     @Test
+    @Museums(count = 10)
     void allMuseumsShouldBeReturned() {
         MuseumsResponse resp = museumStub.getMuseums(
                 MuseumsRequest.newBuilder().setPage(0).setSize(1000).setTitle("").build()
@@ -138,12 +139,14 @@ public class MuseumGrpcTest extends BaseGrpcTest {
     }
 
     @Test
-    @guru.qa.rococo.jupiter.annotation.Museum
+    @guru.qa.rococo.jupiter.annotation.Museum(title = "first___")
+    @guru.qa.rococo.jupiter.annotation.Museum(title = "second___")
     void updateMuseum_whenDuplicateTitle_shouldFail(TestData data) {
-        MuseumJson existing = data.museums().getFirst();
+        MuseumJson first = data.museumByTitle("first___");
+        MuseumJson second = data.museumByTitle("second___");
         Museum req = Museum.newBuilder()
-                .setId(existing.id().toString())
-                .setTitle(existing.title())
+                .setId(first.id().toString())
+                .setTitle(second.title())
                 .setCountryId(countryClient.findAll().getFirst().id().toString())
                 .build();
 

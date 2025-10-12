@@ -2,8 +2,7 @@ package guru.qa.rococo.controller;
 
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.model.PaintingJson;
-import guru.qa.rococo.service.grpc.GrpcPaintingService;
-import guru.qa.rococo.service.orchestration.PaintingOrchestrationService;
+import guru.qa.rococo.service.aggregator.PaintingAggregatorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -22,10 +21,10 @@ import org.springframework.web.bind.annotation.*;
 public class PaintingController {
     private static final Logger LOG = LoggerFactory.getLogger(PaintingController.class);
 
-    private final PaintingOrchestrationService paintingService;
+    private final PaintingAggregatorService paintingService;
 
     @Autowired
-    public PaintingController(PaintingOrchestrationService paintingService) {
+    public PaintingController(PaintingAggregatorService paintingService) {
         this.paintingService = paintingService;
     }
 

@@ -213,26 +213,26 @@ public class MuseumRestTest {
         Assertions.assertEquals("Описание не может быть длиннее 1000 символов", errorMessage);
     }
 
-//    @Test
-//    @ApiLogin
-//    void museumShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
-//        String image = imageToBase64("img/5mb-photo.png");
-//        MuseumJson museumJson = new MuseumJson(
-//                null,
-//                RandomDataUtils.randomWord(10),
-//                RandomDataUtils.randomSentence(20),
-//                new GeoJson("Минск", new CountryJson(null, CountryEnum.ALBANIA)),
-//                image
-//        );
-//
-//        final Response<MuseumJson> response = museumApiClient
-//                .createMuseum(token, museumJson);
-//
-//        Assertions.assertEquals(400, response.code());
-//        Assertions.assertNotNull(response.errorBody());
-//        String errorMessage = getErrorMessage(response.errorBody());
-//        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
-//    }
+    @Test
+    @ApiLogin
+    void museumShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
+        String image = imageToBase64("img/1_1mb_photo.png");
+        MuseumJson museumJson = new MuseumJson(
+                null,
+                RandomDataUtils.randomWord(10),
+                RandomDataUtils.randomSentence(20),
+                new GeoJson("Минск", new CountryJson(null, CountryEnum.ALBANIA)),
+                image
+        );
+
+        final Response<MuseumJson> response = museumApiClient
+                .createMuseum(token, museumJson);
+
+        Assertions.assertEquals(400, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        String errorMessage = getErrorMessage(response.errorBody());
+        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
+    }
 
 
 

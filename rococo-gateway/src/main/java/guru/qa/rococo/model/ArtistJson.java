@@ -20,7 +20,7 @@ public record ArtistJson(
         @Size(max = 2000, message = "Биография не может быть длиннее 2000 символов")
         @JsonProperty("biography")
         String biography,
-        @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Размер фото не может превышать 4 MB")
+        @Size(max = RococoGatewayServiceConfig.ONE_MB, message = "Размер фото не может превышать 1 MB")
         @JsonProperty("photo")
         String photo
 ) {

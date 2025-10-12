@@ -30,19 +30,11 @@ public class CustomAllureOkHttpInterceptor implements Interceptor {
         return this;
     }
 
-    /**
-     * @deprecated use {@link #setRequestTemplate(String)} instead.
-     * Scheduled for removal in 3.0 release.
-     */
     @Deprecated
     public CustomAllureOkHttpInterceptor withRequestTemplate(final String templatePath) {
         return setRequestTemplate(templatePath);
     }
 
-    /**
-     * @deprecated use {@link #setResponseTemplate(String)} instead.
-     * Scheduled for removal in 3.0 release.
-     */
     @Deprecated
     public CustomAllureOkHttpInterceptor withResponseTemplate(final String templatePath) {
         return setResponseTemplate(templatePath);

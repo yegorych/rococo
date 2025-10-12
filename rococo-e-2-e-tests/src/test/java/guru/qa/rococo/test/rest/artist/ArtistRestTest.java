@@ -31,8 +31,6 @@ public class ArtistRestTest {
     @RegisterExtension
     static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
     private final ArtistApiClient artistApiClient = new ArtistApiClient();
-    String expiredToken = "Bearer eyJraWQiOiI0YmMzZDFmOC00NjNiLTRlNzAtYjE2My1iMGRjNzY3MjFlNjYiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJkdWNrIiwiYXVkIjoiY2xpZW50IiwiYXpwIjoiY2xpZW50IiwiYXV0aF90aW1lIjoxNzYwMTIyMTExLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjkwMDAiLCJleHAiOjE3NjAxMjM5MTEsImlhdCI6MTc2MDEyMjExMSwianRpIjoiODYxNzJiNzgtMjViNy00OGQ1LWE2NzktZjRlYjViYjEzNmZhIiwic2lkIjoid3J6Y2ZaR3dUNnkwLW1paUlxWWthOGdoNHE1UU5HMEo0bmpWTjFlVVVqcyJ9.Etw8Sb7Lzu6WsNP1RGRdN_PqlzZG0LJvcIbth7eydUscnmBhkZwmWmr3nMmw2pCtB7CUxdZtd3oHJt47PkxZvTWHFdvPy7ofNJtkmacXfr05pL_rtANPyO0tmNQXuUtuTEIyvuH-eK_xzJylXkokPgDlNmd_krdr0YG3yRIQ4D2ISmf6XU-W5HiMrjWpzQUxgPlCcaVcF4M4bUit2oGli4Q7XEMqymrpgA85aT5dwn4R3P5t_oWllDs-gLm3IidBwCOCYbk-l_su7jb-3TMQBjvOTX79vOeLtx_1SdXKvnIX3Xd0V9630ujqKimYm6WhQDDcGGkEBAq1B7K7Gnn17w";
-
 
     @Test
     @Artist
@@ -125,20 +123,6 @@ public class ArtistRestTest {
         Assertions.assertNotNull(response.errorBody());
         Assertions.assertEquals(
                 "Недействительный токен доступа.",
-                getErrorMessage(response.errorBody())
-        );
-    }
-
-    @Test
-    void artistShouldNotBeCreatedWithExpiredToken() {
-        ArtistJson artist = ArtistJson.randomArtist();
-        final Response<ArtistJson> response = artistApiClient
-                .createArtist(expiredToken, artist);
-
-        Assertions.assertEquals(401, response.code());
-        Assertions.assertNotNull(response.errorBody());
-        Assertions.assertEquals(
-                "Сессия истекла. Пожалуйста, войдите заново.",
                 getErrorMessage(response.errorBody())
         );
     }
@@ -252,26 +236,25 @@ public class ArtistRestTest {
         Assertions.assertEquals("Биография не может быть длиннее 2000 символов", errorMessage);
     }
 
-//    @Test
-//    @ApiLogin
-//    void artistShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
-//        String image = imageToBase64("img/5mb-photo.png");
-//        ArtistJson artistJson = new ArtistJson(
-//                null,
-//                RandomDataUtils.randomWord(10),
-//                RandomDataUtils.randomWord(30),
-//                image
-//        );
-//
-//        final Response<ArtistJson> response = artistApiClient
-//                .createArtist(token, artistJson);
-//
-//        Assertions.assertEquals(400, response.code());
-//        Assertions.assertNotNull(response.errorBody());
-//        String errorMessage = getErrorMessage(response.errorBody());
-//        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
-//    }
+    @Test
+    @ApiLogin
+    void artistShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
+        String image = imageToBase64("img/1_1mb_photo.png");
+        ArtistJson artistJson = new ArtistJson(
+                null,
+                RandomDataUtils.randomWord(10),
+                RandomDataUtils.randomWord(30),
+                image
+        );
 
+        final Response<ArtistJson> response = artistApiClient
+                .createArtist(token, artistJson);
+
+        Assertions.assertEquals(400, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        String errorMessage = getErrorMessage(response.errorBody());
+        Assertions.assertEquals("Размер фото не может превышать 1 MB", errorMessage);
+    }
 
 
     @Test

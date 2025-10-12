@@ -12,10 +12,13 @@ import guru.qa.rococo.page.PaintingPage;
 import guru.qa.rococo.page.component.modal.MuseumModal;
 import guru.qa.rococo.page.component.modal.PaintingModal;
 import guru.qa.rococo.utils.RandomDataUtils;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 
+import static com.codeborne.selenide.WebDriverRunner.getSelenideProxy;
 import static guru.qa.rococo.utils.RandomDataUtils.randomWord;
 
 @WebTest
@@ -214,31 +217,47 @@ public class PaintingPageTest {
                 .checkValidationError("Описание не может быть короче 10 символов");
     }
 
-//    @Test
-//    @ApiLogin
-//    void paintingPhotoSizeShouldBeLessThan4Mb() {
-//        PaintingJson newPainting = PaintingJson.randomPainting();
-//        Selenide.open(PaintingPage.URL, PaintingPage.class)
-//                .clickAddPaintingBtn()
-//                .setTitle(newPainting.title())
-//                .setDescription(newPainting.description())
-//                .selectAnyArtist()
-//                .uploadPhoto("img/5mb-photo.png")
-//                .submit(new PaintingPage())
-//                .checkSnackbarText("Размер фото не может превышать 4 MB");
-//    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Test
+    @UseProxy
+    @Disabled
+    void blankAboutMissingPaintingsShouldBeDisplayed() {
+        getSelenideProxy().addResponseFilter("response filter", (httpResponse, httpMessageContents, httpMessageInfo) -> {
+            if (httpMessageInfo.getUrl().endsWith("/api/painting?size=9&page=0")){
+                String response = """
+                        {
+                            "content": [],
+                            "pageable": {
+                                "pageNumber": 0,
+                                "pageSize": 9,
+                                "sort": {
+                                    "empty": true,
+                                    "sorted": false,
+                                    "unsorted": true
+                                },
+                                "offset": 0,
+                                "paged": true,
+                                "unpaged": false
+                            },
+                            "last": false,
+                            "totalPages": 21,
+                            "totalElements": 188,
+                            "first": true,
+                            "size": 9,
+                            "number": 0,
+                            "sort": {
+                                "empty": true,
+                                "sorted": false,
+                                "unsorted": true
+                            },
+                            "numberOfElements": 9,
+                            "empty": false
+                        }
+                        """;
+                httpMessageContents.setTextContents(response);
+                httpResponse.headers().set("Content-Type", "application/json");
+                httpResponse.setStatus(HttpResponseStatus.OK);
+            }
+        });
+        Selenide.open(PaintingPage.URL, PaintingPage.class);
+    }
 }

@@ -1,4 +1,4 @@
-package guru.qa.rococo.service.orchestration;
+package guru.qa.rococo.service.aggregator;
 
 import guru.qa.grpc.rococo.geo.CountriesResponse;
 import guru.qa.rococo.model.CountryJson;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class GeoOrchestrationService {
+public class GeoAggregatorService {
     private final GrpcGeoService geoService;
 
     @Autowired
-    public GeoOrchestrationService(GrpcGeoService geoService){
+    public GeoAggregatorService(GrpcGeoService geoService){
         this.geoService = geoService;
     }
 

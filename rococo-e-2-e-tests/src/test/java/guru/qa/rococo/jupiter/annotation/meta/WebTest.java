@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({
+        IssueExtension.class,
         BrowserExtension.class,
         UserExtension.class,
         AllureJunit5.class,

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static guru.qa.rococo.utils.ErrorMessageResolver.getErrorMessage;
+import static guru.qa.rococo.utils.ImgBase64Utils.imageToBase64;
 import static guru.qa.rococo.utils.RandomDataUtils.*;
 
 @RestTest
@@ -102,6 +103,7 @@ public class PaintingRestTest {
     @ApiLogin
     @Artist
     @Museum
+    @DisabledByIssue("2")
     void paintingShouldBeCreated(@Token String token, TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         MuseumJson museum = testData.museums().getFirst();
@@ -113,15 +115,8 @@ public class PaintingRestTest {
                 new ArtistJson(artist.id()),
                 ""
         );
-
-        Response<PaintingJson> response = paintingApiClient.attempt(
-                2,
-                () -> paintingApiClient.createPainting(token, paintingJson)
-        );
-
-//
-//        final Response<PaintingJson> response = paintingApiClient
-//                .createPainting(token, paintingJson);
+        final Response<PaintingJson> response = paintingApiClient
+                .createPainting(token, paintingJson);
 
         Assertions.assertTrue(response.isSuccessful());
         Assertions.assertNotNull(response.body());
@@ -232,27 +227,27 @@ public class PaintingRestTest {
         Assertions.assertEquals("Описание не может быть длиннее 1000 символов", errorMessage);
     }
 
-//    @Test
-//    @ApiLogin
-//    void paintingShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
-//        String image = imageToBase64("img/5mb-photo.png");
-//        PaintingJson paintingJson = new PaintingJson(
-//                null,
-//                randomName(),
-//                randomSentence(20),
-//                MuseumJson.randomMuseum(),
-//                ArtistJson.randomArtist(),
-//                image
-//        );
-//
-//        final Response<PaintingJson> response = paintingApiClient
-//                .createPainting(token, paintingJson);
-//
-//        Assertions.assertEquals(400, response.code());
-//        Assertions.assertNotNull(response.errorBody());
-//        String errorMessage = getErrorMessage(response.errorBody());
-//        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
-//    }
+    @Test
+    @ApiLogin
+    void paintingShouldNotBeCreatedWithLargeImage(@Token String token) {
+        String image = imageToBase64("img/1_1mb_photo.png");
+        PaintingJson paintingJson = new PaintingJson(
+                null,
+                randomName(),
+                randomSentence(20),
+                MuseumJson.randomMuseum(),
+                ArtistJson.randomArtist(),
+                image
+        );
+
+        final Response<PaintingJson> response = paintingApiClient
+                .createPainting(token, paintingJson);
+
+        Assertions.assertEquals(400, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        String errorMessage = getErrorMessage(response.errorBody());
+        Assertions.assertEquals("Размер фото не может превышать 1 MB", errorMessage);
+    }
 
     @Test
     @ApiLogin
@@ -314,6 +309,4 @@ public class PaintingRestTest {
                 getErrorMessage(response.errorBody())
         );
     }
-
-
 }

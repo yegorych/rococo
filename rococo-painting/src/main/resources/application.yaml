@@ -4,13 +4,6 @@ server:
 grpc:
   server:
     port: 9091
-#    server:
-#      max-inbound-message-size: 10485760 # 10 MB
-#    client:
-#      grpcUserdataClient:
-#        max-inbound-message-size: 10485760
-#        max-outbound-message-size: 10485760
-
 spring:
   grpc:
     server:
@@ -27,7 +20,7 @@ spring:
       minimum-idle: 10
       maximum-pool-size: 30
       idle-timeout: 10000
-      max-lifetime: 1000
+      max-lifetime: 30000
       auto-commit: true
     username: root
     password: secret

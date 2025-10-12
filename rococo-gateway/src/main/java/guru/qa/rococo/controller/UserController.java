@@ -4,7 +4,7 @@ package guru.qa.rococo.controller;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.ex.AccessDeniedException;
 import guru.qa.rococo.model.UserJson;
-import guru.qa.rococo.service.orchestration.UserdataOrchestrationService;
+import guru.qa.rococo.service.aggregator.UserdataAggregatorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -22,10 +22,10 @@ public class UserController {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-  private final UserdataOrchestrationService userDataClient;
+  private final UserdataAggregatorService userDataClient;
 
   @Autowired
-  public UserController(UserdataOrchestrationService userDataClient) {
+  public UserController(UserdataAggregatorService userDataClient) {
     this.userDataClient = userDataClient;
   }
 

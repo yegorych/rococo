@@ -25,24 +25,4 @@ public class GrpcUserdataClient {
     public @Nonnull UserInfo updateUser(@Nonnull UserInfo user) {
         return rococoUserdataServiceStub.updateUser(user);
     }
-
-//  public @Nonnull UserJson getUser(@Nonnull String username) {
-//    try {
-//      UserInfo userGrpc = rococoUserdataServiceStub.getUser(UserRequest.newBuilder().setUsername(username).build());
-//      return UserJson.fromGrpcUser(userGrpc);
-//    } catch (StatusRuntimeException e) {
-//      LOG.error("### Error while calling gRPC server ", e);
-//      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-//    }
-//  }
-//
-//  public @Nonnull UserJson updateUser(@Nonnull UserJson user) {
-//    try {
-//      return UserJson.fromGrpcUser(rococoUserdataServiceStub.updateUser(user.toGrpcUser()));
-//    }  catch (StatusRuntimeException e) {
-//      LOG.error("### Error while calling gRPC server ", e);
-//      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-//    }
-//  }
-
 }

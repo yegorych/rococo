@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.userdata.UserInfo;
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.nio.charset.StandardCharsets;
@@ -15,17 +14,17 @@ import java.util.UUID;
 public record UserJson(
     @JsonProperty("id")
     UUID id,
-    @Size(min = 3, max = 50, message = "Allowed username length should be from 3 to 50 characters")
+    @Size(min = 3, max = 50, message = "Допустимая длина имени пользователя — от 3 до 50 символов")
     @JsonProperty("username")
     String username,
     @JsonProperty("firstname")
     @Size(max = 255, message = "Имя не может быть длиннее 255 символов")
     String firstname,
     @JsonProperty("lastname")
-    @Size(max = 255, message = "Фамилия не может быть длиннее 30 символов")
+    @Size(max = 255, message = "Фамилия не может быть длиннее 255 символов")
     String lastname,
     @JsonProperty("avatar")
-    @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Фото профиля не может превышать 4 MB")
+    @Size(max = RococoGatewayServiceConfig.ONE_MB, message = "Фото профиля не может превышать 1 MB")
     String photo) {
 
     public static UserJson fromGrpcMessage(UserInfo userInfo) {
@@ -46,5 +45,16 @@ public record UserJson(
                 .setLastname(lastname)
                 .setAvatar(ByteString.copyFromUtf8(photo))
                 .build();
+    }
+
+    @Override
+    public String toString() {
+        return "UserJson{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", photo='" + (photo != null ? photo.substring(0, Math.min(photo.length(), 10)) + "..." : "null") + '\'' +
+                '}';
     }
 }

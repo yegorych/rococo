@@ -56,10 +56,7 @@ public abstract class BasePage<T extends BasePage<?>> {
     }
 
 
-
-
-
-
-
-
+    public Snackbar snackbar() {
+        return snackbar;
+    }
 }

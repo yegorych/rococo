@@ -1,11 +1,7 @@
-package guru.qa.rococo.service.orchestration;
+package guru.qa.rococo.service.aggregator;
 
-import guru.qa.grpc.rococo.artist.ArtistsResponse;
 import guru.qa.grpc.rococo.museum.MuseumsResponse;
-import guru.qa.rococo.model.ArtistJson;
 import guru.qa.rococo.model.MuseumJson;
-import guru.qa.rococo.service.grpc.GrpcArtistService;
-import guru.qa.rococo.service.grpc.GrpcGeoService;
 import guru.qa.rococo.service.grpc.GrpcMuseumService;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -18,12 +14,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MuseumOrchestrationService {
+public class MuseumAggregatorService {
     private final GrpcMuseumService museumService;
-    private final GeoOrchestrationService geoService;
+    private final GeoAggregatorService geoService;
 
     @Autowired
-    public MuseumOrchestrationService(GrpcMuseumService museumService, GeoOrchestrationService geoService) {
+    public MuseumAggregatorService(GrpcMuseumService museumService, GeoAggregatorService geoService) {
         this.museumService = museumService;
         this.geoService = geoService;
     }

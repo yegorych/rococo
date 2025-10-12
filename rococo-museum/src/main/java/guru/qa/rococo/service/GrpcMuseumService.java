@@ -85,17 +85,6 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
                         String.format("Музей с ID %s не найден", id))
                 );
 
-
-//        boolean exists = museumRepository.existsByTitle(request.getTitle());
-//        if (exists) {
-//            responseObserver.onError(
-//                    Status.ALREADY_EXISTS
-//                            .withDescription("Музей с таким названием уже существует")
-//                            .asRuntimeException()
-//            );
-//            return;
-//        }
-
         List<MusuemEntity> museumsEntities =  museumRepository.findByTitle(request.getTitle());
         boolean nameConflict = museumsEntities.stream()
                 .anyMatch(entity -> !entity.getId().equals(id));

@@ -120,17 +120,6 @@ public class ProfileTest {
                 .checkProfilePhoto(expectedAvatar);
     }
 
-//    @Test
-//    @ApiLogin
-//    void photoSizeShouldBeLessThan4Mb() {
-//        Selenide.open(MainPage.URL, MainPage.class)
-//                .header()
-//                .clickProfile()
-//                .uploadPhoto("img/5mb-photo.png")
-//                .submit(new MainPage())
-//                .checkSnackbarText("Фото профиля не может превышать 4 MB");
-//    }
-
     @Test
     @ApiLogin
     void firstnameLengthShouldBeUnder255() {
@@ -187,9 +176,4 @@ public class ProfileTest {
         Selenide.refresh();
         page.header().checkLoginBtnIsVisible();
     }
-
-
-
-
-
 }

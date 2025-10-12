@@ -1,4 +1,4 @@
-package guru.qa.rococo.service.orchestration;
+package guru.qa.rococo.service.aggregator;
 
 import guru.qa.rococo.ex.ValidationException;
 import guru.qa.rococo.model.UserJson;
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserdataOrchestrationService {
+public class UserdataAggregatorService {
     private final GrpcUserdataClient userdataClient;
 
     @Autowired
-    public UserdataOrchestrationService(GrpcUserdataClient userdataClient){
+    public UserdataAggregatorService(GrpcUserdataClient userdataClient){
         this.userdataClient = userdataClient;
     }
 

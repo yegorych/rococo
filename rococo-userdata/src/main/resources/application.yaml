@@ -1,6 +1,9 @@
 server:
   port: 8089
 
+grpc:
+  server:
+    port: 9090
 spring:
   grpc:
     server:

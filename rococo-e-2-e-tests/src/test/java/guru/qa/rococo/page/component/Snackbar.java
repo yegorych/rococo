@@ -7,6 +7,8 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
+import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class Snackbar extends BaseComponent<Snackbar> {
@@ -22,6 +24,20 @@ public class Snackbar extends BaseComponent<Snackbar> {
     @Step("close snackbar")
     public <T extends BasePage<?>> T closeSnackbar(T expectedPage) {
         closeBtn.click();
+        return expectedPage;
+    }
+
+    @Nonnull
+    @Step("check that snackbar is not visible")
+    public <T extends BasePage<?>> T checkSnackbarIsNotVisible(T expectedPage) {
+        self.shouldNot(visible);
+        return expectedPage;
+    }
+
+    @Nonnull
+    @Step("check that snackbar is not visible")
+    public <T extends BasePage<?>> T checkSnackbarDisappears(T expectedPage) {
+        self.should(disappear);
         return expectedPage;
     }
 

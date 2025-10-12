@@ -2,7 +2,7 @@ package guru.qa.rococo.controller;
 
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.model.MuseumJson;
-import guru.qa.rococo.service.orchestration.MuseumOrchestrationService;
+import guru.qa.rococo.service.aggregator.MuseumAggregatorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class MuseumController {
     private static final Logger LOG = LoggerFactory.getLogger(MuseumController.class);
 
-    private final MuseumOrchestrationService museumService;
+    private final MuseumAggregatorService museumService;
 
     @Autowired
-    public MuseumController(MuseumOrchestrationService museumService) {
+    public MuseumController(MuseumAggregatorService museumService) {
         this.museumService = museumService;
     }
 

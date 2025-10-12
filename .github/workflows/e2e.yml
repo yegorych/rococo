@@ -47,7 +47,8 @@ jobs:
           echo "E2E_EXIT_CODE=$exit_code" >> $GITHUB_OUTPUT
           echo "### Test logs ###"
           docker logs rococo-e-2-e
-          if docker logs rococo-e-2-e | grep -q "BUILD SUCCESSFUL"; then
+#          if docker logs rococo-e-2-e | grep -q "BUILD SUCCESSFUL"; then
+          if [ "$(docker logs rococo-e-2-e | tail -n 10 | grep -c '^BUILD SUCCESSFUL')" -gt 0 ]; then
             echo "E2E_EXIT_CODE=0" >> $GITHUB_OUTPUT
             echo "Tests passed successfully!"
             exit 0

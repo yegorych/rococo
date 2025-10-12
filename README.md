@@ -1,220 +1,76 @@
 # Rococo
+
+**Rococo** — это микросервисная платформа для управления художественными коллекциями и данными о музеях.  
+Проект реализован в рамках дипломной работы и демонстрирует использование современных технологий.
+
+---
+
 ## Архитектурная схема проекта
-**фото схемы**
+<img width="1029" height="793" alt="image" src="https://github.com/user-attachments/assets/9f5988f7-9c73-470f-9575-1342cc338a74" />
+
 В проекте 8 микросервисов. У каждого сервиса, кроме gateway, своя mysql БД.
 rococo-auth и rococo-gateway являются Rest сервисами. Сервис auth публикует события об успешной регистрации в kafka, а сервис rococo-userdata подписан на топик и сохраняет созданного пользователя у себя в БД.
-Сервисы rococo-artist, rococo-museum, rococo-painting, rococo-userdata, rococo-geo являются Grpc сервисами. Фронтенд по rest взаимодействует только с auth и gateway, а уже gateway по grpc обращается в соответствующие сервисы. Также в gateway отправляются события в kafka в топик "events" при создании и обновлении картины, а сервис rococo-kafka-log слушает данный топик и логгирует в свою БД все события с картинами. 
+Сервисы rococo-artist, rococo-museum, rococo-painting, rococo-userdata, rococo-geo являются Grpc сервисами. Фронтенд по rest взаимодействует только с auth и gateway, а уже gateway по grpc обращается в соответствующие сервисы. Также в gateway отправляются события в kafka в топик "events" при создании и обновлении картины, а сервис rococo-kafka-log слушает данный топик и логгирует в свою БД все события с картинами.
+
+## Технологии
+- Backend: Java 21, Spring Boot 3, Spring Data JPA, gRPC, REST, Retrofit
+- Messaging: Apache Kafka
+- Databases: MySQL
+- Frontend: SvelteKit
+- Tests: JUnit 5, Selenide, Allure, Selenoid
+- Infrastructure: Docker, Docker Compose
 
 
 ## Как запустить?
-#### 1. Обновиnm зависимости и запустить фронт Rococо:
+Примечание: Все инструкции написаны для macos. Для запуска sh скриптов на windows необходимо использовать bash.
+#### 1. Спулить образы mysql, kafka, zookeeper
+```posh
+docker pull mysql:8.0
+docker pull confluentinc/cp-zookeeper:7.3.2
+docker pull confluentinc/cp-kafka:7.3.2
+```
 
+#### 2. Поднять в docker контейнеры с mysql, kafka и zookeeper
+В корне проекта выполнить
+```posh
+./localenv.sh
+```
+
+#### 3. Обновить зависимости и запустить фронт Rococо (локально):
+Находясь в корне проекта выполнить
 ```posh
 cd rococo-client
 npm i
 npm run dev
 ```
-
-  Фронт стартанет в твоем браузере на порту 3000: http://127.0.0.1:3000/
-Обрати внимание! Надо использовать именно 127.0.0.1, а не localhost, но даже если ты по ошибке перейдешь на localhost, 
-front автоматически тебя перенаправит.
-
-#### 2. Запустите Wiremock, он заменит собо потенциальный сервис rococo-gateway, который только предстоит написать
-
+Фронт будет доступен по ссылке http://127.0.0.1:3000/
+#### 4. Поднять backend (локально):
+Для локального запуска всех сервисов необходимо запустить их с заданием профиля local. Т.к grpc сервисы занимают сразу 2 порта, то при запуске может возникнуть ошибка "port already in use". В корне проекта есть файл ports.sh (работает на macos), который убивает все процессы работающие на портах, которые используются сервисами. Можно выполнить, если на данных портах не поднято ничего важного!
+#### 5. Запуск в docker
+Для поднятия backend и frontend в docker необходимо выполнить следующее:
+1) Для корректного резолва доменных имен контейнеров необходимо добавить в файл hosts (на macos лежит /etc/hosts):
 ```posh
-docker pull wiremock/wiremock:2.35.0
-docker run --name rococo-mock -p 8080:8080 -v ./wiremock/rest:/home/wiremock -d wiremock/wiremock:2.35.0 --global-response-templating --enable-stub-cors
+127.0.0.1       frontend.rococo.dc
+127.0.0.1       auth.rococo.dc
+127.0.0.1       gateway.rococo.dc
+127.0.0.1       allure
 ```
-  Эти команды надо запускать в корне проекта, там же есть скрипт `wiremock.sh`, делающий ровно то же самое. Можно просто запустить его.
-
-  Wiremock стартанет на порту 8080: http://127.0.0.1:8080/ и будет готов отдавать тебе статические ответы на все запросы, уходящие
-с фронта rococo. Кнопка "Войти" пока что не работает, что логично, ведь у нас нет сервиса auth.
-Однако, наш Wiremock понимает некоторые запросы с oauth token, при чем ему не важно - какой именно это токен.
-Поэтому, что бы смоделировать ситуация "я залогинился", то просто зайди в dev tools браузера,
-перейди в Application, там - в LocalStorage и добавь туда токен, для этого в консоли браузера выполни код:
-```javascript
-localStorage.setItem('id_token', 'faketoken')
+2) Создать volumes
+```posh
+docker volume create mysqldata
+docker volume create allure-results
 ```
-- ключ id_token
-- значение - любая строка, например "faketoken"
-
-  После этого обнови страницу фронта и убедись, что вместо кнопки "Войти" у тебя отобразился профиль, а POST запросы заработали.
-
-# Что дальше?
-
-#### 1. В первую очередь, необходимо подумать над сервисами - какие тебе понадобятся.
-
-  Например, можно предложить вот такую структуру сервисов:
-
-<img src="services.png" width="600">
-
-  ВАЖНО! Картинка - не догма, а лишь один из вариантов для примера.
-Взаимодействие между gateway и всеми остальными сервисами можно сделать с помощью 
-REST, gRPC или SOAP. Я бы посоветовал отдать предпочтение gRPC.
-
-#### 2. Далее, необходимо реализовать сервис rococo-auth
-
-  Фронтенд полностью готов к использованию сервиса auth на порту 9000,
-твоя задача взять сервис niffler-auth и аккуратно переделать его для работы с rococo.
-Страницы логина / регистрации, а так же стили и графику мы даем:
-
-- eye.svg
-- eye-active.svg
-- hermitage.jpeg
-- renuar.jpeg
-- favicon.ico
-- styles.css
-- login.html
-- register.html
-
-  Основная задача - аккуратно заменить упоминания о niffler в этом сервисе, а в идеале - еще и
-разобраться, как он работает. В этом будет полезно видео:
-[Implementing an OAuth 2 authorization server with Spring Security - the new way! by Laurentiu Spilca](https://youtu.be/DaUGKnA7aro)
-[Full Stack OAuth 2 - With Spring Security / React / Angular Part 1](https://youtu.be/SfNIjS_2H4M)
-[Full Stack OAuth 2 - With Spring Security / React / Angular Part 2](https://youtu.be/3bGer6-6mdY)
-
-#### 3. Как только у вас появилось уже 2 сервиса, есть смысл подумать о докеризации
-
-  Чем раньше у ваc получится запустить в докере фронт и все бэкенды, тем проще будет дальше.
-На самом деле, докеризация не является строго обязательным требованием, но если вы хотите в будущем
-задеплоить свой сервис на прод, прикрутить CI/CD, без этого никак не обойдется.
-
-  Я советую использовать плагин jib - как в niffler, для бэкендов, и самописный dockerfile для фронта.
-Фронтенд использует фреймворк Svelte, но докеризация там работает ровно так же, как и для React в Niffler.
-
-#### 4. Выбрать протокол взаимодействия между сервисами
-
-  В поставляемом фронтенде классический REST. А вот взаимодействие между микросервисами можно
-делать как угодно! REST, gRPC, SOAP. Делай проект я, однозначно взял бы gRPC - не писать руками кучу
-model-классов, получить перформанс и простое написание тестов. Стоит сказать, что здесь не
-понадобятся streaming rpc, и все ограничится простыми унарными запросами. Однако если вы хотите
-использовать REST или SOAP - мы не будем возражать.
-
-#### 5. Реализовать микросервисный backend
-
-  Это место где, внезапно, СОВА НАРИСОВАНА! :)
-На самом деле, концептуально и технически каждый сервис будет похож на что-то из niffler, поэтому
-главное внимательность и аккуратность. Любые отхождения от niffler возможны - ты можешь захотеть
-использовать, например, NoSQL базы или по другому организовать конфигурацию / структуру проекта -
-никаких ограничений, лишь бы сервис выполнял свое прямое назначение
-
-##### Особенности реализации backend
-
-###### Сервис gateway, работа с пагинацией
-
-   В отличие от Niffler, проект Rococo использует пагинацию (что бы грузить данные с бэка по частям), а это значит что в `rococo-gateway` должны быть реализованы 
-Pageble контроллеры.
-Пример:
-```java
-  @GetMapping()
-  public Page<ArtistJson> getAll(@RequestParam(required = false) String name,
-                                 @PageableDefault Pageable pageable) {
-    return artistService.getAll(name, pageable);
-  }
+Сеть rococo-net будет создана автоматически
+3) В корне проекта выполнить
+```posh
+./docker-compose-dev.sh
 ```
-  Здесь объект `Pageable` - приходит в виде GET параметров с фронта. Спринг сам превратит GET параметры в этот объект.
-Так же GET парметром может прийти (а может и нет) параметр name. Тогда запрос в БД должен включать фильтрацию по полю name (`ContainsIgnoreCase`)
-Пример репозитория с запросом к БД с учетом Pageable и name (он будет, размеется, не в `rococo-gateway`, а в конечных микросервисах)
-```java
-public interface ArtistRepository extends JpaRepository<ArtistEntity, UUID> {
-
-  @Nonnull
-  Page<ArtistEntity> findAllByNameContainsIgnoreCase(
-          @Nonnull String name,
-          @Nonnull Pageable pageable
-  );
-}
+Фронтенд будет по доступен по ссылке http://frontend.rococo.dc/
+При выполнении docker-compose-dev.sh c аргументом 'push' все сервисы пересоберутся и запушатся в docker hub пользователя, указанного в IMAGE_PREFIX в docker.properties и в корневом build.gradle в dockerHubName
+## Запуск тестов в docker
+В корне проекта выполнить
+```posh
+./docker-compose-e2e.sh
 ```
-  Тип `Page<T>` - это ровно то, что ожидает от вас получит фронт, вам лишь придется преобразовать его в Page<ArtistJson>, 
-для этого надо воспользоваться методом `map()`, имеющимся в классе Page.
-
-Почитать про пагинацию, дополнительно, тут: https://www.baeldung.com/spring-data-jpa-pagination-sorting
-
-###### Передача `Pageable` по gRPC между сервисами, возврат `Page` из сервисов
-
-  Тут все просто. Когда вас с фронта приходит `@PageableDefault Pageable pageable` - из него можно достать две цифры -
-`page` и `size`. + не забыть про третий опциональный парметр - `name`. Тогда, к примеру, gRPC сообщение в сервис с художнниками 
-могло бы выглядеть так:
-```protobuf
-message ArtistsRequest {
-  string name = 1;
-  int32 page = 2;
-  int32 size = 3;
-}
-
-message ArtistsResponse {
-  repeated Artist artists = 1;
-  int32 total_count = 2;
-}
-```
-  Тогда мы сможем вернуть на фронт созданный руками Pageable
-```java
-            List<ArtistJson> artistJsonList = response.getArtistsList()
-                    .stream()
-                    .map(ArtistJson::fromGrpcMessage)
-                    .toList();
-            return new PageImpl<>(artistJsonList, pageable, response.getTotalCount());
-```
-
-  Здесь объект `pageable` - это тот, что мы изначально получили от фронта для выполнения запроса, а `response.getTotalCount()`
-- общее число художников в базе.
-
-###### Security config
-
-   Необходим доступ без авторизации к эндпойнту `/api/session` и к GET запросам без необходимости быть
-аторизованным, для этого пропишем их в security config сервиса `rococo-gateway`:
-```java
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        corsCustomizer.corsCustomizer(http);
-
-        http.authorizeHttpRequests(customizer ->
-                customizer.requestMatchers(
-                                antMatcher(HttpMethod.GET, "/api/session"),
-                                antMatcher(HttpMethod.GET, "/api/artist/**"),
-                                antMatcher(HttpMethod.GET, "/api/museum/**"),
-                                antMatcher(HttpMethod.GET, "/api/painting/**"))
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
-        return http.build();
-    }
-```
-Все прочие эндпойнты должны требовать авторизацию
-
-   В связи с тем, что проект подразумевает GET запросы без авторизации, то и тесты должны учитывать разные кейсы, 
-авторизованный пользователь и нет
-
-#### 6. Подготовить структуру тестового "фреймворка", подумать о том какие прекондишены и как вы будете создавать
-
-  Здесь однозначно понадобится возможность API-логина и работы со всеми возможными preconditions проекта - картинами,
-художниками, музеями. Например, было бы хорошо иметь тесты примерно такого вида:
-```java
-@Test
-@DisplayName("...")
-@Tag("...")
-@ApiLogin(user = @TestUser)
-@TestMuseum(title = "Музей в Китай", country = "Китай", city = "Пекин")
-void exampleTest(MuseumJson createdMuseum) { ... }
-
-@Test
-@DisplayName("...")
-@TestPainting
-@TestMuseum
-@TestArtist
-@Tag("...")
-void exampleTest2(PaintingJson createdPainting, MuseumJson createdMuseum, ArtistJson createdArtist) { ... }
-```
-
-#### 7. Реализовать достаточное, на твой взгляд, покрытие e-2-e тестами
-
-  На наш взгляд, только основны позитивных сценариев тут не менее трех десятков.
-А если не забыть про API-тесты (будь то REST или gRPC), то наберется еще столько же.
-
-#### 8. Оформить все красиво!
-
-  Да, тут еще раз намекну про важность ридми, важность нарисовать топологию (схему) твоих сервисов, важность скриншотиков и прочих красот.
-Очень важно думать о том, что если чего-то не будет описано в README, то и проверить я это что-то не смогу.
-
-<img src="rococo.png" width="800">
+Помимо всех backend сервисов поднимутся контейнеры с selenoid, allure и сам контейнер с тестами rococo-e-2-e. Selenoid ui будет доступен по урлу http://127.0.0.1:9097/, а allure ui с отчетом о пройденных тестах - http://allure:5252/.
+При выполнении docker-compose-e2e.sh c аргументом 'firefox' спулится соответствующий образ для selenoid и тесты будут выполняться на firefox, иначе- chrome.

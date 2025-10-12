@@ -1,0 +1,23 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate" level="error"/>
+    <logger name="org.apache.kafka" level="error"/>
+
+    <logger name="com.codeborne.selenide.webdriver.WebDriverFactory" level="error"/>
+    <logger name="com.codeborne.selenide.impl.WebDriverThreadLocalContainer" level="error"/>
+    <logger name="com.codeborne.selenide.drivercommands.CreateDriverCommand" level="error"/>
+    <logger name="com.codeborne.selenide.drivercommands.CloseDriverCommand" level="error"/>
+    <logger name="com.codeborne.selenide.drivercommands.DisposablesRegistry" level="error"/>
+
+    <logger name="guru.qa.rococo.kafka.KafkaConsumer" level="warn"/>
+    <logger name="guru.qa.rococo.jupiter.extension.AllureDockerExtension" level="debug"/>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

@@ -46,6 +46,8 @@ spring:
     open-in-view: false
 
 logging:
+  file:
+    path: ./logs/rococo-gateway
   level:
     root: INFO
     org.springframework.web: DEBUG
@@ -54,3 +56,102 @@ logging:
 
 rococo-front:
   base-uri: 'http://127.0.0.1:3000'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://127.0.0.1:9000'
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://localhost:9090'
+      negotiationType: PLAINTEXT
+    grpcPaintingClient:
+      address: 'static://localhost:9091'
+      negotiationType: PLAINTEXT
+    grpcGeoClient:
+      address: 'static://localhost:9094'
+      negotiationType: PLAINTEXT
+    grpcArtistClient:
+      address: 'static://localhost:9093'
+      negotiationType: PLAINTEXT
+    grpcMuseumClient:
+      address: 'static://localhost:9095'
+      negotiationType: PLAINTEXT
+
+rococo-userdata:
+  base-uri: 'http://127.0.0.1:8089'
+rococo-front:
+  base-uri: 'http://127.0.0.1:3000'
+rococo-gateway:
+  base-uri: 'http://127.0.0.1:8080'
+rococo-geo:
+  base-uri: 'http://127.0.0.1:8087'
+rococo-artist:
+  base-uri: 'http://127.0.0.1:8086'
+rococo-museum:
+  base-uri: 'http://127.0.0.1:8085'
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://auth.rococo.dc:9000'
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://userdata.rococo.dc:9090'
+      negotiationType: PLAINTEXT
+    grpcPaintingClient:
+      address: 'static://painting.rococo.dc:9091'
+      negotiationType: PLAINTEXT
+    grpcGeoClient:
+      address: 'static://geo.rococo.dc:9094'
+      negotiationType: PLAINTEXT
+    grpcArtistClient:
+      address: 'static://artist.rococo.dc:9093'
+      negotiationType: PLAINTEXT
+    grpcMuseumClient:
+      address: 'static://museum.rococo.dc:9095'
+      negotiationType: PLAINTEXT
+
+
+rococo-userdata:
+  base-uri: 'http://userdata.rococo.dc:8089'
+rococo-front:
+  base-uri: 'http://frontend.rococo.dc'
+rococo-gateway:
+  base-uri: 'http://gateway.rococo.dc:8080'
+rococo-geo:
+  base-uri: 'http://geo.rococo.dc:8087'
+rococo-artist:
+  base-uri: 'http://artist.rococo.dc:8086'
+rococo-museum:
+  base-uri: 'http://museum.rococo.dc:8085'
+
+
+

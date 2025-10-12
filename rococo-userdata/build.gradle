@@ -1,0 +1,84 @@
+
+plugins {
+    id 'org.springframework.boot' version '3.4.2'
+    id 'com.google.cloud.tools.jib' version '3.4.1'
+}
+group = 'guru.qa'
+version = '2.0.3'
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.grpc:spring-grpc-dependencies:0.4.0-SNAPSHOT'
+    }
+}
+
+dependencies {
+    implementation project(':rococo-grpc-common')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
+    implementation "net.coobird:thumbnailator:${project.ext.thumbnailatorVersion}"
+    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+
+    //db
+    implementation("org.flywaydb:flyway-mysql:${project.ext.flywayVersion}")
+    implementation("org.flywaydb:flyway-core:${project.ext.flywayVersion}")
+    runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
+
+    //grpc
+    //implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
+    implementation "net.devh:grpc-server-spring-boot-starter:${project.ext.springGrpcVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "com.h2database:h2:${project.ext.h2Version}"
+}
+
+jib {
+    container {
+        ports = ['8089', '9090']
+        jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
+        environment = [
+                'VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString(),
+                'TZ'         : 'Europe/Moscow'
+        ]
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        labels = [
+                'maintainer': 'Yegor Ryshkevich @yegor_rysh',
+                'version'   : "${project.version}".toString()
+        ]
+    }
+    from {
+        image = "${project.ext.dockerImage}"
+        platforms {
+            platform {
+                architecture = "${project.ext.dockerArch}"
+                os = 'linux'
+            }
+        }
+    }
+    to {
+        image = "${project.ext.dockerHubName}/${project.name}-${System.env.PROFILE}"
+        tags = ['latest', "${project.version}"]
+    }
+}
+
+tasks.jib.dependsOn test
+tasks.jibDockerBuild.dependsOn test
+
+tasks.named('bootJar') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println project.version
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

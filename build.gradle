@@ -1,16 +1,53 @@
 plugins {
     id 'java'
+    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'guru.qa'
-sourceCompatibility = '17'
 
-subprojects {
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
     repositories {
         mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+subprojects {
+    ext {
+        dockerHubName = "yegorych"
+        lombokVersion = '1.18.34'
+        springKafkaVersion = '3.3.2'
+        springVaultVersion = '4.2.0'
+        springOpenApiVersion = '2.8.3'
+        postgresDriverVersion = '42.7.3'
+        flywayVersion = '10.17.1'
+        springGrpcVersion = '3.1.0.RELEASE'
+        springGraphqlDateTimeVersion = '6.0.0'
+        jakartaJaxbVersion = '4.0.5'
+        wsdl4jVersion = '1.6.3'
+        protobufVersion = '3.25.3'
+        grpcVersion = '1.63.0'
+        thumbnailatorVersion = '0.4.20'
+        h2Version = '2.3.232'
+        mockitoVersion = '5.12.0'
+        mysqlDriverVersion = '8.0.33'
+
+        dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
+                ? "arm64v8/eclipse-temurin:21-jdk"
+                : "eclipse-temurin:21-jdk"
+        dockerArch = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
+                ? "arm64"
+                : "amd64"
+    }
 }

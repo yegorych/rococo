@@ -1,0 +1,39 @@
+syntax = "proto3";
+package guru.qa.grpc.rococo.artist;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.grpc.rococo.artist";
+option java_outer_classname = "RococoArtistProto";
+
+service RococoArtistService {
+  rpc GetArtists (ArtistRequest) returns (ArtistsResponse) {}
+  rpc GetArtist (IdRequest) returns (Artist) {}
+  rpc CreateArtist (Artist) returns (Artist) {}
+  rpc UpdateArtist (Artist) returns (Artist) {}
+}
+
+message ArtistRequest {
+  string name = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message IdRequest {
+  string id = 1;
+}
+
+message ArtistsResponse {
+  repeated Artist artists = 1;
+  int32 total_count = 2;
+}
+
+message Artist {
+  string id = 1;
+  string name = 2;
+  string biography = 3;
+  bytes photo = 4;
+}
+
+
+
+

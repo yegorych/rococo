@@ -36,7 +36,11 @@ spring:
     generate-ddl: true
     open-in-view: false
 
+
+
 logging:
+  file:
+    path: ./logs/rococo-auth
   level:
     root: INFO
     org.springframework.web: DEBUG
@@ -44,7 +48,49 @@ logging:
     org.springframework.security.oauth2: DEBUG
     org.springframework.boot.autoconfigure: DEBUG
 
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/rococo-auth'
+    username: root
+    password: secret
 rococo-front:
   base-uri: 'http://127.0.0.1:3000'
 rococo-auth:
   base-uri: 'http://127.0.0.1:9000'
+oauth2:
+  client-id: 'client'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
+  datasource:
+    url: 'jdbc:mysql://rococo-all-db:3306/rococo-auth'
+    username: root
+    password: secret
+rococo-front:
+  base-uri: 'http://frontend.rococo.dc'
+rococo-auth:
+  base-uri: 'http://auth.rococo.dc:9000'
+oauth2:
+  client-id: 'client'

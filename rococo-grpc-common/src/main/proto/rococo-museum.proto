@@ -1,0 +1,41 @@
+syntax = "proto3";
+package guru.qa.grpc.rococo.museum;
+
+option java_multiple_files = true;
+option java_package = "guru.qa.grpc.rococo.museum";
+option java_outer_classname = "RococoMuseumProto";
+
+service RococoMuseumService {
+  rpc GetMuseums (MuseumsRequest) returns (MuseumsResponse) {}
+  rpc GetMuseum (IdRequest) returns (Museum) {}
+  rpc CreateMuseum (Museum) returns (Museum) {}
+  rpc UpdateMuseum (Museum) returns (Museum) {}
+}
+
+message MuseumsRequest {
+  int32 page = 1;
+  int32 size = 2;
+  string title = 3;
+}
+
+message IdRequest {
+  string id = 1;
+}
+
+message MuseumsResponse {
+  repeated Museum museum = 1;
+  int32 total_count = 2;
+}
+
+message Museum {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string city = 4;
+  bytes photo = 5;
+  string countryId = 6;
+}
+
+
+
+

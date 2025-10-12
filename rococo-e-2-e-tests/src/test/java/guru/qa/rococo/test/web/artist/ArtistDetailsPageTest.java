@@ -249,7 +249,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
-    @DisabledByIssue("4")
+    //@DisabledByIssue("4")
     void paintingFromArtistDetailShouldBeCreated(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();

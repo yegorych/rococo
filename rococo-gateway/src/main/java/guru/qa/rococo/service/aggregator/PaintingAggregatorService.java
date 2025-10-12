@@ -85,22 +85,22 @@ public class PaintingAggregatorService {
 
     }
 
-    public PaintingJson updatePainting(@Nonnull PaintingJson paintingJson){
+    public PaintingJson updatePainting(@Nonnull String username, @Nonnull PaintingJson paintingJson){
         PaintingJson painting =
                 PaintingJson.fromGrpcMessage(paintingService.updatePainting(paintingJson.toGrpcMessage()))
                 .addArtist(ArtistJson.fromGrpcMessage(
                         artistService.getArtistById(paintingJson.artist().id().toString()))
                 );
-//        if (painting.id() != null) {
-//            Event event = new Event(
-//                    username,
-//                    painting.id().toString(),
-//                    EventType.CREATE,
-//                    new Date()
-//            );
-//            kafkaTemplate.send("events", event);
-//            LOG.info("### Kafka topic [events] sent message: {}", event);
-//        }
+        if (painting.id() != null) {
+            Event event = new Event(
+                    username,
+                    painting.id().toString(),
+                    EventType.CREATE,
+                    new Date()
+            );
+            kafkaTemplate.send("events", event);
+            LOG.info("### Kafka topic [events] sent message: {}", event);
+        }
         return painting;
     }
 

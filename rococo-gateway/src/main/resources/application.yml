@@ -67,6 +67,8 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
   security:
     oauth2:
       resourceserver:
@@ -115,6 +117,8 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
   security:
     oauth2:
       resourceserver:

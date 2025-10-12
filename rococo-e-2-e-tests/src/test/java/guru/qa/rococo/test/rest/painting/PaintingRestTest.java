@@ -103,7 +103,7 @@ public class PaintingRestTest {
     @ApiLogin
     @Artist
     @Museum
-    @DisabledByIssue("2")
+    //@DisabledByIssue("2")
     void paintingShouldBeCreated(@Token String token, TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         MuseumJson museum = testData.museums().getFirst();
@@ -126,7 +126,7 @@ public class PaintingRestTest {
     @Test
     @ApiLogin
     @Artist
-    @DisabledByIssue("2")
+    //@DisabledByIssue("2")
     void paintingShouldBeCreatedWithoutMuseum(@Token String token, TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         PaintingJson paintingJson = new PaintingJson(

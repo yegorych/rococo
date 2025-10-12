@@ -12,9 +12,9 @@
 - **REST-сервисы**: `rococo-auth`, `rococo-gateway`
 - **gRPC-сервисы**: `rococo-artist`, `rococo-museum`, `rococo-painting`, `rococo-userdata`, `rococo-geo`
 - **Kafka-события**:
-  - `rococo-auth` публикует события регистрации
-  - `rococo-userdata` подписан и сохраняет пользователей
-  - `rococo-gateway` публикует события о картинах
+  - `rococo-auth` публикует события регистрации в топик `users`
+  - `rococo-userdata` слушает топик `users` и сохраняет пользователей в свою бд
+  - `rococo-gateway` публикует события о создании/обновлении картин в топик `events`
   - `rococo-kafka-log` логгирует события из топика `events`
 - **Фронтенд** (`rococo-client`) взаимодействует по REST только с `auth` и `gateway`
   

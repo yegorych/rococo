@@ -97,12 +97,10 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     @Test
     @guru.qa.rococo.jupiter.annotation.Painting
     void updatePainting_shouldSucceed_whenExists(TestData data) {
-        // создаём картину, затем обновляем
         Painting created = data.paintings().getFirst().toGrpcMessage();
-
-        Painting updateReq = created.toBuilder().setTitle("updated-" + UUID.randomUUID()).build();
-        Painting updated = paintingStub.updatePainting(updateReq);
-        Assertions.assertEquals(updateReq.getTitle(), updated.getTitle());
+        Painting request = created.toBuilder().setTitle("updated-").build();
+        Painting updated = paintingStub.updatePainting(request);
+        Assertions.assertEquals(request.getTitle(), updated.getTitle());
     }
 
     @Test

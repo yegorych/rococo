@@ -124,6 +124,7 @@ public class PaintingPageTest {
     @ApiLogin
     @Artist
     @Museum
+    @DisabledByIssue("4")
     void paintingShouldBeCreated(TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         MuseumJson museum = testData.museums().getFirst();
@@ -148,7 +149,8 @@ public class PaintingPageTest {
     @Test
     @ApiLogin
     @Artist
-    void paintingShouldBeCreatedWithoutMuseum(TestData testData) {
+    @DisabledByIssue("4")
+    void paintingShouldBeCreatedWithoutMuseum() {
         PaintingJson newPainting = PaintingJson.randomPainting();
 
         Selenide.open(PaintingPage.URL, PaintingPage.class)

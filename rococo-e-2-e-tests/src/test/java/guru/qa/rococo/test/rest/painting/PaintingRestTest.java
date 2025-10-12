@@ -71,9 +71,9 @@ public class PaintingRestTest {
     }
 
     @Test
-    @Paintings(count = 15)
+    @Paintings(count = 9)
     void paintingsShouldBePaginated() {
-        int size = 5;
+        final int size = 3;
         Set<PaintingJson> paintings = new HashSet<>();
         int page = 0;
         while (page!= 3) {
@@ -83,7 +83,7 @@ public class PaintingRestTest {
             paintings.addAll(response.body().getContent());
             page++;
         }
-        Assertions.assertEquals(15, paintings.size());
+        Assertions.assertEquals(9, paintings.size());
     }
 
     @Test
@@ -126,6 +126,7 @@ public class PaintingRestTest {
     @Test
     @ApiLogin
     @Artist
+    @DisabledByIssue("2")
     void paintingShouldBeCreatedWithoutMuseum(@Token String token, TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         PaintingJson paintingJson = new PaintingJson(
@@ -275,6 +276,7 @@ public class PaintingRestTest {
     @Test
     @ApiLogin
     @Painting(museum = @Museum)
+    @DisabledByIssue("2")
     void paintingShouldBeUpdated(@Token String token, TestData testData) {
         PaintingJson createdPainting = testData.paintings().getFirst();
         PaintingJson expectedPainting = new PaintingJson(

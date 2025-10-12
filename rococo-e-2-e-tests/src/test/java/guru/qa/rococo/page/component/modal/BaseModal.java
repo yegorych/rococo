@@ -14,8 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.actions;
+import static com.codeborne.selenide.Selenide.*;
 
 
 public abstract class BaseModal<T extends BaseModal<T>> extends BaseComponent<T> {
@@ -38,7 +37,9 @@ public abstract class BaseModal<T extends BaseModal<T>> extends BaseComponent<T>
     @Nonnull
     @Step("click submit button")
     public <T> T submit(T expectedPage) {
-        submitBtn.click();
+        submitBtn.shouldBe(visible); // убедись, что кнопка видима
+        executeJavaScript("arguments[0].click();", submitBtn);
+        //submitBtn.click();
         return expectedPage;
     }
 

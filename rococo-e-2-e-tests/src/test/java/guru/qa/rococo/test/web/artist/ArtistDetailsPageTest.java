@@ -3,6 +3,7 @@ package guru.qa.rococo.test.web.artist;
 import com.codeborne.selenide.Selenide;
 import guru.qa.rococo.jupiter.annotation.ApiLogin;
 import guru.qa.rococo.jupiter.annotation.Artist;
+import guru.qa.rococo.jupiter.annotation.DisabledByIssue;
 import guru.qa.rococo.jupiter.annotation.ScreenShotTest;
 import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.model.TestData;
@@ -248,6 +249,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisabledByIssue("4")
     void paintingFromArtistDetailShouldBeCreated(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();

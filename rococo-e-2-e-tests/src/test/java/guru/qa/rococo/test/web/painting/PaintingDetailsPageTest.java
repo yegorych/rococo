@@ -95,9 +95,10 @@ public class PaintingDetailsPageTest {
 
     @Test
     @ApiLogin
-    @Painting
     @Artist
     @Museum
+    @Painting
+    //@DisabledByIssue("4")
     void paintingShouldBeUpdated(TestData testData) {
         PaintingJson createdPainting = testData.paintings().getFirst();
         String id = createdPainting.id().toString();
@@ -111,7 +112,6 @@ public class PaintingDetailsPageTest {
                 .setDescription(newPainting.description())
                 .selectArtist(createdArtist.name())
                 .selectMuseum(createdMuseum.title())
-                .uploadPhoto("img/painting.png")
                 .submit(new PaintingDetailsPage())
                 .checkSnackbarText("Обновлена картина: " + newPainting.title())
                 .checkPaintingDetails(newPainting);

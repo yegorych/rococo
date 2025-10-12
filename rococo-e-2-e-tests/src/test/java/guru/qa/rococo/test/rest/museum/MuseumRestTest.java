@@ -231,7 +231,7 @@ public class MuseumRestTest {
         Assertions.assertEquals(400, response.code());
         Assertions.assertNotNull(response.errorBody());
         String errorMessage = getErrorMessage(response.errorBody());
-        Assertions.assertEquals("Размер фото не может превышать 4 MB", errorMessage);
+        Assertions.assertEquals("Размер фото не может превышать 1 MB", errorMessage);
     }
 
 

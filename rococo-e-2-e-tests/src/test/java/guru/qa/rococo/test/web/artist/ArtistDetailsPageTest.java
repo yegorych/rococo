@@ -3,6 +3,7 @@ package guru.qa.rococo.test.web.artist;
 import com.codeborne.selenide.Selenide;
 import guru.qa.rococo.jupiter.annotation.ApiLogin;
 import guru.qa.rococo.jupiter.annotation.Artist;
+import guru.qa.rococo.jupiter.annotation.DisabledByIssue;
 import guru.qa.rococo.jupiter.annotation.ScreenShotTest;
 import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.model.TestData;
@@ -12,6 +13,7 @@ import guru.qa.rococo.page.ArtistPage;
 import guru.qa.rococo.page.PaintingPage;
 import guru.qa.rococo.page.component.modal.ArtistModal;
 import guru.qa.rococo.page.detailsPage.ArtistDetailsPage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -242,21 +244,6 @@ public class ArtistDetailsPageTest {
                 .checkValidationError("Биография не может быть короче 10 символов");
     }
 
-
-//    @Test
-//    @ApiLogin
-//    @Artist
-//    //добавить на тесты на форматы изображений
-//    void editArtistModalPhotoSizeShouldBeLessThan4Mb(TestData testData) {
-//        ArtistJson artistJson = testData.artists().getFirst();
-//        String id = artistJson.id().toString();
-//
-//        Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
-//                .clickOnEditBtn()
-//                .uploadPhoto("img/5mb-photo.png")
-//                .submit(new ArtistDetailsPage())
-//                .checkSnackbarText("Размер фото не может превышать 4 MB");
-//    }
 
 
     @Test

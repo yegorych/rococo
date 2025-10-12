@@ -14,8 +14,7 @@ import java.util.Optional;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 
 public class Selection<T extends BaseModal<T>> extends BaseComponent<Selection<T>>{
@@ -51,7 +50,7 @@ public class Selection<T extends BaseModal<T>> extends BaseComponent<Selection<T
     @Nonnull
     @Step("select element by name {0}")
     public T selectOption(String name) {
-        self.getOptions().findBy(text(name)).scrollIntoView(true).click();
+        self.getOptions().findBy(exactText(name)).scrollIntoView(true).click();
         return modal;
     }
 

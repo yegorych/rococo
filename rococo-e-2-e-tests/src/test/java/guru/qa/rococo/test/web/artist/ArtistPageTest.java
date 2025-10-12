@@ -186,33 +186,4 @@ public class ArtistPageTest {
                 .submit(new MuseumModal())
                 .checkValidationError("Биография не может быть короче 10 символов");
     }
-
-//    @Test
-//    @ApiLogin
-//    void artistPhotoSizeShouldBeLessThan4Mb() {
-//        ArtistJson newArtist = ArtistJson.randomArtist();
-//        Selenide.open(ArtistPage.URL, ArtistPage.class)
-//                .clickAddArtistBtn()
-//                .setName(newArtist.name())
-//                .setBiography(newArtist.biography())
-//                .uploadPhoto("img/5mb-photo.png")
-//                .submit(new ArtistPage())
-//                .checkSnackbarText("Размер фото не может превышать 4 MB");
-//    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

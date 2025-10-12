@@ -29,7 +29,7 @@ public record PaintingJson(
         @NotNull(message = "Художник должен быть задан")
         ArtistJson artist,
         @JsonProperty("content")
-        @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Размер фото не может превышать 4 MB")
+        @Size(max = RococoGatewayServiceConfig.ONE_MB, message = "Размер фото не может превышать 1 MB")
         String content
 ) {
         public static PaintingJson fromGrpcMessage(Painting painting) {

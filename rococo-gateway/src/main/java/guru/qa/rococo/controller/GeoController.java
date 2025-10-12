@@ -2,8 +2,7 @@ package guru.qa.rococo.controller;
 
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.model.CountryJson;
-import guru.qa.rococo.service.grpc.GrpcGeoService;
-import guru.qa.rococo.service.orchestration.GeoOrchestrationService;
+import guru.qa.rococo.service.aggregator.GeoAggregatorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class GeoController {
     private static final Logger LOG = LoggerFactory.getLogger(GeoController.class);
 
-    private final GeoOrchestrationService gpcGeoService;
+    private final GeoAggregatorService gpcGeoService;
 
     @Autowired
-    public GeoController(GeoOrchestrationService gpcGeoService) {
+    public GeoController(GeoAggregatorService gpcGeoService) {
         this.gpcGeoService = gpcGeoService;
     }
 

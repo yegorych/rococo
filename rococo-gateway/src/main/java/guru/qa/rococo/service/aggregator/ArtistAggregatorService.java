@@ -1,12 +1,8 @@
-package guru.qa.rococo.service.orchestration;
+package guru.qa.rococo.service.aggregator;
 
 import guru.qa.grpc.rococo.artist.ArtistsResponse;
-import guru.qa.grpc.rococo.painting.PaintingsResponse;
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.model.PaintingJson;
-import guru.qa.rococo.model.UserJson;
 import guru.qa.rococo.service.grpc.GrpcArtistService;
-import guru.qa.rococo.service.grpc.GrpcUserdataClient;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +14,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ArtistOrchestrationService {
+public class ArtistAggregatorService {
     private final GrpcArtistService artistService;
 
     @Autowired
-    public ArtistOrchestrationService(GrpcArtistService artistService){
+    public ArtistAggregatorService(GrpcArtistService artistService){
         this.artistService = artistService;
     }
 

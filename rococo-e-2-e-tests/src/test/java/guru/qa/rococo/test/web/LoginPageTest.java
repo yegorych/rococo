@@ -82,14 +82,4 @@ public class LoginPageTest {
                 .navigateToRegistration()
                 .isRegistrationPage();
     }
-
-
-
-
-
-
-
-
-
-
 }

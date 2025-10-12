@@ -2,7 +2,7 @@ package guru.qa.rococo.controller;
 
 import guru.qa.rococo.config.RococoGatewayServiceConfig;
 import guru.qa.rococo.model.ArtistJson;
-import guru.qa.rococo.service.orchestration.ArtistOrchestrationService;
+import guru.qa.rococo.service.aggregator.ArtistAggregatorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class ArtistController {
     private static final Logger LOG = LoggerFactory.getLogger(ArtistController.class);
 
-    private final ArtistOrchestrationService artistService;
+    private final ArtistAggregatorService artistService;
 
     @Autowired
-    public ArtistController(ArtistOrchestrationService artistService) {
+    public ArtistController(ArtistAggregatorService artistService) {
         this.artistService = artistService;
     }
 

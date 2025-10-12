@@ -25,7 +25,7 @@ public class SessionApiClient extends RestClient {
 
   @Step("Get session using GET /api/session")
   @Nonnull
-  public Response<SessionJson> getCountryPage(String token) {
+  public Response<SessionJson> getSession(String token) {
     return requireNonNull(execute(sessionApi.session(token)));
   }
 

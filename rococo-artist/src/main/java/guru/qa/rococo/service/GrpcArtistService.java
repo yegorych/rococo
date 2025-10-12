@@ -106,21 +106,9 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
                         String.format("Художник с ID %s не найден", request.getId()))
                 );
 
-          List<ArtistEntity> artistEntities = artistRepository.findByName(request.getName());
-//        if (!artistEntities.isEmpty()) {
-//            if (!id.equals(artistEntities.getFirst().getId())){
-//                responseObserver.onError(
-//                        Status.ALREADY_EXISTS
-//                                .withDescription("Художник с таким именем уже существует")
-//                                .asRuntimeException()
-//                );
-//                return;
-//            }
-//        }
-
+        List<ArtistEntity> artistEntities = artistRepository.findByName(request.getName());
         boolean nameConflict = artistEntities.stream()
                 .anyMatch(entity -> !entity.getId().equals(id));
-
         if (nameConflict) {
             responseObserver.onError(
                     Status.ALREADY_EXISTS
@@ -129,8 +117,6 @@ public class GrpcArtistService extends RococoArtistServiceGrpc.RococoArtistServi
             );
             return;
         }
-
-
         ArtistEntity updatedArtist = artistRepository.save(ArtistEntity.fromGrpcMessage(request, ae));
         responseObserver.onNext(updatedArtist.toGrpcMessage());
         responseObserver.onCompleted();

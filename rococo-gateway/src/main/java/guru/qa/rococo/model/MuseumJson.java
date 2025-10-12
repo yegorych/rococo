@@ -23,7 +23,7 @@ public record MuseumJson(
         @JsonProperty("geo")
         GeoJson geo,
         @JsonProperty("photo")
-        @Size(max = RococoGatewayServiceConfig.FOUR_MB, message = "Размер фото не может превышать 4 MB")
+        @Size(max = RococoGatewayServiceConfig.ONE_MB, message = "Размер фото не может превышать 1 MB")
         String photo
 ) {
 

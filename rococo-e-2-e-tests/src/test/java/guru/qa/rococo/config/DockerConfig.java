@@ -95,6 +95,12 @@ enum DockerConfig implements Config {
 
   @NotNull
   @Override
+  public String userdataGrpcAddress() {
+    return "userdata.rococo.dc";
+  }
+
+  @NotNull
+  @Override
   public String paintingGrpcAddress() {
     return "painting.rococo.dc";
   }
@@ -106,5 +112,10 @@ enum DockerConfig implements Config {
     return allureDockerApiFromEnv != null
             ? allureDockerApiFromEnv
             : "http://allure:5050/";
+  }
+  @Nonnull
+  @Override
+  public String kafkaAddress() {
+    return "kafka:9092";
   }
 }

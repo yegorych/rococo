@@ -19,7 +19,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
-@Profile({"local", "docker", "staging"})
+@Profile({"local", "docker"})
 public class SecurityConfigLocal {
 
   private final CorsCustomizer corsCustomizer;

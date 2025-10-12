@@ -2,12 +2,15 @@ package guru.qa.rococo.jupiter.extension;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideConfig;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import guru.qa.rococo.jupiter.annotation.UseProxy;
 import guru.qa.rococo.page.MainPage;
 import io.qameta.allure.Allure;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.extension.*;
+import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -24,17 +27,6 @@ public class BrowserExtension implements
     TestExecutionExceptionHandler,
     LifecycleMethodExecutionExceptionHandler {
 
-//  static {
-//    Configuration.browser = "chrome";
-//    Configuration.timeout = 8000;
-//    Configuration.pageLoadStrategy = "eager";
-//    if ("docker".equals(System.getProperty("test.env"))) {
-//      Configuration.remote = "http://selenoid:4444/wd/hub";
-//      Configuration.browserVersion = "127.0";
-//      Configuration.browserCapabilities = new ChromeOptions()
-//              .addArguments("--no-sandbox", "--lang=ru-RU", "--disable-dev-shm-usage");
-//    }
-//  }
 
   static {
     String browser = System.getProperty("browser");
@@ -42,7 +34,6 @@ public class BrowserExtension implements
             ? "chrome"
             : browser;
 
-    Configuration.browser = "chrome";
     Configuration.timeout = 8000;
     Configuration.pageLoadStrategy = "eager";
     Configuration.savePageSource = false;

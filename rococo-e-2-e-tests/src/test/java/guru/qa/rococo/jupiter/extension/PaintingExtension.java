@@ -117,45 +117,6 @@ public class PaintingExtension implements
                                         .findFirst().orElseThrow(()-> new IllegalArgumentException("Museum not found"));
 
                             }
-
-
-//                            final String museumTitle = paintingAnno.museum().title().isEmpty()
-//                                    ? RandomDataUtils.randomMuseumTitle()
-//                                    : paintingAnno.museum().title();
-//
-//                            MuseumJson museumJson = paintingAnno.museum().createMuseum()
-//                                    ? MuseumExtension.createdMuseums()
-//                                    .stream().filter(m -> museumTitle.equals(m.title()))
-//                                    .findFirst()
-//                                    .orElseGet(() -> {
-//                                        final Museum museum = paintingAnno.museum();
-//                                        final String desc = museum.description().isEmpty()
-//                                                ? randomSentence(10)
-//                                                : museum.description();
-//
-//                                        final String photo = museum.photo().isEmpty()
-//                                                ? null
-//                                                : ImgBase64Utils.imageToBase64(museum.photo());
-//
-//                                        MuseumJson m = museumClient.createMuseum(
-//                                                new MuseumJson(
-//                                                        null,
-//                                                        museumTitle,
-//                                                        desc,
-//                                                        new GeoJson(
-//                                                                museum.city().isEmpty() ? randomCity() : museum.city(),
-//                                                                new CountryJson(
-//                                                                        null,
-//                                                                        paintingAnno.museum().country()
-//                                                                )
-//                                                        ),
-//                                                        photo
-//                                                ));
-//                                        MuseumExtension.createdMuseums().add(m);
-//                                        return m;
-//                                    })
-//                                    : null;
-
                             return paintingClient.createPainting(
                                     new PaintingJson(
                                             null,

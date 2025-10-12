@@ -1,5 +1,6 @@
 package guru.qa.rococo.api.core;
 
+import guru.qa.rococo.api.logging.CompactImageHttpLogger;
 import guru.qa.rococo.config.Config;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
@@ -18,7 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -30,9 +30,13 @@ public abstract class RestClient {
 
   private final OkHttpClient okHttpClient;
   private final Retrofit retrofit;
+  private final static HttpLoggingInterceptor safeInterceptor = new HttpLoggingInterceptor(new CompactImageHttpLogger());
+    static {
+      safeInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    }
 
   public RestClient(String baseUrl) {
-    this(baseUrl, false, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.BODY);
+    this(baseUrl, false, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.NONE, safeInterceptor);
   }
 
   public RestClient(String baseUrl, HttpLoggingInterceptor.Level level) {
@@ -70,11 +74,7 @@ public abstract class RestClient {
             )
         )
     );
-    this.okHttpClient = builder
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
-            .build();
+    this.okHttpClient = builder.build();
     this.retrofit = new Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)

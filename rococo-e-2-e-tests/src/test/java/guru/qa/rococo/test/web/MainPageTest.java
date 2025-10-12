@@ -15,7 +15,4 @@ public class MainPageTest {
                 .header()
                 .checkLoginBtnIsVisible();
     }
-
-
-
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.protobuf.ByteString;
 import guru.qa.grpc.rococo.userdata.UserInfo;
 import guru.qa.rococo.data.entity.userdata.UserEntity;
+import guru.qa.rococo.jupiter.annotation.User;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -67,6 +68,18 @@ public record UserJson(
 
     }
 
+    public UserJson addFirstname(String firstname){
+        return new UserJson(id, username, firstname, lastname, photo, password);
+    }
+
+    public UserJson addLastname(String lastname){
+        return new UserJson(id, username, firstname, lastname, photo, password);
+    }
+
+    public UserJson addPhoto(String photo){
+        return new UserJson(id, username, firstname, lastname, photo, password);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -77,5 +90,17 @@ public record UserJson(
     @Override
     public int hashCode() {
         return Objects.hash(id, username, firstname, lastname, photo);
+    }
+
+    @Override
+    public String toString() {
+        return "UserJson{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", photo='" + (photo != null ? photo.substring(0, Math.min(photo.length(), 10)) + "..." : "null") + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

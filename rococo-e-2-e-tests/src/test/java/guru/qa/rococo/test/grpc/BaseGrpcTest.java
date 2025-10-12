@@ -4,6 +4,7 @@ import guru.qa.grpc.rococo.artist.RococoArtistServiceGrpc;
 import guru.qa.grpc.rococo.geo.RococoGeoServiceGrpc;
 import guru.qa.grpc.rococo.museum.RococoMuseumServiceGrpc;
 import guru.qa.grpc.rococo.painting.RococoPaintingServiceGrpc;
+import guru.qa.grpc.rococo.userdata.RococoUserdataServiceGrpc;
 import guru.qa.rococo.config.Config;
 import guru.qa.rococo.utils.GrpcConsoleInterceptor;
 import io.grpc.Channel;
@@ -30,6 +31,11 @@ public class BaseGrpcTest {
     protected static RococoPaintingServiceGrpc.RococoPaintingServiceBlockingStub paintingStub
             = RococoPaintingServiceGrpc.newBlockingStub(
                     channel(CFG.paintingGrpcAddress(), CFG.paintingGrpcPort())
+    );
+
+    protected static RococoUserdataServiceGrpc.RococoUserdataServiceBlockingStub userdataStub
+            = RococoUserdataServiceGrpc.newBlockingStub(
+            channel(CFG.userdataGrpcAddress(), CFG.userdataGrpcPort())
     );
 
     private static Channel channel(String url, int port){

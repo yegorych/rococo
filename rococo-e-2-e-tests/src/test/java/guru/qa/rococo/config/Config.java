@@ -1,6 +1,7 @@
 package guru.qa.rococo.config;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public interface Config {
 
@@ -46,7 +47,15 @@ public interface Config {
   @Nonnull
   String paintingGrpcAddress();
   @Nonnull
+  String userdataGrpcAddress();
+  @Nonnull
   String allureDockerUrl();
+  @Nonnull
+  String kafkaAddress();
+  @Nonnull
+  default List<String> kafkaTopcis() {
+    return List.of("users", "events");
+  }
 
   default int museumGrpcPort() {
     return 9095;
@@ -62,6 +71,10 @@ public interface Config {
 
   default int paintingGrpcPort() {
     return 9091;
+  }
+
+  default int userdataGrpcPort() {
+    return 9090;
   }
 
 }

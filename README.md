@@ -1,7 +1,7 @@
 # Rococo
 
 **Rococo** — это микросервисная платформа для управления художественными коллекциями и данными о музеях.  
-Проект реализован в рамках дипломной работы и демонстрирует использование современных технологий: gRPC, REST Gateway, Kafka, JWT-авторизация и SvelteKit фронтенд.
+Проект реализован в рамках дипломной работы и демонстрирует использование современных технологий.
 
 ---
 
@@ -27,62 +27,60 @@
 
 ## Архитектурная схема
 
-```mermaid
-flowchart LR
-    subgraph FRONTEND
-        UI[SvelteKit Frontend]
-    end
+graph TD
+subgraph Frontend
+client[Rococo Client (Svelte)]
+end
 
-    subgraph GATEWAY[API Gateway (REST <-> gRPC)]
-    end
+subgraph Gateway
+gateway[Rococo Gateway (Spring REST + gRPC)]
+end
 
-    subgraph AUTH[Auth Service (REST)]
-        AUTH_DB[(MySQL Auth DB)]
-    end
+subgraph Auth
+auth[Rococo Auth (Spring REST)]
+end
 
-    subgraph SERVICES
-        USERDATA[UserData Service (gRPC)]
-        ARTIST[Artist Service (gRPC)]
-        OTHER[Other gRPC Services...]
-    end
+subgraph Kafka
+kafka[Kafka]
+topic[Topic: events]
+end
 
-    subgraph DBs
-        USERDATA_DB[(MySQL UserData DB)]
-        ARTIST_DB[(MySQL Artist DB)]
-        OTHER_DB[(MySQL Other DBs)]
-    end
+subgraph GrpcServices
+artist[Rococo Artist (gRPC)]
+museum[Rococo Museum (gRPC)]
+painting[Rococo Painting (gRPC)]
+geo[Rococo Geo (gRPC)]
+userdata[Rococo Userdata (gRPC)]
+kafkalog[Rococo Kafka Log]
+end
 
-    subgraph KAFKA[Kafka Broker]
-        TOPIC_AUTH[Auth Events]
-        TOPIC_GATEWAY[Gateway Events]
-    end
+subgraph Databases
+db_auth[(MySQL: auth)]
+db_artist[(MySQL: artist)]
+db_museum[(MySQL: museum)]
+db_painting[(MySQL: painting)]
+db_geo[(MySQL: geo)]
+db_userdata[(MySQL: userdata)]
+db_kafkalog[(MySQL: kafka-log)]
+end
 
-    subgraph LOG_SERVICE[Kafka Log Listener]
-        LOG_DB[(MySQL Logs DB)]
-    end
+client -->|REST| gateway
+client -->|REST| auth
+gateway -->|gRPC| artist
+gateway -->|gRPC| museum
+gateway -->|gRPC| painting
+gateway -->|gRPC| geo
+gateway -->|gRPC| userdata
 
-    %% Connections
-    UI -->|REST| GATEWAY
-    GATEWAY -->|REST| AUTH
-    GATEWAY -->|gRPC| USERDATA
-    GATEWAY -->|gRPC| ARTIST
-    GATEWAY -->|gRPC| OTHER
+auth -->|publish registration| kafka
+kafka -->|events| userdata
+kafka -->|events| kafkalog
+gateway -->|publish painting events| kafka
 
-    AUTH -->|MySQL| AUTH_DB
-    USERDATA -->|MySQL| USERDATA_DB
-    ARTIST -->|MySQL| ARTIST_DB
-    OTHER -->|MySQL| OTHER_DB
-
-    AUTH -->|Publish Events| TOPIC_AUTH
-    GATEWAY -->|Publish Events| TOPIC_GATEWAY
-
-    LOG_SERVICE -->|Consume| TOPIC_AUTH
-    LOG_SERVICE -->|Consume| TOPIC_GATEWAY
-    LOG_SERVICE -->|MySQL| LOG_DB
-
-    MUSEUM --> DBM
-    ARTIST --> DBA
-    PAINTING --> DBP
-    USERDATA --> DBU
-    KLOG --> DBL
-```
+auth --> db_auth
+artist --> db_artist
+museum --> db_museum
+painting --> db_painting
+geo --> db_geo
+userdata --> db_userdata
+kafkalog --> db_kafkalog

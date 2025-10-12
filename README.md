@@ -8,12 +8,16 @@
 ## Архитектурная схема проекта
 <img width="1029" height="793" alt="image" src="https://github.com/user-attachments/assets/9f5988f7-9c73-470f-9575-1342cc338a74" />
 
-В проекте 8 микросервисов. У каждого сервиса, кроме gateway, своя mysql БД.
-
-rococo-auth и rococo-gateway являются Rest сервисами. Сервис auth публикует события об успешной регистрации в kafka, а сервис rococo-userdata подписан на топик и сохраняет созданного пользователя у себя в БД.
-
-Сервисы rococo-artist, rococo-museum, rococo-painting, rococo-userdata, rococo-geo являются Grpc сервисами. Фронтенд по rest взаимодействует только с auth и gateway, а уже gateway по grpc обращается в соответствующие сервисы. Также в gateway отправляются события в kafka в топик "events" при создании и обновлении картины, а сервис rococo-kafka-log слушает данный топик и логгирует в свою БД все события с картинами.
-
+- **8 микросервисов**, каждый (кроме `gateway`) со своей MySQL-базой
+- **REST-сервисы**: `rococo-auth`, `rococo-gateway`
+- **gRPC-сервисы**: `rococo-artist`, `rococo-museum`, `rococo-painting`, `rococo-userdata`, `rococo-geo`
+- **Kafka-события**:
+  - `rococo-auth` публикует события регистрации
+  - `rococo-userdata` подписан и сохраняет пользователей
+  - `rococo-gateway` публикует события о картинах
+  - `rococo-kafka-log` логгирует события из топика `events`
+- **Фронтенд** (`rococo-client`) взаимодействует по REST только с `auth` и `gateway`
+  
 ## Технологии
 - Backend: Java 21, Spring Boot 3, Spring Data JPA, gRPC, REST, Retrofit
 - Messaging: Apache Kafka

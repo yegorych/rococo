@@ -37,9 +37,7 @@ public abstract class BaseModal<T extends BaseModal<T>> extends BaseComponent<T>
     @Nonnull
     @Step("click submit button")
     public <T> T submit(T expectedPage) {
-        submitBtn.shouldBe(visible); // убедись, что кнопка видима
-        executeJavaScript("arguments[0].click();", submitBtn);
-        //submitBtn.click();
+        submitBtn.click();
         return expectedPage;
     }
 

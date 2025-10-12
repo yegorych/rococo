@@ -42,10 +42,9 @@ public class PaintingController {
     }
 
     @PatchMapping
-    public PaintingJson update(@AuthenticationPrincipal Jwt principal,
-                               @Valid @RequestBody PaintingJson painting) {
-        String username = principal.getClaim("sub");
-        return paintingService.updatePainting(username, painting);
+    public PaintingJson update(@Valid @RequestBody PaintingJson painting) {
+        //String username = principal.getClaim("sub");
+        return paintingService.updatePainting(painting);
     }
 
     @GetMapping("/{id}")

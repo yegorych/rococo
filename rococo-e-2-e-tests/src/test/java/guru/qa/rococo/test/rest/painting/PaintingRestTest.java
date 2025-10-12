@@ -276,7 +276,7 @@ public class PaintingRestTest {
     @Test
     @ApiLogin
     @Painting(museum = @Museum)
-    @DisabledByIssue("2")
+    //@DisabledByIssue("2")
     void paintingShouldBeUpdated(@Token String token, TestData testData) {
         PaintingJson createdPainting = testData.paintings().getFirst();
         PaintingJson expectedPainting = new PaintingJson(

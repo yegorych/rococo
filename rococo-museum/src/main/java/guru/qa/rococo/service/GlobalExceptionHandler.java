@@ -29,7 +29,7 @@ public class GlobalExceptionHandler{
     @GrpcExceptionHandler(Exception.class)
     public StatusRuntimeException handleException(Exception e) {
         log.error("Unhandled exception caught in gRPC advice", e);
-        return Status.INTERNAL.withDescription("Ошибка при получении музеев").withCause(e).asRuntimeException();
+        return Status.INTERNAL.withDescription("Внутренняя ошибка сервера").withCause(e).asRuntimeException();
     }
 
 }

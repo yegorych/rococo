@@ -29,49 +29,56 @@
 
 ```mermaid
 flowchart LR
-    subgraph Frontend
-        FE[SvelteKit App]
+    subgraph FRONTEND
+        UI[SvelteKit Frontend]
     end
 
-    subgraph Gateway
-        GW[REST Gateway]
+    subgraph GATEWAY[API Gateway (REST <-> gRPC)]
     end
 
-    subgraph Auth
-        AUTH[Auth Service (REST)]
+    subgraph AUTH[Auth Service (REST)]
+        AUTH_DB[(MySQL Auth DB)]
     end
 
-    subgraph gRPC
-        MUSEUM[Museum Service]
-        ARTIST[Artist Service]
-        PAINTING[Painting Service]
-        USERDATA[Userdata Service]
+    subgraph SERVICES
+        USERDATA[UserData Service (gRPC)]
+        ARTIST[Artist Service (gRPC)]
+        OTHER[Other gRPC Services...]
     end
 
-    subgraph Kafka
-        KAFKA[(Kafka Broker)]
-        KLOG[Kafka Log Service]
+    subgraph DBs
+        USERDATA_DB[(MySQL UserData DB)]
+        ARTIST_DB[(MySQL Artist DB)]
+        OTHER_DB[(MySQL Other DBs)]
     end
 
-    subgraph Databases
-        DBM[(MySQL - Museums)]
-        DBA[(MySQL - Artists)]
-        DBP[(MySQL - Paintings)]
-        DBU[(MySQL - Users)]
-        DBL[(MySQL - Logs)]
+    subgraph KAFKA[Kafka Broker]
+        TOPIC_AUTH[Auth Events]
+        TOPIC_GATEWAY[Gateway Events]
     end
 
-    FE --> GW
-    GW -->|REST/gRPC| MUSEUM
-    GW -->|REST/gRPC| ARTIST
-    GW -->|REST/gRPC| PAINTING
-    GW -->|REST/gRPC| USERDATA
-    GW --> AUTH
+    subgraph LOG_SERVICE[Kafka Log Listener]
+        LOG_DB[(MySQL Logs DB)]
+    end
 
-    AUTH --> KAFKA
-    GW --> KAFKA
-    KAFKA --> USERDATA
-    KAFKA --> KLOG
+    %% Connections
+    UI -->|REST| GATEWAY
+    GATEWAY -->|REST| AUTH
+    GATEWAY -->|gRPC| USERDATA
+    GATEWAY -->|gRPC| ARTIST
+    GATEWAY -->|gRPC| OTHER
+
+    AUTH -->|MySQL| AUTH_DB
+    USERDATA -->|MySQL| USERDATA_DB
+    ARTIST -->|MySQL| ARTIST_DB
+    OTHER -->|MySQL| OTHER_DB
+
+    AUTH -->|Publish Events| TOPIC_AUTH
+    GATEWAY -->|Publish Events| TOPIC_GATEWAY
+
+    LOG_SERVICE -->|Consume| TOPIC_AUTH
+    LOG_SERVICE -->|Consume| TOPIC_GATEWAY
+    LOG_SERVICE -->|MySQL| LOG_DB
 
     MUSEUM --> DBM
     ARTIST --> DBA

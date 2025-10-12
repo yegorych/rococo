@@ -8,9 +8,15 @@
 ## Архитектурная схема проекта
 <img width="1029" height="793" alt="image" src="https://github.com/user-attachments/assets/9f5988f7-9c73-470f-9575-1342cc338a74" />
 
-В проекте 8 микросервисов. У каждого сервиса, кроме gateway, своя mysql БД.
-rococo-auth и rococo-gateway являются Rest сервисами. Сервис auth публикует события об успешной регистрации в kafka, а сервис rococo-userdata подписан на топик и сохраняет созданного пользователя у себя в БД.
-Сервисы rococo-artist, rococo-museum, rococo-painting, rococo-userdata, rococo-geo являются Grpc сервисами. Фронтенд по rest взаимодействует только с auth и gateway, а уже gateway по grpc обращается в соответствующие сервисы. Также в gateway отправляются события в kafka в топик "events" при создании и обновлении картины, а сервис rococo-kafka-log слушает данный топик и логгирует в свою БД все события с картинами.
+- **8 микросервисов**, каждый (кроме `gateway`) со своей MySQL-базой
+- **REST-сервисы**: `rococo-auth`, `rococo-gateway`
+- **gRPC-сервисы**: `rococo-artist`, `rococo-museum`, `rococo-painting`, `rococo-userdata`, `rococo-geo`
+- **Kafka-события**:
+    - `rococo-auth` публикует события регистрации в топик `users`
+    - `rococo-userdata` слушает топик `users` и сохраняет пользователей в свою бд
+    - `rococo-gateway` публикует события о создании/обновлении картин в топик `events`
+    - `rococo-kafka-log` логгирует события из топика `events`
+- **Фронтенд** (`rococo-client`) взаимодействует по REST только с `auth` и `gateway`
 
 ## Технологии
 - Backend: Java 21, Spring Boot 3, Spring Data JPA, gRPC, REST, Retrofit
@@ -60,12 +66,12 @@ npm run dev
 docker volume create mysqldata
 docker volume create allure-results
 ```
-Сеть rococo-net будет создана автоматически
 3) В корне проекта выполнить
 ```posh
 ./docker-compose-dev.sh
 ```
 Фронтенд будет по доступен по ссылке http://frontend.rococo.dc/
+
 При выполнении docker-compose-dev.sh c аргументом 'push' все сервисы пересоберутся и запушатся в docker hub пользователя, указанного в IMAGE_PREFIX в docker.properties и в корневом build.gradle в dockerHubName
 ## Запуск тестов в docker
 В корне проекта выполнить
@@ -74,3 +80,6 @@ docker volume create allure-results
 ```
 Помимо всех backend сервисов поднимутся контейнеры с selenoid, allure и сам контейнер с тестами rococo-e-2-e. Selenoid ui будет доступен по урлу http://127.0.0.1:9097/, а allure ui с отчетом о пройденных тестах - http://allure:5252/.
 При выполнении docker-compose-e2e.sh c аргументом 'firefox' спулится соответствующий образ для selenoid и тесты будут выполняться на firefox, иначе- chrome.
+
+## CI/CD
+При каждом Pull request пересобираются все сервисы и запускаются тесты. После прогона в комменте pr будет отображен результат выполнения тестов и ссылка на allure отчет.

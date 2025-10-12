@@ -221,7 +221,7 @@ services:
       - EXECUTION_TYPE=${EXECUTION_TYPE}
     volumes:
       - ./rococo-e-2-e-tests/.screen-output/screenshots/selenoid:/rococo/rococo-e-2-e-tests/.screen-output/screenshots/selenoid
-      - ./logs:/rococo/logs
+     # - ./logs:/rococo/logs
     depends_on:
       frontend.rococo.dc:
         condition: service_started

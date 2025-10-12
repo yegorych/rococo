@@ -269,8 +269,6 @@ public class PaintingRestTest {
         Assertions.assertEquals("Художник должен быть задан", errorMessage);
     }
 
-
-
     @Test
     @ApiLogin
     @Painting(museum = @Museum)

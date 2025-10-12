@@ -36,6 +36,8 @@ jobs:
       - name: Get the last commit message
         run: |
           echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> $GITHUB_ENV
+      - name: Ensure ./logs directory exists
+        run: mkdir -p ./logs
       - name: Run e2e-tests
         id: e2e
         run: |

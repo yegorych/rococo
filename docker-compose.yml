@@ -6,7 +6,6 @@ services:
       - MYSQL_ROOT_PASSWORD=secret
       - TZ=GMT+3
     volumes:
-      #- mysqldata:/var/lib/mysql
       - ./mysql/script:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
@@ -221,7 +220,6 @@ services:
       - HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}
       - EXECUTION_TYPE=${EXECUTION_TYPE}
     volumes:
-#      - allure-results:/rococo/rococo-e-2-e-tests/build/allure-results
       - ./rococo-e-2-e-tests/.screen-output/screenshots/selenoid:/rococo/rococo-e-2-e-tests/.screen-output/screenshots/selenoid
       - ./logs:/rococo/logs
     depends_on:
@@ -241,8 +239,6 @@ services:
       - KEEP_HISTORY=1
     ports:
       - 5050:5050
-#    volumes:
-#      - allure-results:/app/allure-results
     networks:
       - rococo-net
 

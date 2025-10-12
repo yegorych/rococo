@@ -98,7 +98,6 @@ public class PaintingDetailsPageTest {
     @Artist
     @Museum
     @Painting
-    //@DisabledByIssue("4")
     void paintingShouldBeUpdated(TestData testData) {
         PaintingJson createdPainting = testData.paintings().getFirst();
         String id = createdPainting.id().toString();

@@ -47,23 +47,13 @@ jobs:
           echo "E2E_EXIT_CODE=$exit_code" >> $GITHUB_OUTPUT
           echo "### Test logs ###"
           docker logs rococo-e-2-e
-#          if docker logs rococo-e-2-e | grep -q "BUILD SUCCESSFUL"; then
-          if [ "$(docker logs rococo-e-2-e | tail -n 10 | grep -c '^BUILD SUCCESSFUL')" -gt 0 ]; then
-            echo "E2E_EXIT_CODE=0" >> $GITHUB_OUTPUT
+          if [ "$exit_code" -eq "0" ]; then
             echo "Tests passed successfully!"
             exit 0
           else
-            echo "E2E_EXIT_CODE=1" >> $GITHUB_OUTPUT
             echo "Tests failed!"
             exit 1
           fi
-#          if [ "$exit_code" -eq "0" ]; then
-#            echo "Tests passed successfully!"
-#            exit 0
-#          else
-#            echo "Tests failed!"
-#            exit 1
-#          fi
       - name: Add comment to PR with link to allure
         if: always()
         uses: actions/github-script@v7

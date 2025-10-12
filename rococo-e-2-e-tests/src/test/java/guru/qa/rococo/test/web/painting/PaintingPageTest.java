@@ -124,7 +124,6 @@ public class PaintingPageTest {
     @ApiLogin
     @Artist
     @Museum
-    //@DisabledByIssue("4")
     void paintingShouldBeCreated(TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         MuseumJson museum = testData.museums().getFirst();
@@ -149,7 +148,6 @@ public class PaintingPageTest {
     @Test
     @ApiLogin
     @Artist
-    //@DisabledByIssue("4")
     void paintingShouldBeCreatedWithoutMuseum() {
         PaintingJson newPainting = PaintingJson.randomPainting();
 
@@ -219,47 +217,47 @@ public class PaintingPageTest {
                 .checkValidationError("Описание не может быть короче 10 символов");
     }
 
-    @Test
-    @UseProxy
-    @Disabled
-    void blankAboutMissingPaintingsShouldBeDisplayed() {
-        getSelenideProxy().addResponseFilter("response filter", (httpResponse, httpMessageContents, httpMessageInfo) -> {
-            if (httpMessageInfo.getUrl().endsWith("/api/painting?size=9&page=0")){
-                String response = """
-                        {
-                            "content": [],
-                            "pageable": {
-                                "pageNumber": 0,
-                                "pageSize": 9,
-                                "sort": {
-                                    "empty": true,
-                                    "sorted": false,
-                                    "unsorted": true
-                                },
-                                "offset": 0,
-                                "paged": true,
-                                "unpaged": false
-                            },
-                            "last": false,
-                            "totalPages": 21,
-                            "totalElements": 188,
-                            "first": true,
-                            "size": 9,
-                            "number": 0,
-                            "sort": {
-                                "empty": true,
-                                "sorted": false,
-                                "unsorted": true
-                            },
-                            "numberOfElements": 9,
-                            "empty": false
-                        }
-                        """;
-                httpMessageContents.setTextContents(response);
-                httpResponse.headers().set("Content-Type", "application/json");
-                httpResponse.setStatus(HttpResponseStatus.OK);
-            }
-        });
-        Selenide.open(PaintingPage.URL, PaintingPage.class);
-    }
+//    @Test
+//    @UseProxy
+//    @Disabled
+//    void blankAboutMissingPaintingsShouldBeDisplayed() {
+//        getSelenideProxy().addResponseFilter("response filter", (httpResponse, httpMessageContents, httpMessageInfo) -> {
+//            if (httpMessageInfo.getUrl().endsWith("/api/painting?size=9&page=0")){
+//                String response = """
+//                        {
+//                            "content": [],
+//                            "pageable": {
+//                                "pageNumber": 0,
+//                                "pageSize": 9,
+//                                "sort": {
+//                                    "empty": true,
+//                                    "sorted": false,
+//                                    "unsorted": true
+//                                },
+//                                "offset": 0,
+//                                "paged": true,
+//                                "unpaged": false
+//                            },
+//                            "last": false,
+//                            "totalPages": 21,
+//                            "totalElements": 188,
+//                            "first": true,
+//                            "size": 9,
+//                            "number": 0,
+//                            "sort": {
+//                                "empty": true,
+//                                "sorted": false,
+//                                "unsorted": true
+//                            },
+//                            "numberOfElements": 9,
+//                            "empty": false
+//                        }
+//                        """;
+//                httpMessageContents.setTextContents(response);
+//                httpResponse.headers().set("Content-Type", "application/json");
+//                httpResponse.setStatus(HttpResponseStatus.OK);
+//            }
+//        });
+//        Selenide.open(PaintingPage.URL, PaintingPage.class);
+//    }
 }

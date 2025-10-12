@@ -6,6 +6,8 @@
 ---
 
 ## Архитектурная схема проекта
+<img width="1029" height="793" alt="image" src="https://github.com/user-attachments/assets/9f5988f7-9c73-470f-9575-1342cc338a74" />
+
 В проекте 8 микросервисов. У каждого сервиса, кроме gateway, своя mysql БД.
 rococo-auth и rococo-gateway являются Rest сервисами. Сервис auth публикует события об успешной регистрации в kafka, а сервис rococo-userdata подписан на топик и сохраняет созданного пользователя у себя в БД.
 Сервисы rococo-artist, rococo-museum, rococo-painting, rococo-userdata, rococo-geo являются Grpc сервисами. Фронтенд по rest взаимодействует только с auth и gateway, а уже gateway по grpc обращается в соответствующие сервисы. Также в gateway отправляются события в kafka в топик "events" при создании и обновлении картины, а сервис rococo-kafka-log слушает данный топик и логгирует в свою БД все события с картинами. 
@@ -70,5 +72,5 @@ docker volume create allure-results
 ```posh
 ./docker-compose-e2e.sh
 ```
-Помимо всех backend сервисов поднимутся контейнеры с selenoid, allure и сам контейнер с тестами rococo-e-2-e. Selenoid ui будет доступен по урлу http://127.0.0.1:9097/, а allure ui с отчетом о пройденных тестах - http://allure:5252/
+Помимо всех backend сервисов поднимутся контейнеры с selenoid, allure и сам контейнер с тестами rococo-e-2-e. Selenoid ui будет доступен по урлу http://127.0.0.1:9097/, а allure ui с отчетом о пройденных тестах - http://allure:5252/. 
 При выполнении docker-compose-e2e.sh c аргументом 'firefox' спулится соответствующий образ для selenoid и тесты будут выполняться на firefox, иначе- chrome.

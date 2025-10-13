@@ -3,6 +3,7 @@ package guru.qa.rococo.test.grpc.painting;
 import guru.qa.grpc.rococo.painting.*;
 import guru.qa.grpc.rococo.painting.IdRequest;
 import guru.qa.rococo.jupiter.annotation.Artist;
+import guru.qa.rococo.jupiter.annotation.DisabledByIssue;
 import guru.qa.rococo.jupiter.annotation.Museum;
 import guru.qa.rococo.jupiter.annotation.container.Paintings;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
@@ -95,10 +96,14 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
-    @guru.qa.rococo.jupiter.annotation.Painting
+    @guru.qa.rococo.jupiter.annotation.Painting(museum = @Museum)
     void updatePainting_shouldSucceed_whenExists(TestData data) {
         Painting created = data.paintings().getFirst().toGrpcMessage();
-        Painting request = created.toBuilder().setTitle("updated-").build();
+        Painting request = Painting.newBuilder()
+                .setId(created.getId())
+                .setTitle(created.getTitle() + "upd")
+                .setArtistId(created.getArtistId())
+                .build();
         Painting updated = paintingStub.updatePainting(request);
         Assertions.assertEquals(request.getTitle(), updated.getTitle());
     }

@@ -30,14 +30,19 @@ public class AllureBackendLogsExtension implements SuiteExtension{
 
     private static void addAttachmentLogs(AllureLifecycle allureLifecycle, String... serviceNames) throws IOException {
         for (String serviceName : serviceNames) {
-            allureLifecycle.addAttachment(
-                    serviceName + " log",
-                    "text/html",
-                    ".log",
-                    Files.newInputStream(
-                            Path.of(String.format("./logs/%s/app.log", serviceName))
-                    )
-            );
+            try {
+                allureLifecycle.addAttachment(
+                        serviceName + " log",
+                        "text/html",
+                        ".log",
+                        Files.newInputStream(
+                                Path.of(String.format("./logs/%s/app.log", serviceName))
+                        )
+                );
+            } catch (Exception e) {
+                //do nothing
+            }
+
         }
     }
 }

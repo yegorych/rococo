@@ -53,7 +53,7 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-auth:/rococo/logs/rococo-auth
     healthcheck:
       test: "wget --spider http://localhost:9000/actuator/health || exit 1"
       interval: 5s
@@ -75,7 +75,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-gateway:/rococo/logs/rococo-gateway
     healthcheck:
       test: "wget --spider http://localhost:8090/actuator/health || exit 1"
       interval: 5s
@@ -92,7 +92,7 @@ services:
     container_name: userdata.rococo.dc
     image: ${PREFIX}/rococo-userdata-docker:latest
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-userdata:/rococo/logs/rococo-userdata
     ports:
       - 8089:8089
       - 9090:9090
@@ -123,7 +123,7 @@ services:
     container_name: artist.rococo.dc
     image: ${PREFIX}/rococo-artist-docker:latest
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-artist:/rococo/logs/rococo-artist
     ports:
       - 8086:8086
       - 9093:9093
@@ -138,7 +138,7 @@ services:
     container_name: geo.rococo.dc
     image: ${PREFIX}/rococo-geo-docker:latest
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-geo:/rococo/logs/rococo-geo
     ports:
       - 8087:8087
       - 9094:9094
@@ -153,7 +153,7 @@ services:
     container_name: museum.rococo.dc
     image: ${PREFIX}/rococo-museum-docker:latest
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-museum:/rococo/logs/rococo-museum
     ports:
       - 8085:8085
       - 9095:9095
@@ -168,7 +168,7 @@ services:
     container_name: painting.rococo.dc
     image: ${PREFIX}/rococo-painting-docker:latest
     volumes:
-      - ./logs:/rococo/logs
+      - ./logs/rococo-painting:/rococo/logs/rococo-painting
     ports:
       - 8088:8088
       - 9091:9091
@@ -237,8 +237,12 @@ services:
       - ./rococo-e-2-e-tests/.screen-output/screenshots/selenoid:/rococo/rococo-e-2-e-tests/.screen-output/screenshots/selenoid
       - ./logs:/rococo/logs
     depends_on:
+      painting.rococo.dc:
+        condition: service_healthy
       frontend.rococo.dc:
         condition: service_started
+      rococo-all-db:
+        condition: service_healthy
     networks:
       - rococo-net
 

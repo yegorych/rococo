@@ -44,18 +44,18 @@ spring:
     generate-ddl: true
     open-in-view: false
 
-#logging:
-#  file:
-#    path: ./logs/rococo-artist
-#  level:
-#    root: INFO
-#    io.grpc.netty.NettyServerHandler: ERROR
-#    io.netty.handler.codec.http2.Http2ConnectionHandler: ERROR
-#    i.grpc.netty.NettyServerTransport: ERROR
-#    org.springframework.web: DEBUG
-#    org.springframework.security: DEBUG
-#    org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
+logging:
+  file:
+    path: ./logs/rococo-artist
+  level:
+    root: INFO
+    io.grpc.netty.NettyServerHandler: ERROR
+    io.netty.handler.codec.http2.Http2ConnectionHandler: ERROR
+    i.grpc.netty.NettyServerTransport: ERROR
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.boot.autoconfigure: DEBUG
 
 
 
@@ -73,18 +73,6 @@ spring:
     url: 'jdbc:mysql://localhost:3306/rococo-artist'
     username: root
     password: secret
-logging:
-  file:
-    path: ./logs/rococo-artist
-  level:
-    root: INFO
-    io.grpc.netty.NettyServerHandler: ERROR
-    io.netty.handler.codec.http2.Http2ConnectionHandler: ERROR
-    i.grpc.netty.NettyServerTransport: ERROR
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    org.springframework.boot.autoconfigure: DEBUG
 
 
 ---
@@ -101,17 +89,5 @@ spring:
     url: 'jdbc:mysql://rococo-all-db:3306/rococo-artist'
     username: root
     password: secret
-logging:
-  file:
-    path: /rococo/logs/rococo-artist
-  level:
-    root: INFO
-    io.grpc.netty.NettyServerHandler: ERROR
-    io.netty.handler.codec.http2.Http2ConnectionHandler: ERROR
-    i.grpc.netty.NettyServerTransport: ERROR
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    org.springframework.boot.autoconfigure: DEBUG
 
 

@@ -223,12 +223,8 @@ services:
       - ./rococo-e-2-e-tests/.screen-output/screenshots/selenoid:/rococo/rococo-e-2-e-tests/.screen-output/screenshots/selenoid
       - ./logs:/rococo/logs
     depends_on:
-      painting.rococo.dc:
-        condition: service_healthy
       frontend.rococo.dc:
         condition: service_started
-      rococo-all-db:
-        condition: service_healthy
     networks:
       - rococo-net
 

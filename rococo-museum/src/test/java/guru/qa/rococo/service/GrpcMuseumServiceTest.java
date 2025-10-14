@@ -58,7 +58,6 @@ class GrpcMuseumServiceTest {
         return entity;
     }
 
-    // --- getMuseums ---
     @Test
     void getMuseums_shouldReturnPagedMuseums() {
         List<MusuemEntity> list = List.of(
@@ -109,7 +108,6 @@ class GrpcMuseumServiceTest {
         assertEquals(15, pageable.getPageSize());
     }
 
-    // --- getMuseum ---
     @Test
     void getMuseum_shouldReturnMuseum() {
         UUID id = UUID.randomUUID();
@@ -142,7 +140,6 @@ class GrpcMuseumServiceTest {
         );
     }
 
-    // --- createMuseum ---
     @Test
     void createMuseum_shouldSaveAndReturnMuseum() {
         MusuemEntity entity = mockMuseumEntity(UUID.randomUUID(), "Tate Modern");
@@ -178,7 +175,6 @@ class GrpcMuseumServiceTest {
         assertEquals(Status.INVALID_ARGUMENT.getCode(), ((StatusRuntimeException) thrown).getStatus().getCode());
     }
 
-    // --- updateMuseum ---
     @Test
     void updateMuseum_shouldUpdateMuseum() {
         UUID id = UUID.randomUUID();

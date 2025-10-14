@@ -1,9 +1,10 @@
 package guru.qa.rococo.test.grpc.painting;
 
-import guru.qa.grpc.rococo.painting.*;
 import guru.qa.grpc.rococo.painting.IdRequest;
+import guru.qa.grpc.rococo.painting.Painting;
+import guru.qa.grpc.rococo.painting.PaintingRequest;
+import guru.qa.grpc.rococo.painting.PaintingsResponse;
 import guru.qa.rococo.jupiter.annotation.Artist;
-import guru.qa.rococo.jupiter.annotation.DisabledByIssue;
 import guru.qa.rococo.jupiter.annotation.Museum;
 import guru.qa.rococo.jupiter.annotation.container.Paintings;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
@@ -139,7 +140,6 @@ public class PaintingGrpcTest extends BaseGrpcTest {
                         .setSize(10)
                         .build()
         );
-        // проверяем, что в ответе все картины имеют указанного художника (если есть записи)
         resp.getPaintingsList().forEach(p -> Assertions.assertEquals(artist.id().toString(), p.getArtistId()));
     }
 }

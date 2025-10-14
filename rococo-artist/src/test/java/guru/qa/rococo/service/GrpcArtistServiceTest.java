@@ -52,7 +52,7 @@ class GrpcArtistServiceTest {
         ArtistRequest request = ArtistRequest.newBuilder()
                 .setPage(2)
                 .setSize(5)
-                .setName("")  // без фильтра
+                .setName("")
                 .build();
 
         grpcArtistService.getArtists(request, artistsObserver);

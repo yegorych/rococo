@@ -47,8 +47,6 @@ class GrpcUserServiceTest {
     testUser.setPhoto("avatar".getBytes());
   }
 
-  // --- GET USER TESTS ---
-
   @Test
   void shouldReturnUserInfo_WhenUserExists() {
     when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(testUser));

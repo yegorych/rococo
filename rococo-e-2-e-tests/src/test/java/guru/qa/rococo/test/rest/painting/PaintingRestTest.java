@@ -11,6 +11,7 @@ import guru.qa.rococo.model.rest.MuseumJson;
 import guru.qa.rococo.model.rest.PaintingJson;
 import guru.qa.rococo.service.impl.api.PaintingApiClient;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import retrofit2.Response;
@@ -24,6 +25,7 @@ import static guru.qa.rococo.utils.ImgBase64Utils.imageToBase64;
 import static guru.qa.rococo.utils.RandomDataUtils.*;
 
 @RestTest
+@DisplayName("rest: тесты контроллера Painting в Gateway")
 public class PaintingRestTest {
 
     @RegisterExtension
@@ -33,6 +35,7 @@ public class PaintingRestTest {
 
     @Test
     @Artist(paintings = 3)
+    @DisplayName("Получение картин по ID автора")
     void paintingsByAuthorShouldBeReturned(TestData testData) {
         UUID artistId = testData.artists().getFirst().id();
         final Response<RestResponsePage<PaintingJson>>response = paintingApiClient
@@ -44,6 +47,20 @@ public class PaintingRestTest {
     }
 
     @Test
+    @Painting
+    @DisplayName("Получение картин по ID")
+    void paintingsByIdShouldBeReturned(TestData testData) {
+        PaintingJson paintingJson = testData.paintings().getFirst();
+        final Response<PaintingJson> response = paintingApiClient
+                .getPainting(paintingJson.id().toString());
+
+        Assertions.assertTrue(response.isSuccessful());
+        Assertions.assertNotNull(response.body());
+        Assertions.assertEquals(paintingJson.id(), response.body().id());
+    }
+
+    @Test
+    @DisplayName("Картина по случайному ID не найдена")
     void paintingShouldNotBeReturnedByRandomId() {
         String randomId = UUID.randomUUID().toString();
         final Response<PaintingJson> response = paintingApiClient
@@ -61,6 +78,7 @@ public class PaintingRestTest {
     @Painting(title = "Painting dasd 1")
     @Painting(title = "Painting dasd 2")
     @Painting(title = "Painting dasd 3")
+    @DisplayName("Фильтрация картин по названию")
     void shouldReturnFilteredPaintingsPageByTitle() {
         final Response<RestResponsePage<PaintingJson>> response = paintingApiClient
                 .getPaintingPage("Painting dasd", 0, 10);
@@ -72,6 +90,7 @@ public class PaintingRestTest {
 
     @Test
     @Paintings(count = 9)
+    @DisplayName("Пагинация списка картин")
     void paintingsShouldBePaginated() {
         final int size = 3;
         Set<PaintingJson> paintings = new HashSet<>();
@@ -88,7 +107,8 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
-    void paintingShouldNotBeCreatedWithNonEmptyId(@Token String token, TestData testData) {
+    @DisplayName("Создание картины с ID должно завершиться ошибкой")
+    void paintingShouldNotBeCreatedWithNonEmptyId(@Token String token) {
         PaintingJson paintingJson = PaintingJson.randomPainting().addId(UUID.randomUUID());
         final Response<PaintingJson> response = paintingApiClient
                 .createPainting(token, paintingJson);
@@ -103,6 +123,7 @@ public class PaintingRestTest {
     @ApiLogin
     @Artist
     @Museum
+    @DisplayName("Создание новой картины")
     void paintingShouldBeCreated(@Token String token, TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         MuseumJson museum = testData.museums().getFirst();
@@ -125,6 +146,7 @@ public class PaintingRestTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Создание картины без музея")
     void paintingShouldBeCreatedWithoutMuseum(@Token String token, TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         PaintingJson paintingJson = new PaintingJson(
@@ -143,6 +165,7 @@ public class PaintingRestTest {
     }
 
     @Test
+    @DisplayName("Создание картины без токена возвращает 401")
     void paintingShouldNotBeCreatedWithoutToken() {
         final Response<PaintingJson> response = paintingApiClient
                 .createPainting(null, PaintingJson.randomPainting());
@@ -159,6 +182,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание картины с пустым названием (пробелы) возвращает ошибку")
     void paintingShouldNotBeCreatedWithBlankTitle(@Token String token) {
         PaintingJson paintingJson = new PaintingJson(
                 null,
@@ -179,6 +203,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание картины с пустым названием возвращает ошибку")
     void paintingShouldNotBeCreatedWithEmptyTitle(@Token String token) {
         PaintingJson paintingJson = new PaintingJson(
                 null,
@@ -200,6 +225,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание картины с названием >255 символов возвращает ошибку")
     void paintingShouldNotBeCreatedWithLongTitle(@Token String token) {
         PaintingJson paintingJson = new PaintingJson(
                 null,
@@ -220,6 +246,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание картины с описанием >1000 символов возвращает ошибку")
     void paintingShouldNotBeCreatedWithLongDescription(@Token String token) {
         PaintingJson paintingJson = new PaintingJson(
                 null,
@@ -241,6 +268,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание картины с фото >1MB возвращает ошибку")
     void paintingShouldNotBeCreatedWithLargeImage(@Token String token) {
         String image = imageToBase64("img/1_1mb_photo.png");
         PaintingJson paintingJson = new PaintingJson(
@@ -263,6 +291,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание картины без художника возвращает ошибку")
     void paintingShouldNotBeCreatedWithoutArtist(@Token String token) {
         PaintingJson paintingJson = new PaintingJson(
                 null,
@@ -285,6 +314,7 @@ public class PaintingRestTest {
     @Test
     @ApiLogin
     @Painting(museum = @Museum)
+    @DisplayName("Обновление данных картины")
     void paintingShouldBeUpdated(@Token String token, TestData testData) {
         PaintingJson createdPainting = testData.paintings().getFirst();
         PaintingJson expectedPainting = new PaintingJson(
@@ -305,6 +335,7 @@ public class PaintingRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Обновление несуществующей картины возвращает 404")
     void paintingShouldNotBeUpdatedWithRandomId(@Token String token) {
         UUID randomId = UUID.randomUUID();
         PaintingJson paintingJson = PaintingJson.randomPainting().addId(randomId);
@@ -321,6 +352,7 @@ public class PaintingRestTest {
     }
 
     @Test
+    @DisplayName("Обновление картины без токена возвращает 401")
     void paintingShouldNotBeUpdatedWithoutToken() {
         final Response<PaintingJson> response = paintingApiClient
                 .updatePainting(null, PaintingJson.randomPainting());

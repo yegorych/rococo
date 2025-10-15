@@ -4,11 +4,13 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static guru.qa.rococo.utils.RandomDataUtils.randomUsername;
 
 @WebTest
+@DisplayName("web: тесты страницы регистрации")
 public class RegistrationTest {
     private final String password = "12345";
     private RegisterPage registerPage;
@@ -21,6 +23,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Новый пользователь успешно регистрируется")
     void newUserShouldBeRegistered() {
         String username = randomUsername();
         registerPage
@@ -32,6 +35,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Имя пользователя не может быть пустым")
     void usernameShouldNotBeBlank() {
         registerPage
                 .setUsername(" ")
@@ -42,6 +46,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Имя пользователя должно быть от 3 до 255 символов")
     void usernameShouldBeValidLength() {
         registerPage
                 .setUsername(shortString)
@@ -57,6 +62,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Имя пользователя обязательно для заполнения")
     void usernameShouldBeRequired() {
         registerPage
                 .setPassword(password)
@@ -66,6 +72,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Пользователь с уже существующим именем не может быть зарегистрирован повторно")
     void userWithExistingNameShouldNotBeRegistered() {
         String username = randomUsername();
         registerPage
@@ -84,6 +91,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Пароль должен быть от 3 до 255 символов")
     void passwordShouldBeValidLength() {
         registerPage
                 .setUsername(randomUsername())
@@ -99,6 +107,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Пароли должны совпадать")
     void passwordsShouldBeEqual() {
         registerPage
                 .setUsername(randomUsername())
@@ -109,6 +118,7 @@ public class RegistrationTest {
     }
 
     @Test
+    @DisplayName("Пароль не может быть пустым")
     void passwordShouldNotBeBlank() {
         registerPage
                 .setUsername(randomUsername())

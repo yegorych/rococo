@@ -12,6 +12,7 @@ import guru.qa.rococo.page.MuseumPage;
 import guru.qa.rococo.page.component.modal.MuseumModal;
 import guru.qa.rococo.page.detailsPage.MuseumDetailsPage;
 import guru.qa.rococo.utils.RandomDataUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -20,10 +21,12 @@ import static guru.qa.rococo.utils.RandomDataUtils.*;
 import static guru.qa.rococo.utils.RandomDataUtils.randomWord;
 
 @WebTest
+@DisplayName("web: тесты страницы деталей музея")
 public class MuseumDetailsPageTest {
 
     @ScreenShotTest(expected = "expected-museum-details-photo.png", rewriteExpected = true)
     @Museum(photo = "img/avatar.png")
+    @DisplayName("Отображение страницы музея с фото")
     void museumDetailsShouldBeDisplayed(TestData testData, BufferedImage expectedImage) {
         MuseumJson museum = testData.museums().getFirst();
         String id = museum.id().toString();
@@ -35,6 +38,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Кнопка редактирования музея отображается для авторизованного пользователя")
     void editMuseumButtonShouldBeDisplayedForAuthorizedUser(TestData testData) {
         String id = testData.museums().getFirst().id().toString();
         Selenide.open(MuseumDetailsPage.URL(id), MuseumDetailsPage.class)
@@ -43,6 +47,7 @@ public class MuseumDetailsPageTest {
 
     @Test
     @Museum
+    @DisplayName("Кнопка редактирования музея не отображается для неавторизованного пользователя")
     void editMuseumButtonShouldNotBeDisplayedForUnauthorizedUser(TestData testData) {
         String id = testData.museums().getFirst().id().toString();
         Selenide.open(MuseumDetailsPage.URL(id), MuseumDetailsPage.class)
@@ -52,6 +57,7 @@ public class MuseumDetailsPageTest {
     @Test
     @Museum
     @ApiLogin
+    @DisplayName("Модальное окно редактирования музея открывается")
     void editMuseumModalShouldBeOpened(TestData testData) {
         String id = testData.museums().getFirst().id().toString();
         Selenide.open(MuseumDetailsPage.URL(id), MuseumDetailsPage.class)
@@ -62,6 +68,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Модальное окно редактирования закрывается по кнопке закрытия")
     void editMuseumModalShouldBeClosedByClickingOnTheCloseButton(TestData testData) {
         MuseumJson museumJson = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)
@@ -74,6 +81,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Модальное окно редактирования закрывается по клику вне области")
     void editMuseumModalShouldBeClosedByClickingOnEmptyArea(TestData testData) {
         MuseumJson museumJson = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)
@@ -86,6 +94,7 @@ public class MuseumDetailsPageTest {
     @ScreenShotTest(expected = "expected-edit-museum-modal-photo.png", rewriteExpected = true)
     @ApiLogin
     @Museum(photo = "img/museumPhoto.png")
+    @DisplayName("Модальное окно редактирования содержит данные музея")
     void editMuseumModalShouldContainMuseumData(TestData testData, BufferedImage bufferedImage) {
         MuseumJson museumJson = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)
@@ -97,6 +106,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Редактирование всех полей музея")
     void museumShouldBeUpdated(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         MuseumJson newMuseum = MuseumJson.randomMuseum();
@@ -116,6 +126,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Редактирование только названия музея")
     void editMuseumModalShouldAllowEditingTitleOnly(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         String newTitle = RandomDataUtils.randomMuseumTitle();
@@ -131,6 +142,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Редактирование только страны музея")
     void editMuseumModalShouldAllowEditingCountryOnly(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         String newCountry = CountryEnum.randomCountry().getCountryName();
@@ -146,6 +158,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Редактирование только города музея")
     void editMuseumModalShouldAllowEditingCityOnly(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
 
@@ -160,6 +173,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Редактирование только описания музея")
     void editMuseumModalShouldAllowEditingDescriptionOnly(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
 
@@ -175,6 +189,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Название музея не должно превышать 255 символов")
     void editMuseumModalTitleLengthShouldBeUnder255(TestData testData) {
         MuseumJson museum = testData.museums().getFirst();
 
@@ -189,6 +204,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Название музея должно быть не короче 3 символов")
     void editMuseumModalTitleLengthShouldBeOver3(TestData testData) {
         MuseumJson museum = testData.museums().getFirst();
 
@@ -203,6 +219,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Город музея не должен превышать 255 символов")
     void editMuseumModalCityLengthShouldBeUnder255(TestData testData) {
         MuseumJson museum = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)
@@ -216,6 +233,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Город музея должен быть не короче 3 символов")
     void editMuseumModalCityLengthShouldBeOver3(TestData testData) {
         MuseumJson museum = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)
@@ -229,6 +247,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Описание музея не должно превышать 2000 символов")
     void editMuseumModalDescriptionLengthShouldBeUnder2000(TestData testData) {
         MuseumJson museum = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)
@@ -242,6 +261,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Описание музея должно быть не короче 10 символов")
     void editMuseumModalDescriptionLengthShouldBeOver10(TestData testData) {
         MuseumJson museum = testData.museums().getFirst();
         Selenide.open(MuseumPage.URL, MuseumPage.class)

@@ -9,11 +9,10 @@ import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.model.TestData;
 import guru.qa.rococo.model.rest.ArtistJson;
 import guru.qa.rococo.page.ArtistPage;
-import guru.qa.rococo.page.NotFoundPage;
 import guru.qa.rococo.page.component.modal.ArtistModal;
 import guru.qa.rococo.page.component.modal.MuseumModal;
-import guru.qa.rococo.page.detailsPage.ArtistDetailsPage;
 import guru.qa.rococo.utils.RandomDataUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -21,9 +20,11 @@ import java.awt.image.BufferedImage;
 import static guru.qa.rococo.utils.RandomDataUtils.randomWord;
 
 @WebTest
+@DisplayName("web: тесты страницы с списком художников")
 public class ArtistPageTest {
 
     @Test
+    @DisplayName("Плейсхолдер поиска художников отображается")
     void artistSearchPlaceholderShouldBeDisplayed() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .search().checkPlaceholder("Искать художников...");
@@ -31,12 +32,14 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Кнопка добавления художника отображается для авторизованного пользователя")
     void addArtistButtonShouldBeDisplayedForAuthorizedUser() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .checkAddArtistBtnIsDisplayed();
     }
 
     @Test
+    @DisplayName("Кнопка добавления художника не отображается для неавторизованного пользователя")
     void addArtistButtonShouldNotBeDisplayedForUnauthorizedUser() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .checkAddArtistBtnIsNotDisplayed();
@@ -44,6 +47,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Модальное окно добавления художника закрывается по кнопке закрытия")
     void addArtistModalShouldBeClosedByClickingOnTheCloseButton() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .clickAddArtistBtn()
@@ -53,6 +57,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Модальное окно добавления художника содержит пустые поля")
     void addArtistModalShouldHaveEmptyFields() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .clickAddArtistBtn()
@@ -61,6 +66,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Модальное окно добавления художника закрывается по клику вне области")
     void addArtistModalShouldBeClosedByClickingOnEmptyArea() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .clickAddArtistBtn()
@@ -70,6 +76,7 @@ public class ArtistPageTest {
 
     @Test
     @Artists(count = 20)
+    @DisplayName("Пагинация работает при прокрутке списка художников")
     void paginationShouldWorkWhenScrolling(TestData testData) {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .scrollArtistCard(testData.artists().size())
@@ -79,6 +86,7 @@ public class ArtistPageTest {
     @Test
     @Artist(name = "Ggggrrrr one")
     @Artist(name = "Ggggrrrr two")
+    @DisplayName("Результаты поиска содержат только художников с заданным именем")
     void searchResultsShouldContainOnlyArtistsWithName() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .findArtist("Ggggrrrr")
@@ -86,6 +94,7 @@ public class ArtistPageTest {
     }
 
     @Test
+    @DisplayName("Отображается сообщение об отсутствии результатов поиска")
     void messageAboutEmptySearchResultShouldBeDisplayed() {
         Selenide.open(ArtistPage.URL, ArtistPage.class)
                 .findArtist(RandomDataUtils.randomWord(5))
@@ -95,6 +104,7 @@ public class ArtistPageTest {
 
     @ScreenShotTest(expected = "expected-artist-photo.png", rewriteExpected = true)
     @Artist(photo = "img/avatar.png")
+    @DisplayName("Карточка художника с фото отображается корректно")
     void artistCardShouldBeDisplayedCorrectly(TestData testData, BufferedImage expectedImage) {
         ArtistJson artistJson = testData.artists().getFirst();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -103,6 +113,7 @@ public class ArtistPageTest {
 
     @ScreenShotTest(expected = "expected-artist-without-photo.png", rewriteExpected = true)
     @Artist
+    @DisplayName("Карточка художника без фото отображается корректно")
     void artistCardWithoutPhotoShouldBeDisplayedCorrectly(TestData testData, BufferedImage expectedImage) {
         String name = testData.artists().getFirst().name();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -111,6 +122,7 @@ public class ArtistPageTest {
 
     @Test
     @Artist
+    @DisplayName("Переход на страницу художника работает")
     void artistDetailsPageShouldOpen(TestData testData) {
         String name = testData.artists().getFirst().name();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -121,6 +133,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание нового художника")
     void artistShouldBeCreated() {
         ArtistJson newArtist = ArtistJson.randomArtist();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -137,6 +150,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Имя художника не должно превышать 255 символов")
     void nameLengthShouldBeUnder255() {
         ArtistJson newArtist = ArtistJson.randomArtist();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -150,6 +164,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Имя художника должно быть не короче 3 символов")
     void nameLengthShouldBeOver3() {
         ArtistJson newArtist = ArtistJson.randomArtist();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -163,6 +178,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Биография художника не должна превышать 2000 символов")
     void biographyLengthShouldBeUnder2000() {
         ArtistJson newArtist = ArtistJson.randomArtist();
         Selenide.open(ArtistPage.URL, ArtistPage.class)
@@ -176,6 +192,7 @@ public class ArtistPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Биография художника должна быть не короче 10 символов")
     void biographyLengthShouldBeOver10() {
         ArtistJson newArtist = ArtistJson.randomArtist();
         Selenide.open(ArtistPage.URL, ArtistPage.class)

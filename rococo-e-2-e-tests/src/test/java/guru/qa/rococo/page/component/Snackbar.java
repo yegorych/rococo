@@ -2,8 +2,10 @@ package guru.qa.rococo.page.component;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.rococo.model.Color;
 import guru.qa.rococo.page.BasePage;
 import io.qameta.allure.Step;
+import org.junit.jupiter.api.Assertions;
 
 import javax.annotation.Nonnull;
 
@@ -12,12 +14,11 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class Snackbar extends BaseComponent<Snackbar> {
-    private final SelenideElement logoutBtn = self.$("button.variant-ghost");
     private final SelenideElement closeBtn = self.$("button[aria-label='Dismiss toast']");
 
 
     public Snackbar() {
-        super($(".snackbar"));
+        super($(".snackbar .toast"));
     }
 
     @Nonnull
@@ -45,6 +46,12 @@ public class Snackbar extends BaseComponent<Snackbar> {
     @Step("check that snackbar has text: {0}")
     public void checkSnackbarHasText(String text) {
         self.should(Condition.text(text));
+    }
+
+    @Step("check snackbar color")
+    public void checkSnackbarColor(Color color) {
+        String rgba = self.getCssValue("background-color");
+        Assertions.assertEquals(color.rgb, rgba);
     }
 
 

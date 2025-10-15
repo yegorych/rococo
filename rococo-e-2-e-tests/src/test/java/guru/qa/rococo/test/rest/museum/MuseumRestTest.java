@@ -12,17 +12,16 @@ import guru.qa.rococo.model.pageable.RestResponsePage;
 import guru.qa.rococo.model.rest.CountryJson;
 import guru.qa.rococo.model.rest.GeoJson;
 import guru.qa.rococo.model.rest.MuseumJson;
-import guru.qa.rococo.service.impl.api.GeoApiClient;
 import guru.qa.rococo.service.impl.api.MuseumApiClient;
 import guru.qa.rococo.service.impl.db.CountryDbClient;
 import guru.qa.rococo.utils.ErrorMessageResolver;
 import guru.qa.rococo.utils.RandomDataUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -31,6 +30,7 @@ import static guru.qa.rococo.utils.ErrorMessageResolver.getErrorMessage;
 import static guru.qa.rococo.utils.ImgBase64Utils.imageToBase64;
 
 @RestTest
+@DisplayName("rest: тесты контроллера Museum в Gateway")
 public class MuseumRestTest {
 
     @RegisterExtension
@@ -41,6 +41,7 @@ public class MuseumRestTest {
 
     @Test
     @Museum
+    @DisplayName("Получение музея по ID")
     void museumShouldBeReturnedById(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         final Response<MuseumJson> response = museumApiClient
@@ -51,6 +52,7 @@ public class MuseumRestTest {
     }
 
     @Test
+    @DisplayName("Музей по случайному ID не найден")
     void museumShouldNotBeReturnedByRandomId() {
         String randomId = UUID.randomUUID().toString();
         final Response<MuseumJson> response = museumApiClient
@@ -68,6 +70,7 @@ public class MuseumRestTest {
     @Museum(title = "Museum bnvkfg 1")
     @Museum(title = "Museum bnvkfg 2")
     @Museum(title = "Museum bnvkfg 3")
+    @DisplayName("Фильтрация музеев по названию")
     void shouldReturnFilteredMuseumsPageByTitle() {
         final Response<RestResponsePage<MuseumJson>> response = museumApiClient
                 .getMuseumPage("Museum bnvkfg", 0, 10);
@@ -79,6 +82,7 @@ public class MuseumRestTest {
 
     @Test
     @Museums(count = 15)
+    @DisplayName("Пагинация списка музеев")
     void museumsShouldBePaginated() {
         int size = 5;
         Set<MuseumJson> museums = new HashSet<>();
@@ -95,6 +99,7 @@ public class MuseumRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание нового музея")
     void museumShouldBeCreated(@Token String token) {
         CountryJson country = countryDbClient.findAll().getFirst();
         MuseumJson museum = MuseumJson.randomMuseum().addCountry(country);
@@ -108,6 +113,7 @@ public class MuseumRestTest {
     }
 
     @Test
+    @DisplayName("Создание музея без токена возвращает 401")
     void museumShouldNotBeCreatedWithoutToken() {
         CountryJson country = countryDbClient.findAll().getFirst();
         MuseumJson museum = MuseumJson.randomMuseum().addCountry(country);
@@ -126,6 +132,7 @@ public class MuseumRestTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Создание музея с ID должно завершиться ошибкой")
     void museumShouldNotBeCreatedWithNonEmptyId(@Token String token, TestData testData) {
         MuseumJson museumJson = new MuseumJson(
                 UUID.randomUUID(),
@@ -148,6 +155,7 @@ public class MuseumRestTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Создание дубликата музея должно завершиться ошибкой")
     void shouldNotCreateMuseumWithDuplicateTitle(@Token String token, TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         MuseumJson museumJson = new MuseumJson(
@@ -168,6 +176,7 @@ public class MuseumRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание музея с пустым названием (пробелы) возвращает ошибку")
     void museumShouldNotBeCreatedWithBlankTitle(@Token String token) {
         MuseumJson museumJson = new MuseumJson(
                 null,
@@ -188,6 +197,7 @@ public class MuseumRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание музея с пустым названием возвращает ошибку")
     void museumShouldNotBeCreatedWithEmptyTitle(@Token String token) {
         MuseumJson museumJson = new MuseumJson(
                 null,
@@ -208,6 +218,7 @@ public class MuseumRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание музея с названием >255 символов возвращает ошибку")
     void museumShouldNotBeCreatedWithLongTitle(@Token String token) {
         MuseumJson museumJson = new MuseumJson(
                 null,
@@ -228,6 +239,7 @@ public class MuseumRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание музея с описанием >1000 символов возвращает ошибку")
     void museumShouldNotBeCreatedWithLongDescription(@Token String token) {
         MuseumJson museumJson = new MuseumJson(
                 null,
@@ -248,7 +260,8 @@ public class MuseumRestTest {
 
     @Test
     @ApiLogin
-    void museumShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
+    @DisplayName("Создание музея с фото >1MB возвращает ошибку")
+    void museumShouldNotBeCreatedWithLargeImage(@Token String token) {
         String image = imageToBase64("img/1_1mb_photo.png");
         MuseumJson museumJson = new MuseumJson(
                 null,
@@ -272,6 +285,7 @@ public class MuseumRestTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Обновление данных музея")
     void museumShouldBeUpdated(@Token String token, TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         MuseumJson expectedMuseum = new MuseumJson(
@@ -293,6 +307,7 @@ public class MuseumRestTest {
     @Test
     @ApiLogin
     @Museum
+    @DisplayName("Обновление несуществующего музея возвращает 404")
     void museumShouldNotBeUpdatedWithRandomId(@Token String token, TestData testData) {
         UUID randomId = UUID.randomUUID();
         MuseumJson createdMuseum = testData.museums().getFirst();
@@ -318,6 +333,7 @@ public class MuseumRestTest {
     @Test
     @ApiLogin
     @Museums(count = 2)
+    @DisplayName("Обновление с дублирующим названием музея возвращает 409")
     void shouldNotUpdatedMuseumWithDuplicateTitle(@Token String token, TestData testData) {
         MuseumJson firstMuseum = testData.museums().getFirst();
         MuseumJson secondMuseum = testData.museums().getLast();
@@ -333,6 +349,7 @@ public class MuseumRestTest {
 
     @Test
     @Museum
+    @DisplayName("Обновление музея без токена возвращает 401")
     void museumShouldNotBeUpdatedWithoutToken(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
 

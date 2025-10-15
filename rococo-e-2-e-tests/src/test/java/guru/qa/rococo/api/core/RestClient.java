@@ -1,6 +1,7 @@
 package guru.qa.rococo.api.core;
 
 import guru.qa.rococo.api.logging.CompactImageHttpLogger;
+import guru.qa.rococo.api.logging.CustomAllureOkHttpInterceptor;
 import guru.qa.rococo.config.Config;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
@@ -58,6 +59,12 @@ public abstract class RestClient {
   public RestClient(String baseUrl, boolean followRedirect, Converter.Factory factory, HttpLoggingInterceptor.Level level, @Nullable Interceptor... interceptors) {
     final OkHttpClient.Builder builder = new OkHttpClient.Builder()
         .followRedirects(followRedirect);
+
+    builder.addNetworkInterceptor(
+            new CustomAllureOkHttpInterceptor()
+                    .setRequestTemplate("http-request.ftl")
+                    .setResponseTemplate("http-response.ftl")
+    );
 
     if (ArrayUtils.isNotEmpty(interceptors)) {
       for (Interceptor interceptor : requireNonNull(interceptors)) {

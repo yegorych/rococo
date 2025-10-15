@@ -13,11 +13,11 @@ import guru.qa.rococo.service.impl.api.ArtistApiClient;
 import guru.qa.rococo.utils.ErrorMessageResolver;
 import guru.qa.rococo.utils.RandomDataUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +26,7 @@ import static guru.qa.rococo.utils.ErrorMessageResolver.getErrorMessage;
 import static guru.qa.rococo.utils.ImgBase64Utils.imageToBase64;
 
 @RestTest
+@DisplayName("rest: тесты контроллера Artist в Gateway")
 public class ArtistRestTest {
 
     @RegisterExtension
@@ -34,6 +35,7 @@ public class ArtistRestTest {
 
     @Test
     @Artist
+    @DisplayName("Получение художника по ID")
     void artistShouldBeReturnedById(TestData testData) {
         ArtistJson createdArtist = testData.artists().getFirst();
         final Response<ArtistJson> response = artistApiClient
@@ -44,6 +46,7 @@ public class ArtistRestTest {
     }
 
     @Test
+    @DisplayName("Художник по случайному ID не найден")
     void artistShouldNotBeReturnedByRandomId() {
         String randomId = UUID.randomUUID().toString();
         final Response<ArtistJson> response = artistApiClient
@@ -61,6 +64,7 @@ public class ArtistRestTest {
     @Artist(name = "Artist loalal 1")
     @Artist(name = "Artist loalal 2")
     @Artist(name = "Artist loalal 3")
+    @DisplayName("Фильтрация художников по имени")
     void shouldReturnFilteredArtistsPageByName() {
         final Response<RestResponsePage<ArtistJson>> response = artistApiClient
                 .getArtistPage("Artist loalal", 0, 10);
@@ -72,6 +76,7 @@ public class ArtistRestTest {
 
     @Test
     @Artists(count = 15)
+    @DisplayName("Пагинация списка художников")
     void artistsShouldBePaginated() {
         int size = 5;
         Set<ArtistJson> artists = new HashSet<>();
@@ -88,6 +93,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание нового художника")
     void artistShouldBeCreated(@Token String token) {
         ArtistJson artist = ArtistJson.randomArtist();
         final Response<ArtistJson> response = artistApiClient
@@ -99,6 +105,7 @@ public class ArtistRestTest {
     }
 
     @Test
+    @DisplayName("Создание художника без токена возвращает 401")
     void artistShouldNotBeCreatedWithEmptyToken() {
         ArtistJson artist = ArtistJson.randomArtist();
         final Response<ArtistJson> response = artistApiClient
@@ -113,6 +120,7 @@ public class ArtistRestTest {
     }
 
     @Test
+    @DisplayName("Создание художника с недействительным токеном возвращает 401")
     void artistShouldNotBeCreatedWithInvalidToken() {
         ArtistJson artist = ArtistJson.randomArtist();
         String invalidToken = "invalidToken";
@@ -129,6 +137,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание художника с ID должно завершиться ошибкой")
     void artistShouldNotBeCreatedWithNonEmptyId(@Token String token) {
         ArtistJson artistJson = ArtistJson.randomArtist().addId(UUID.randomUUID());
         final Response<ArtistJson> response = artistApiClient
@@ -143,6 +152,7 @@ public class ArtistRestTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Создание дубликата художника должно завершиться ошибкой")
     void artistShouldNotBeCreatedWithDuplicateName(@Token String token, TestData testData) {
         ArtistJson createdArtist = testData.artists().getFirst();
         ArtistJson artistJson = new ArtistJson(
@@ -162,6 +172,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание художника с пустым именем (пробелы) возвращает ошибку")
     void artistShouldNotBeCreatedWithBlankName(@Token String token) {
         ArtistJson artistJson = new ArtistJson(
                 null,
@@ -181,6 +192,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание художника с пустым именем возвращает ошибку")
     void artistShouldNotBeCreatedWithEmptyName(@Token String token) {
         ArtistJson artistJson = new ArtistJson(
                 null,
@@ -200,6 +212,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание художника с именем >255 символов возвращает ошибку")
     void artistShouldNotBeCreatedWithLongName(@Token String token) {
         ArtistJson artistJson = new ArtistJson(
                 null,
@@ -219,6 +232,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Создание художника с биографией >2000 символов возвращает ошибку")
     void artistShouldNotBeCreatedWithLongBiography(@Token String token) {
         ArtistJson artistJson = new ArtistJson(
                 null,
@@ -238,7 +252,8 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
-    void artistShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
+    @DisplayName("Создание художника с фото >1MB возвращает ошибку")
+    void artistShouldNotBeCreatedWithLargeImage(@Token String token){
         String image = imageToBase64("img/1_1mb_photo.png");
         ArtistJson artistJson = new ArtistJson(
                 null,
@@ -260,6 +275,7 @@ public class ArtistRestTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Обновление данных художника")
     void artistShouldBeUpdated(@Token String token, TestData testData) {
         ArtistJson createdArtist = testData.artists().getFirst();
         ArtistJson expectedArtist = ArtistJson.randomArtist().addId(createdArtist.id());
@@ -271,8 +287,8 @@ public class ArtistRestTest {
     }
 
     @Test
-    @ApiLogin
     @Artist
+    @DisplayName("Обновление художника без токена возвращает 401")
     void artistShouldNotBeUpdatedWithoutToken(TestData testData) {
         ArtistJson createdArtist = testData.artists().getFirst();
         final Response<ArtistJson> response = artistApiClient
@@ -288,7 +304,8 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
-    void artistShouldNotBeUpdatedWithRandomId(@Token String token, TestData testData) {
+    @DisplayName("Обновление несуществующего художника возвращает 404")
+    void artistShouldNotBeUpdatedWithRandomId(@Token String token) {
         UUID randomId = UUID.randomUUID();
         ArtistJson artistJson = ArtistJson.randomArtist().addId(randomId);
         final Response<ArtistJson> response = artistApiClient
@@ -305,6 +322,7 @@ public class ArtistRestTest {
     @Test
     @ApiLogin
     @Artists(count = 2)
+    @DisplayName("Обновление с дублирующим именем художника возвращает 409")
     void shouldNotUpdatedArtistWithDuplicateName(@Token String token, TestData testData) {
         ArtistJson firstArtist = testData.artists().getFirst();
         ArtistJson secondArtist = testData.artists().getLast();

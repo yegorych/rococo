@@ -14,15 +14,18 @@ import guru.qa.rococo.model.rest.MuseumJson;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 @GrpcTest
+@DisplayName("gRPC: сервис Painting")
 public class PaintingGrpcTest extends BaseGrpcTest {
 
     @Test
     @Paintings(count = 20)
+    @DisplayName("Получение всех картин")
     void allPaintingsShouldBeReturned() {
         PaintingsResponse resp = paintingStub.getPaintings(
                 PaintingRequest.newBuilder().setPage(0).setSize(20).setTitle("").setArtistId("").build()
@@ -31,6 +34,7 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Пагинация списка картин")
     void paintingsShouldBePaginated() {
         int size = 4;
         PaintingsResponse resp = paintingStub.getPaintings(
@@ -40,6 +44,7 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Получение картины по ID")
     @guru.qa.rococo.jupiter.annotation.Painting
     void paintingShouldBeReturnedById(TestData data) {
         var paintingJson = data.paintings().getFirst();
@@ -49,6 +54,7 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Картина по случайному ID не найдена")
     void paintingByRandomIdShouldNotBeReturned() {
         IdRequest request = IdRequest.newBuilder().setId(UUID.randomUUID().toString()).build();
         StatusRuntimeException ex = Assertions.assertThrows(
@@ -59,6 +65,7 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Некорректный UUID возвращает INVALID_ARGUMENT")
     void paintingByInvalidUuidShouldReturnInvalidArgument() {
         IdRequest request = IdRequest.newBuilder().setId("no-uuid").build();
         StatusRuntimeException ex = Assertions.assertThrows(
@@ -69,9 +76,10 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Создание новой картины")
     @Museum
     @Artist
-    void createPainting_shouldSucceed(TestData data) {
+    void paintingShouldBeCreated(TestData data) {
         MuseumJson museum = data.museums().getFirst();
         ArtistJson artist = data.artists().getFirst();
 
@@ -87,7 +95,8 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
-    void createPainting_withId_shouldFail() {
+    @DisplayName("Создание картины с ID должно завершиться ошибкой")
+    void paintingWithNonEmptyIdShouldNotBeCreated() {
         Painting req = Painting.newBuilder().setId("123").setTitle("x").build();
         StatusRuntimeException ex = Assertions.assertThrows(
                 StatusRuntimeException.class,
@@ -97,8 +106,9 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Обновление существующей картины")
     @guru.qa.rococo.jupiter.annotation.Painting(museum = @Museum)
-    void updatePainting_shouldSucceed_whenExists(TestData data) {
+    void paintingShouldBeUpdated(TestData data) {
         Painting created = data.paintings().getFirst().toGrpcMessage();
         Painting request = Painting.newBuilder()
                 .setId(created.getId())
@@ -110,7 +120,8 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
-    void updatePainting_notFound_shouldReturnNotFound() {
+    @DisplayName("Обновление несуществующей картины возвращает NOT_FOUND")
+    void paintingWithRandomIdShouldNotBeUpdated() {
         Painting req = Painting.newBuilder().setId(UUID.randomUUID().toString()).setTitle("x").build();
         StatusRuntimeException ex = Assertions.assertThrows(
                 StatusRuntimeException.class,
@@ -120,7 +131,8 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     }
 
     @Test
-    void updatePainting_invalidUuid_shouldReturnInvalidArgument() {
+    @DisplayName("Обновление с некорректным UUID возвращает INVALID_ARGUMENT")
+    void paintingWithInvalidIdShouldNotBeUpdated() {
         Painting req = Painting.newBuilder().setId("bad-uuid").setTitle("x").build();
         StatusRuntimeException ex = Assertions.assertThrows(
                 StatusRuntimeException.class,
@@ -131,7 +143,8 @@ public class PaintingGrpcTest extends BaseGrpcTest {
 
     @Test
     @Artist
-    void getPaintings_filteredByArtist(TestData data) {
+    @DisplayName("Фильтрация картин по художнику")
+    void paintingsShouldBeFilteredByArtist(TestData data) {
         var artist = data.artists().getFirst();
         PaintingsResponse resp = paintingStub.getPaintings(
                 PaintingRequest.newBuilder()

@@ -1,23 +1,22 @@
 package guru.qa.rococo.test.rest.geo;
 
 import guru.qa.rococo.jupiter.annotation.meta.RestTest;
-import guru.qa.rococo.jupiter.extension.ApiLoginExtension;
 import guru.qa.rococo.model.pageable.RestResponsePage;
 import guru.qa.rococo.model.rest.CountryJson;
 import guru.qa.rococo.service.CountryClient;
-import guru.qa.rococo.service.impl.db.CountryDbClient;
 import guru.qa.rococo.service.impl.api.GeoApiClient;
+import guru.qa.rococo.service.impl.db.CountryDbClient;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import retrofit2.Response;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 @RestTest
+@DisplayName("rest: тесты контроллера Geo в Gateway")
 public class GeoRestTest {
 
   private final GeoApiClient geoApiClient = new GeoApiClient();
@@ -25,6 +24,7 @@ public class GeoRestTest {
   private static final List<CountryJson> allCountry = countryClient.findAll();
 
   @Test
+  @DisplayName("Получение страницы стран из Gateway")
   void countriesShouldBeReturnedFromGateway() {
     final Response<RestResponsePage<CountryJson>> response = geoApiClient.getCountryPage(0, 10);
     Assertions.assertTrue(response.isSuccessful());
@@ -33,6 +33,7 @@ public class GeoRestTest {
   }
 
   @Test
+  @DisplayName("Проверка полной пагинации списка стран")
   void allCountriesShouldBePaginated() {
     int size = 10;
     List<CountryJson> countries = new ArrayList<>();

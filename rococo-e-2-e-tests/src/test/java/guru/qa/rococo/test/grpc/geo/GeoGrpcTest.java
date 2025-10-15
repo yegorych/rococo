@@ -11,20 +11,22 @@ import guru.qa.rococo.service.impl.db.CountryDbClient;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 @GrpcTest
+@DisplayName("gRPC: сервис Geo")
 public class GeoGrpcTest extends BaseGrpcTest {
 
     private static final CountryClient countryClient = new CountryDbClient();
     private static final List<CountryJson> allCountry = countryClient.findAll();
 
     @Test
+    @DisplayName("Получение всех стран")
     void allCountriesShouldBeReturned() {
         int expectedNumberOfCountries = allCountry.size();
 
@@ -41,6 +43,7 @@ public class GeoGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Пагинация списка стран")
     void countriesShouldBePaginated() {
         int size = 17;
         CountriesResponse response = geoStub.getCountries(
@@ -54,6 +57,7 @@ public class GeoGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Пустой запрос возвращает ошибку")
     void countriesShouldNotBeReturnedForEmptyRequest() {
         StatusRuntimeException ex = Assertions.assertThrows(
                 StatusRuntimeException.class,
@@ -63,6 +67,7 @@ public class GeoGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Отрицательный размер возвращает ошибку")
     void countriesShouldNotBeReturnedWhenSizeIsInvalid() {
         CountriesRequest request = CountriesRequest.newBuilder()
                 .setSize(-1)
@@ -76,6 +81,7 @@ public class GeoGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Отрицательная страница возвращает ошибку")
     void countriesShouldNotBeReturnedWhenPageIsInvalid() {
         CountriesRequest request = CountriesRequest.newBuilder()
                 .setSize(0)
@@ -89,6 +95,7 @@ public class GeoGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Получение страны по ID")
     void countryByIdShouldBeReturned() {
         CountryJson countryJson = allCountry.get(new Random().nextInt(allCountry.size()));
         Country response = geoStub.getCounty(
@@ -100,6 +107,7 @@ public class GeoGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Страна по случайному ID не найдена")
     void countryByRandomIdShouldNotBeReturned() {
         String id = UUID.randomUUID().toString();
         IdRequest request = IdRequest.newBuilder()

@@ -3,7 +3,6 @@ package guru.qa.rococo.test.web.artist;
 import com.codeborne.selenide.Selenide;
 import guru.qa.rococo.jupiter.annotation.ApiLogin;
 import guru.qa.rococo.jupiter.annotation.Artist;
-import guru.qa.rococo.jupiter.annotation.DisabledByIssue;
 import guru.qa.rococo.jupiter.annotation.ScreenShotTest;
 import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.model.TestData;
@@ -21,10 +20,12 @@ import java.awt.image.BufferedImage;
 import static guru.qa.rococo.utils.RandomDataUtils.*;
 
 @WebTest
+@DisplayName("web: тесты страницы деталей художника")
 public class ArtistDetailsPageTest {
 
     @ScreenShotTest(expected = "expected-artist-details-photo.png", rewriteExpected = true)
     @Artist(photo = "img/artist.png", paintings = 3)
+    @DisplayName("Отображение страницы художника с фото и картинами")
     void artistDetailsShouldBeDisplayed(TestData testData, BufferedImage expectedImage) {
         ArtistJson artist = testData.artists().getFirst();
         String id = artist.id().toString();
@@ -35,6 +36,7 @@ public class ArtistDetailsPageTest {
 
     @Test
     @Artist
+    @DisplayName("Отображение страницы художника без картин")
     void artistDetailWithoutPaintingsShouldBeDisplayed(TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         String id = artist.id().toString();
@@ -45,6 +47,7 @@ public class ArtistDetailsPageTest {
     @Test
     @Artist
     @ApiLogin
+    @DisplayName("Вторая кнопка добавления картины отображается для авторизованного пользователя (без картин)")
     void artistDetailWithoutPaintingsShouldBeHavingSecondAddPaintingButtonForAuthorizedUser(TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         String id = artist.id().toString();
@@ -55,6 +58,7 @@ public class ArtistDetailsPageTest {
     @Test
     @Artist
     @ApiLogin
+    @DisplayName("Вторая кнопка добавления картины не отображается для авторизованного пользователя (с картинами)")
     void artistDetailWithPaintingsShouldBeNotHavingSecondAddPaintingButtonForAuthorizedUser(TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         String id = artist.id().toString();
@@ -65,6 +69,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Кнопка редактирования художника отображается для авторизованного пользователя")
     void editArtistButtonShouldBeDisplayedForAuthorizedUser(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -74,6 +79,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Кнопка добавления картины отображается для авторизованного пользователя")
     void addPaintingButtonShouldBeDisplayedForAuthorizedUser(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -83,6 +89,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Кнопка добавления картины не отображается для неавторизованного пользователя")
     void addPaintingButtonShouldNotBeDisplayedForUnauthorizedUser(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -91,6 +98,7 @@ public class ArtistDetailsPageTest {
 
     @Test
     @Artist
+    @DisplayName("Кнопка редактирования художника не отображается для неавторизованного пользователя")
     void editArtistButtonShouldNotBeDisplayedForUnauthorizedUser(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -100,6 +108,7 @@ public class ArtistDetailsPageTest {
     @Test
     @Artist
     @ApiLogin
+    @DisplayName("Модальное окно редактирования открывается")
     void editArtistModalShouldBeOpened(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -110,6 +119,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Модальное окно закрывается по кнопке закрытия")
     void editArtistModalShouldBeClosedByClickingOnTheCloseButton(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -121,6 +131,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Модальное окно закрывается кликом по свободной области")
     void editArtistModalShouldBeClosedByClickingOnEmptyArea(TestData testData) {
         String id = testData.artists().getFirst().id().toString();
         Selenide.open(ArtistDetailsPage.URL(id), ArtistDetailsPage.class)
@@ -132,6 +143,7 @@ public class ArtistDetailsPageTest {
     @ScreenShotTest(expected = "expected-edit-artist-modal-photo.png", rewriteExpected = true)
     @ApiLogin
     @Artist(photo = "img/artist.png")
+    @DisplayName("Модальное окно редактирования содержит данные художника")
     void editArtistModalShouldContainArtistData(TestData testData, BufferedImage bufferedImage) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -143,6 +155,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Редактирование имени и биографии художника")
     void artistShouldBeEdited(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -160,6 +173,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Редактирование только имени художника")
     void editArtistModalShouldAllowEditingNameOnly(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -175,6 +189,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Редактирование только биографии художника")
     void editArtistModalShouldAllowEditingBiographyOnly(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -191,6 +206,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Имя художника не должно превышать 255 символов")
     void editArtistModalNameLengthShouldBeUnder255(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -205,6 +221,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Имя художника должно быть не короче 3 символов")
     void editArtistModalNameLengthShouldBeOver3(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -219,6 +236,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Биография художника не должна превышать 2000 символов")
     void editArtistModalBiographyLengthShouldBeUnder2000(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -233,6 +251,7 @@ public class ArtistDetailsPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Биография художника должна быть не короче 10 символов")
     void editArtistModalBiographyLengthShouldBeOver10(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -244,11 +263,10 @@ public class ArtistDetailsPageTest {
                 .checkValidationError("Биография не может быть короче 10 символов");
     }
 
-
-
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Добавление новой картины со страницы художника")
     void paintingFromArtistDetailShouldBeCreated(TestData testData) {
         ArtistJson artistJson = testData.artists().getFirst();
         String id = artistJson.id().toString();
@@ -266,12 +284,4 @@ public class ArtistDetailsPageTest {
                 .checkNumberOfPaintingsEqual(1)
                 .checkPaintingCard(newPainting);
     }
-
-
-
-
-
-
-
-
 }

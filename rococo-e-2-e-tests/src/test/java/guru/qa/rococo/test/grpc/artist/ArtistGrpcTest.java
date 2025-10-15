@@ -11,15 +11,18 @@ import guru.qa.rococo.model.rest.ArtistJson;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 @GrpcTest
+@DisplayName("gRPC: сервис Artist")
 public class ArtistGrpcTest extends BaseGrpcTest {
 
     @Test
     @Artists(count = 10)
+    @DisplayName("Успешное создание художника")
     void allArtistsShouldBeReturned() {
         ArtistsResponse response = artistStub.getArtists(
                 ArtistRequest.newBuilder()
@@ -32,6 +35,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
 
     @Test
     @Artists(count = 5)
+    @DisplayName("Пагинация списка художников")
     void artistsShouldBePaginated() {
         int size = 5;
         ArtistsResponse response = artistStub.getArtists(
@@ -44,6 +48,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Фильтрация художников по имени")
     @guru.qa.rococo.jupiter.annotation.Artist(name = "filterName_1")
     @guru.qa.rococo.jupiter.annotation.Artist(name = "filterName__2")
     void getArtists_shouldReturnFilteredByName() {
@@ -59,6 +64,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Получение художника по ID")
     @guru.qa.rococo.jupiter.annotation.Artist
     void artistShouldBeReturnedById(TestData data) {
         var artistJson = data.artists().getFirst();
@@ -69,6 +75,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Художник по случайному ID не найден")
     void artistByRandomIdShouldNotBeReturned() {
         IdRequest request = IdRequest.newBuilder()
                 .setId(UUID.randomUUID().toString())
@@ -81,6 +88,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Некорректный UUID возвращает INVALID_ARGUMENT")
     void artistByInvalidUuidShouldReturnInvalidArgument() {
         IdRequest request = IdRequest.newBuilder().setId("not-uuid").build();
         StatusRuntimeException ex = Assertions.assertThrows(
@@ -91,6 +99,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Создание нового художника")
     void artistShouldBeCreated() {
         Artist request = Artist.newBuilder().setName("Test Artist " + UUID.randomUUID()).build();
         Artist created = artistStub.createArtist(request);
@@ -99,6 +108,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Создание художника с ID должно завершиться ошибкой")
     void createArtist_withId_shouldFail() {
         Artist request = Artist.newBuilder().setId("123").setName("BadArtist").build();
         StatusRuntimeException ex = Assertions.assertThrows(
@@ -109,9 +119,10 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Создание дубликата художника должно завершиться ошибкой")
     @guru.qa.rococo.jupiter.annotation.Artist
     void createArtist_whenDuplicate_shouldFail(TestData data) {
-        var existing = data.artists().getFirst();
+        ArtistJson existing = data.artists().getFirst();
         Artist request = Artist.newBuilder().setName(existing.name()).build();
         StatusRuntimeException ex = Assertions.assertThrows(
                 StatusRuntimeException.class,
@@ -121,6 +132,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Обновление созданного художника")
     @guru.qa.rococo.jupiter.annotation.Artist
     void artistShouldBeUpdated(TestData data) {
         ArtistJson existing = data.artists().getFirst();
@@ -133,6 +145,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Обновление несуществующего художника возвращает NOT_FOUND")
     void updateArtist_notFound_shouldReturnNotFound() {
         Artist request = Artist.newBuilder()
                 .setId(UUID.randomUUID().toString())
@@ -146,6 +159,7 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Обновление с некорректным UUID возвращает INVALID_ARGUMENT")
     void updateArtist_invalidUuid_shouldReturnInvalidArgument() {
         Artist request = Artist.newBuilder().setId("bad-uuid").setName("x").build();
         StatusRuntimeException ex = Assertions.assertThrows(
@@ -156,9 +170,10 @@ public class ArtistGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Обновление с дублирующим именем должно завершиться ошибкой")
     @guru.qa.rococo.jupiter.annotation.Artist
     void updateArtist_whenDuplicateName_shouldFail(TestData data) {
-        var a1 = data.artists().getFirst();
+        ArtistJson a1 = data.artists().getFirst();
         Artist a2 = Artist.newBuilder().setName("duplicate-" + UUID.randomUUID()).build();
         Artist created = artistStub.createArtist(a2);
         Artist updateReq = Artist.newBuilder()

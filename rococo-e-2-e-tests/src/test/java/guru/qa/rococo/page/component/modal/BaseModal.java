@@ -29,7 +29,7 @@ public abstract class BaseModal<T extends BaseModal<T>> extends BaseComponent<T>
     @Nonnull
     @Step("click close button")
     public <T extends BasePage<?>> T closeModal(T expectedPage) {
-        closeBtn.click();
+        closeBtn.should(visible).click();
         return expectedPage;
     }
 
@@ -37,7 +37,7 @@ public abstract class BaseModal<T extends BaseModal<T>> extends BaseComponent<T>
     @Nonnull
     @Step("click submit button")
     public <T> T submit(T expectedPage) {
-        submitBtn.click();
+        submitBtn.should(visible).click();
         return expectedPage;
     }
 

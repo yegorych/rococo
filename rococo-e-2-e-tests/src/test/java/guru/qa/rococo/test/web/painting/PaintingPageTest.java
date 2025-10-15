@@ -14,6 +14,7 @@ import guru.qa.rococo.page.component.modal.PaintingModal;
 import guru.qa.rococo.utils.RandomDataUtils;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -22,9 +23,11 @@ import static com.codeborne.selenide.WebDriverRunner.getSelenideProxy;
 import static guru.qa.rococo.utils.RandomDataUtils.randomWord;
 
 @WebTest
+@DisplayName("web: тесты страницы с списком картин")
 public class PaintingPageTest {
 
     @Test
+    @DisplayName("Плейсхолдер поиска картин отображается")
     void paintingSearchPlaceholderShouldBeDisplayed() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .search().checkPlaceholder("Искать картины...");
@@ -32,12 +35,14 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Кнопка добавления картины отображается для авторизованного пользователя")
     void addPaintingButtonShouldBeDisplayedForAuthorizedUser() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .checkAddPaintingBtnIsDisplayed();
     }
 
     @Test
+    @DisplayName("Кнопка добавления картины не отображается для неавторизованного пользователя")
     void addPaintingButtonShouldNotBeDisplayedForUnauthorizedUser() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .checkAddPaintingBtnIsNotDisplayed();
@@ -45,6 +50,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Модальное окно добавления картины закрывается по кнопке закрытия")
     void addPaintingModalShouldBeClosedByClickingOnTheCloseButton() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .clickAddPaintingBtn()
@@ -54,6 +60,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Модальное окно добавления картины содержит пустые поля")
     void addPaintingModalShouldHaveEmptyFields() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .clickAddPaintingBtn()
@@ -62,6 +69,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Модальное окно добавления картины закрывается по клику вне области")
     void addPaintingModalShouldBeClosedByClickingOnEmptyArea() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .clickAddPaintingBtn()
@@ -71,6 +79,7 @@ public class PaintingPageTest {
 
     @Test
     @Paintings(count = 20)
+    @DisplayName("Пагинация работает при прокрутке списка картин")
     void paginationShouldWorkWhenScrolling(TestData testData) {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .scrollPaintingCard(testData.paintings().size())
@@ -80,6 +89,7 @@ public class PaintingPageTest {
     @Test
     @Painting(title = "Ggggrrrr one")
     @Painting(title = "Ggggrrrr two")
+    @DisplayName("Результаты поиска содержат только картины с заданным названием")
     void searchResultsShouldContainOnlyPaintingsWithTitle() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .findPainting("Ggggrrrr")
@@ -87,6 +97,7 @@ public class PaintingPageTest {
     }
 
     @Test
+    @DisplayName("Отображается сообщение об отсутствии результатов поиска")
     void messageAboutEmptySearchResultShouldBeDisplayed() {
         Selenide.open(PaintingPage.URL, PaintingPage.class)
                 .findPainting(RandomDataUtils.randomWord(5))
@@ -96,6 +107,7 @@ public class PaintingPageTest {
 
     @ScreenShotTest(expected = "expected-painting-photo.png", rewriteExpected = true)
     @Painting(photo = "img/painting.png")
+    @DisplayName("Карточка картины с фото отображается корректно")
     void paintingCardShouldBeDisplayedCorrectly(TestData testData, BufferedImage expectedImage) {
         PaintingJson paintingJson = testData.paintings().getFirst();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -104,6 +116,7 @@ public class PaintingPageTest {
 
     @ScreenShotTest(expected = "expected-painting-without-photo.png", rewriteExpected = true)
     @Painting(title = "Without photo")
+    @DisplayName("Карточка картины без фото отображается корректно")
     void paintingCardWithoutPhotoShouldBeDisplayedCorrectly(TestData testData, BufferedImage expectedImage) {
         String title = testData.paintings().getFirst().title();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -112,6 +125,7 @@ public class PaintingPageTest {
 
     @Test
     @Painting
+    @DisplayName("Переход на страницу картины работает")
     void paintingDetailsPageShouldOpen(TestData testData) {
         String title = testData.paintings().getFirst().title();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -124,6 +138,7 @@ public class PaintingPageTest {
     @ApiLogin
     @Artist
     @Museum
+    @DisplayName("Создание новой картины")
     void paintingShouldBeCreated(TestData testData) {
         ArtistJson artist = testData.artists().getFirst();
         MuseumJson museum = testData.museums().getFirst();
@@ -148,6 +163,7 @@ public class PaintingPageTest {
     @Test
     @ApiLogin
     @Artist
+    @DisplayName("Создание картины без музея")
     void paintingShouldBeCreatedWithoutMuseum() {
         PaintingJson newPainting = PaintingJson.randomPainting();
 
@@ -163,6 +179,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Название картины не должно превышать 255 символов")
     void titleLengthShouldBeUnder255() {
         PaintingJson newPainting = PaintingJson.randomPainting();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -177,6 +194,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Название картины должно быть не короче 3 символов")
     void titleLengthShouldBeOver3() {
         PaintingJson newPainting = PaintingJson.randomPainting();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -191,6 +209,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Описание картины не должно превышать 2000 символов")
     void descriptionLengthShouldBeUnder2000() {
         PaintingJson newPainting = PaintingJson.randomPainting();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -205,6 +224,7 @@ public class PaintingPageTest {
 
     @Test
     @ApiLogin
+    @DisplayName("Описание картины должно быть не короче 10 символов")
     void descriptionLengthShouldBeOver10() {
         PaintingJson newPainting = PaintingJson.randomPainting();
         Selenide.open(PaintingPage.URL, PaintingPage.class)
@@ -220,6 +240,7 @@ public class PaintingPageTest {
     @Test
     @UseProxy
     @Disabled
+    @DisplayName("Заглушка отображается при отсутствии картин")
     void blankAboutMissingPaintingsShouldBeDisplayed() {
         getSelenideProxy().addResponseFilter("response filter", (httpResponse, httpMessageContents, httpMessageInfo) -> {
             if (httpMessageInfo.getUrl().endsWith("/api/painting?size=9&page=0")){

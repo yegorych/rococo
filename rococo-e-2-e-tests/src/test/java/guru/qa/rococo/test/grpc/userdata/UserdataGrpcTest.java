@@ -1,31 +1,23 @@
 package guru.qa.rococo.test.grpc.userdata;
 
-import guru.qa.grpc.rococo.geo.CountriesRequest;
-import guru.qa.grpc.rococo.geo.CountriesResponse;
-import guru.qa.grpc.rococo.geo.Country;
-import guru.qa.grpc.rococo.geo.IdRequest;
 import guru.qa.grpc.rococo.userdata.UserInfo;
 import guru.qa.grpc.rococo.userdata.UserRequest;
 import guru.qa.rococo.jupiter.annotation.User;
 import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
-import guru.qa.rococo.model.rest.CountryJson;
 import guru.qa.rococo.model.rest.UserJson;
-import guru.qa.rococo.service.CountryClient;
-import guru.qa.rococo.service.impl.db.CountryDbClient;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import guru.qa.rococo.utils.RandomDataUtils;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
 @GrpcTest
+@DisplayName("gRPC: сервис Userdata")
 public class UserdataGrpcTest extends BaseGrpcTest {
 
     @Test
+    @DisplayName("Получение пользователя по имени")
     @User
     void userShouldBeReturned(UserJson user) {
         UserInfo response = userdataStub.getUser(
@@ -38,6 +30,7 @@ public class UserdataGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Пользователь с случайным именем не найден")
     void userWithRandomUsernameShouldNotBeReturned() {
         String username = RandomDataUtils.randomUsername();
         UserRequest request = UserRequest.newBuilder()
@@ -57,6 +50,7 @@ public class UserdataGrpcTest extends BaseGrpcTest {
 
     @Test
     @User
+    @DisplayName("Обновление данных пользователя")
     void userShouldBeUpdated(UserJson user) {
         final String name = "name";
         final String lastname = "lastname";
@@ -74,6 +68,7 @@ public class UserdataGrpcTest extends BaseGrpcTest {
     }
 
     @Test
+    @DisplayName("Обновление несуществующего пользователя возвращает NOT_FOUND")
     void userWithRandomNameShouldNotBeUpdated() {
         String username = RandomDataUtils.randomUsername();
         UserInfo request = UserInfo.newBuilder()

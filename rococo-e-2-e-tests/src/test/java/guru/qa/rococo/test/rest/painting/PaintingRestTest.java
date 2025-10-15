@@ -142,6 +142,19 @@ public class PaintingRestTest {
         Assertions.assertNotNull(response.body());
     }
 
+    @Test
+    void paintingShouldNotBeCreatedWithoutToken() {
+        final Response<PaintingJson> response = paintingApiClient
+                .createPainting(null, PaintingJson.randomPainting());
+
+        Assertions.assertEquals(401, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        Assertions.assertEquals(
+                "Требуется авторизация. Пожалуйста, выполните вход.",
+                getErrorMessage(response.errorBody())
+        );
+    }
+
 
 
     @Test
@@ -303,6 +316,19 @@ public class PaintingRestTest {
         Assertions.assertNotNull(response.errorBody());
         Assertions.assertEquals(
                 String.format("Картина с ID %s не найдена", randomId),
+                getErrorMessage(response.errorBody())
+        );
+    }
+
+    @Test
+    void paintingShouldNotBeUpdatedWithoutToken() {
+        final Response<PaintingJson> response = paintingApiClient
+                .updatePainting(null, PaintingJson.randomPainting());
+
+        Assertions.assertEquals(401, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        Assertions.assertEquals(
+                "Требуется авторизация. Пожалуйста, выполните вход.",
                 getErrorMessage(response.errorBody())
         );
     }

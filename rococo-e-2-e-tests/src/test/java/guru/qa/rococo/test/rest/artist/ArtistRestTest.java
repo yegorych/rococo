@@ -238,7 +238,7 @@ public class ArtistRestTest {
 
     @Test
     @ApiLogin
-    void artistShouldNotBeCreatedWithLargeImage(@Token String token) throws IOException {
+    void artistShouldNotBeCreatedWithLargeImage(@Token String token){
         String image = imageToBase64("img/1_1mb_photo.png");
         ArtistJson artistJson = new ArtistJson(
                 null,
@@ -271,7 +271,6 @@ public class ArtistRestTest {
     }
 
     @Test
-    @ApiLogin
     @Artist
     void artistShouldNotBeUpdatedWithoutToken(TestData testData) {
         ArtistJson createdArtist = testData.artists().getFirst();

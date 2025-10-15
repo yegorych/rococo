@@ -97,7 +97,7 @@ public class MuseumDetailsPageTest {
     @Test
     @ApiLogin
     @Museum
-    void museumShouldBeEdited(TestData testData) {
+    void museumShouldBeUpdated(TestData testData) {
         MuseumJson createdMuseum = testData.museums().getFirst();
         MuseumJson newMuseum = MuseumJson.randomMuseum();
 

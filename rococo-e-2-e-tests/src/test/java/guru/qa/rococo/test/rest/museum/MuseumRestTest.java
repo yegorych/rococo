@@ -12,7 +12,9 @@ import guru.qa.rococo.model.pageable.RestResponsePage;
 import guru.qa.rococo.model.rest.CountryJson;
 import guru.qa.rococo.model.rest.GeoJson;
 import guru.qa.rococo.model.rest.MuseumJson;
+import guru.qa.rococo.service.impl.api.GeoApiClient;
 import guru.qa.rococo.service.impl.api.MuseumApiClient;
+import guru.qa.rococo.service.impl.db.CountryDbClient;
 import guru.qa.rococo.utils.ErrorMessageResolver;
 import guru.qa.rococo.utils.RandomDataUtils;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +36,7 @@ public class MuseumRestTest {
     @RegisterExtension
     static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
     private final MuseumApiClient museumApiClient = new MuseumApiClient();
+    private final CountryDbClient countryDbClient = new CountryDbClient();
 
 
     @Test
@@ -88,6 +91,36 @@ public class MuseumRestTest {
             page++;
         }
         Assertions.assertEquals(15, museums.size());
+    }
+
+    @Test
+    @ApiLogin
+    void museumShouldBeCreated(@Token String token) {
+        CountryJson country = countryDbClient.findAll().getFirst();
+        MuseumJson museum = MuseumJson.randomMuseum().addCountry(country);
+
+        final Response<MuseumJson> response = museumApiClient
+                .createMuseum(token, museum);
+
+        Assertions.assertTrue(response.isSuccessful());
+        Assertions.assertNotNull(response.body());
+        Assertions.assertEquals(museum.title(), response.body().title());
+    }
+
+    @Test
+    void museumShouldNotBeCreatedWithoutToken() {
+        CountryJson country = countryDbClient.findAll().getFirst();
+        MuseumJson museum = MuseumJson.randomMuseum().addCountry(country);
+
+        final Response<MuseumJson> response = museumApiClient
+                .createMuseum(null, museum);
+
+        Assertions.assertEquals(401, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        Assertions.assertEquals(
+                "Требуется авторизация. Пожалуйста, выполните вход.",
+                getErrorMessage(response.errorBody())
+        );
     }
 
     @Test
@@ -296,5 +329,21 @@ public class MuseumRestTest {
         Assertions.assertEquals(409, response.code());
         Assertions.assertNotNull(response.errorBody());
         Assertions.assertEquals("Музей с таким названием уже существует", ErrorMessageResolver.getErrorMessage(response.errorBody()));
+    }
+
+    @Test
+    @Museum
+    void museumShouldNotBeUpdatedWithoutToken(TestData testData) {
+        MuseumJson createdMuseum = testData.museums().getFirst();
+
+        final Response<MuseumJson> response = museumApiClient
+                .updateMuseum(null, createdMuseum);
+
+        Assertions.assertEquals(401, response.code());
+        Assertions.assertNotNull(response.errorBody());
+        Assertions.assertEquals(
+                "Требуется авторизация. Пожалуйста, выполните вход.",
+                getErrorMessage(response.errorBody())
+        );
     }
 }

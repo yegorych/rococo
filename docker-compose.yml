@@ -53,7 +53,7 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     healthcheck:
       test: "wget --spider http://localhost:9000/actuator/health || exit 1"
       interval: 5s
@@ -75,7 +75,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     healthcheck:
       test: "wget --spider http://localhost:8090/actuator/health || exit 1"
       interval: 5s
@@ -92,7 +92,7 @@ services:
     container_name: userdata.rococo.dc
     image: ${PREFIX}/rococo-userdata-docker:latest
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     ports:
       - 8089:8089
       - 9090:9090
@@ -126,7 +126,7 @@ services:
       - 8086:8086
       - 9093:9093
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     restart: always
     depends_on:
       auth.rococo.dc:
@@ -141,7 +141,7 @@ services:
       - 8087:8087
       - 9094:9094
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     restart: always
     depends_on:
       auth.rococo.dc:
@@ -156,7 +156,7 @@ services:
       - 8085:8085
       - 9095:9095
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     restart: always
     depends_on:
       auth.rococo.dc:
@@ -171,7 +171,7 @@ services:
       - 8088:8088
       - 9091:9091
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/logs
     restart: always
     depends_on:
       auth.rococo.dc:

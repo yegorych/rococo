@@ -49,14 +49,14 @@ public class AllureDockerExtension implements SuiteExtension {
       //способ через копирование
       for (String serviceName : serviceNames) {
         try {
-          Path source = Path.of(CFG.logsDirectory(), serviceName, "/app.log");
+          Path source = Path.of(CFG.logsDirectory(), serviceName, "app.log");
           Path target = allureResultsDirectory.resolve(serviceName + "-app.log");
 
           if (Files.exists(source) && Files.isReadable(source) && Files.size(source) > 0) {
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
             log.info("Copied log for {} to allure-results: {}", serviceName, target);
           } else {
-            log.warn("Log file not found or unreadable: {}", source);
+              log.warn("Log file not found or unreadable: {}", source);
           }
         } catch (Exception e) {
           log.error("Failed to copy log for {}: {}", serviceName, e.getMessage(), e);

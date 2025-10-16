@@ -57,12 +57,6 @@ enum DockerConfig implements Config {
     return "jdbc:mysql://rococo-all-db:3306/rococo-geo";
   }
 
-  @Nonnull
-  @Override
-  public String userdataUrl() {
-    return "http://userdata.rococo.dc:8089/";
-  }
-
   @NotNull
   @Override
   public String userdataJdbcUrl() {
@@ -117,5 +111,11 @@ enum DockerConfig implements Config {
   @Override
   public String kafkaAddress() {
     return "kafka:9092";
+  }
+
+  @NotNull
+  @Override
+  public String logsDirectory() {
+    return "/rococo/logs/";
   }
 }

@@ -20,6 +20,8 @@ public class AllureDockerExtension implements SuiteExtension {
   private static final Base64.Encoder encoder = Base64.getEncoder();
   private static final Path allureResultsDirectory = Path.of("./rococo-e-2-e-tests/build/allure-results");
   private static final String projectId = Config.projectId;
+  protected static final Config CFG = Config.getInstance();
+  String[] serviceNames = {"rococo-auth", "rococo-userdata", "rococo-gateway", "rococo-artist", "rococo-museum", "rococo-geo", "rococo-painting"};
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
   private boolean allureBroken = false;
@@ -42,6 +44,13 @@ public class AllureDockerExtension implements SuiteExtension {
     if (inDocker && !allureBroken) {
       try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
+        for (String serviceName : serviceNames) {
+          final byte[] content = Files.readAllBytes(Path.of(String.format(CFG.logsDirectory() + "%s/app.log", serviceName)));
+          final String encoded = Base64.getEncoder().encodeToString(content);
+          final DecodedAllureFile logFile = new DecodedAllureFile(serviceName + "-app.log", encoded);
+          filesToSend.add(logFile);
+        }
+
         for (Path allureResult : paths.toList()) {
           try (InputStream is = Files.newInputStream(allureResult)) {
             filesToSend.add(
@@ -58,6 +67,7 @@ public class AllureDockerExtension implements SuiteExtension {
                 filesToSend
             )
         );
+
         allureDockerApiClient.generateReport(
             projectId,
             System.getenv("HEAD_COMMIT_MESSAGE"),

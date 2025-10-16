@@ -5,10 +5,13 @@ import guru.qa.rococo.model.allure.AllureResults;
 import guru.qa.rococo.model.allure.DecodedAllureFile;
 import guru.qa.rococo.service.impl.api.AllureDockerApiClient;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -18,6 +21,7 @@ public class AllureDockerExtension implements SuiteExtension {
 
   private static final boolean inDocker = "docker".equals(System.getProperty("test.env"));
   private static final Base64.Encoder encoder = Base64.getEncoder();
+  private final static Logger log = LoggerFactory.getLogger(AllureBackendLogsExtension.class);
   private static final Path allureResultsDirectory = Path.of("./rococo-e-2-e-tests/build/allure-results");
   private static final String projectId = Config.projectId;
   protected static final Config CFG = Config.getInstance();
@@ -42,13 +46,36 @@ public class AllureDockerExtension implements SuiteExtension {
   @Override
   public void afterSuite() {
     if (inDocker && !allureBroken) {
+      //способ через копирование
+      for (String serviceName : serviceNames) {
+        try {
+          Path source = Path.of(CFG.logsDirectory(), serviceName, "/app.log");
+          Path target = allureResultsDirectory.resolve(serviceName + "-app.log");
+
+          if (Files.exists(source) && Files.isReadable(source) && Files.size(source) > 0) {
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+            log.info("Copied log for {} to allure-results: {}", serviceName, target);
+          } else {
+            log.warn("Log file not found or unreadable: {}", source);
+          }
+        } catch (Exception e) {
+          log.error("Failed to copy log for {}: {}", serviceName, e.getMessage(), e);
+        }
+      }
+
       try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
         for (String serviceName : serviceNames) {
-          final byte[] content = Files.readAllBytes(Path.of(String.format(CFG.logsDirectory() + "%s/app.log", serviceName)));
-          final String encoded = Base64.getEncoder().encodeToString(content);
-          final DecodedAllureFile logFile = new DecodedAllureFile(serviceName + "-app.log", encoded);
-          filesToSend.add(logFile);
+          final String path = String.format(CFG.logsDirectory() + "%s/app.log", serviceName);
+          try (InputStream is = Files.newInputStream(Path.of(path))) {
+            final String encoded = encoder.encodeToString(is.readAllBytes());
+            filesToSend.add(
+                    new DecodedAllureFile(
+                            serviceName + "-app.log",
+                            encoded
+                    )
+            );
+          }
         }
 
         for (Path allureResult : paths.toList()) {

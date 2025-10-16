@@ -71,7 +71,8 @@ public class CustomAllureOkHttpInterceptor implements Interceptor {
 
         if (Objects.nonNull(responseBody)) {
             final byte[] bytes = responseBody.bytes();
-            responseAttachmentBuilder.setBody(new String(bytes, StandardCharsets.UTF_8));
+            final String responseBodyText = new String(bytes, StandardCharsets.UTF_8);
+            responseAttachmentBuilder.setBody(truncateBase64Images(responseBodyText));
             responseBuilder.body(ResponseBody.create(responseBody.contentType(), bytes));
         }
 
@@ -90,6 +91,13 @@ public class CustomAllureOkHttpInterceptor implements Interceptor {
     private static String readRequestBody(final RequestBody requestBody) throws IOException {
         final Buffer buffer = new Buffer();
         requestBody.writeTo(buffer);
-        return buffer.readString(StandardCharsets.UTF_8);
+        return truncateBase64Images(buffer.readString(StandardCharsets.UTF_8));
+    }
+
+    private static String truncateBase64Images(String body) {
+        return body.replaceAll(
+                "(?i)data:image/[^;]+;base64,[a-zA-Z0-9+/=\\r\\n]+",
+                "data:image/...<truncated>"
+        );
     }
 }

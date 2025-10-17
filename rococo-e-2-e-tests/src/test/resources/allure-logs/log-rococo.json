@@ -1,7 +1,7 @@
 {
-  "uuid": "service logs",
-  "name": "Логи всех сервисов",
-  "status": "skipped",
+  "uuid": "service-logs",
+  "name": "SERVICE-LOG",
+  "status": "passed",
   "attachments": [
     {
       "name": "rococo-artist-app.log",

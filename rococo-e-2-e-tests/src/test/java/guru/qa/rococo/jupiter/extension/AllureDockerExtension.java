@@ -21,11 +21,10 @@ public class AllureDockerExtension implements SuiteExtension {
 
   private static final boolean inDocker = "docker".equals(System.getProperty("test.env"));
   private static final Base64.Encoder encoder = Base64.getEncoder();
-  private final static Logger log = LoggerFactory.getLogger(AllureBackendLogsExtension.class);
+  private final static Logger log = LoggerFactory.getLogger(AllureDockerExtension.class);
   private static final Path allureResultsDirectory = Path.of("./rococo-e-2-e-tests/build/allure-results");
   private static final String projectId = Config.projectId;
   protected static final Config CFG = Config.getInstance();
-  private static final ObjectMapper mapper = new ObjectMapper();
   private static final String[] serviceNames = {"rococo-auth", "rococo-userdata", "rococo-gateway", "rococo-artist", "rococo-museum", "rococo-geo", "rococo-painting"};
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
@@ -47,7 +46,6 @@ public class AllureDockerExtension implements SuiteExtension {
   @Override
   public void afterSuite() {
     if (inDocker && !allureBroken) {
-      //способ через копирование
       for (String serviceName : serviceNames) {
         try {
           Path source = Path.of(CFG.logsDirectory(), serviceName, "app.log");
@@ -64,17 +62,15 @@ public class AllureDockerExtension implements SuiteExtension {
         }
       }
 
-
       ClassLoader classLoader = getClass().getClassLoader();
-      try (InputStream is = classLoader.getResourceAsStream("allure-logs/log-rococo-artist-result.json")) {
+      try (InputStream is = classLoader.getResourceAsStream("allure-logs/log-rococo.json")) {
         if (is != null) {
-          Path target = allureResultsDirectory.resolve("log-rococo-artist-result.json");
+          Path target = allureResultsDirectory.resolve("log-rococo.json");
           Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
       } catch (IOException e) {
         log.error("Failed to copy allure logs : {}", e.getMessage(), e);
       }
-
 
         try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();

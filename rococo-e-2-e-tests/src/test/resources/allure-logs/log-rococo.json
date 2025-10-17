@@ -1,0 +1,42 @@
+{
+  "uuid": "service logs",
+  "name": "Логи всех сервисов",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-artist-app.log",
+      "type": "text/plain",
+      "source": "rococo-artist-app.log"
+    },
+    {
+      "name": "rococo-auth-app.log",
+      "type": "text/plain",
+      "source": "rococo-auth-app.log"
+    },
+    {
+      "name": "rococo-gateway-app.log",
+      "type": "text/plain",
+      "source": "rococo-gateway-app.log"
+    },
+    {
+      "name": "rococo-geo-app.log",
+      "type": "text/plain",
+      "source": "rococo-geo-app.log"
+    },
+    {
+      "name": "rococo-museum-app.log",
+      "type": "text/plain",
+      "source": "rococo-museum-app.log"
+    },
+    {
+      "name": "rococo-painting-app.log",
+      "type": "text/plain",
+      "source": "rococo-painting-app.log"
+    },
+    {
+      "name": "rococo-userdata-app.log",
+      "type": "text/plain",
+      "source": "rococo-userdata-app.log"
+    }
+  ]
+}

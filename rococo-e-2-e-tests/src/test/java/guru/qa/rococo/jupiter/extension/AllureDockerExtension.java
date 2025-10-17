@@ -1,5 +1,6 @@
 package guru.qa.rococo.jupiter.extension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.rococo.config.Config;
 import guru.qa.rococo.model.allure.AllureResults;
 import guru.qa.rococo.model.allure.DecodedAllureFile;
@@ -12,9 +13,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class AllureDockerExtension implements SuiteExtension {
@@ -25,7 +24,8 @@ public class AllureDockerExtension implements SuiteExtension {
   private static final Path allureResultsDirectory = Path.of("./rococo-e-2-e-tests/build/allure-results");
   private static final String projectId = Config.projectId;
   protected static final Config CFG = Config.getInstance();
-  String[] serviceNames = {"rococo-auth", "rococo-userdata", "rococo-gateway", "rococo-artist", "rococo-museum", "rococo-geo", "rococo-painting"};
+  private static final ObjectMapper mapper = new ObjectMapper();
+  private static final String[] serviceNames = {"rococo-auth", "rococo-userdata", "rococo-gateway", "rococo-artist", "rococo-museum", "rococo-geo", "rococo-painting"};
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
   private boolean allureBroken = false;
@@ -60,6 +60,33 @@ public class AllureDockerExtension implements SuiteExtension {
           }
         } catch (Exception e) {
           log.error("Failed to copy log for {}: {}", serviceName, e.getMessage(), e);
+        }
+      }
+
+      for (String serviceName : serviceNames) {
+        try {
+          Path logFile = allureResultsDirectory.resolve(serviceName + "-app.log");
+          if (Files.exists(logFile) && Files.size(logFile) > 0) {
+            String uuid = "log-" + serviceName;
+            Path resultJson = allureResultsDirectory.resolve(uuid + "-result.json");
+
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("uuid", uuid);
+            result.put("name", "Лог " + serviceName);
+            result.put("status", "passed");
+
+            Map<String, String> attachment = new LinkedHashMap<>();
+            attachment.put("name", serviceName + "-app.log");
+            attachment.put("type", "text/plain");
+            attachment.put("source", serviceName + "-app.log");
+
+            result.put("attachments", List.of(attachment));
+
+            mapper.writerWithDefaultPrettyPrinter().writeValue(resultJson.toFile(), result);
+            log.info("Generated result.json for log: {}", resultJson);
+          }
+        } catch (Exception e) {
+          log.error("Failed to generate result.json for {}: {}", serviceName, e.getMessage(), e);
         }
       }
 

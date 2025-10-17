@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-userdata",
+  "name": "LOG: Сервис Userdata",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-userdata-app.log",
+      "type": "text/plain",
+      "source": "rococo-userdata-app.log"
+    }
+  ]
+}

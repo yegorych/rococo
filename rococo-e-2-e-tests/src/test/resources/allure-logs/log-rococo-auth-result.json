@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-auth",
+  "name": "LOG: Сервис Auth",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-auth-app.log",
+      "type": "text/plain",
+      "source": "rococo-auth-app.log"
+    }
+  ]
+}

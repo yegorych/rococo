@@ -1,6 +1,5 @@
 package guru.qa.rococo.jupiter.extension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.rococo.config.Config;
 import guru.qa.rococo.model.allure.AllureResults;
 import guru.qa.rococo.model.allure.DecodedAllureFile;
@@ -46,6 +45,7 @@ public class AllureDockerExtension implements SuiteExtension {
   @Override
   public void afterSuite() {
     if (inDocker && !allureBroken) {
+      ClassLoader classLoader = getClass().getClassLoader();
       for (String serviceName : serviceNames) {
         try {
           Path source = Path.of(CFG.logsDirectory(), serviceName, "app.log");
@@ -60,16 +60,15 @@ public class AllureDockerExtension implements SuiteExtension {
         } catch (Exception e) {
           log.error("Failed to copy log for {}: {}", serviceName, e.getMessage(), e);
         }
-      }
 
-      ClassLoader classLoader = getClass().getClassLoader();
-      try (InputStream is = classLoader.getResourceAsStream("allure-logs/log-rococo.json")) {
-        if (is != null) {
-          Path target = allureResultsDirectory.resolve("log-rococo.json");
-          Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+        try (InputStream is = classLoader.getResourceAsStream("allure-logs/log-" + serviceName + "-result.json")) {
+          if (is != null) {
+            Path target = allureResultsDirectory.resolve("log-"+ serviceName + "-result.json");
+            Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+          }
+        } catch (IOException e) {
+          log.error("Failed to copy allure logs : {}", e.getMessage(), e);
         }
-      } catch (IOException e) {
-        log.error("Failed to copy allure logs : {}", e.getMessage(), e);
       }
 
         try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {

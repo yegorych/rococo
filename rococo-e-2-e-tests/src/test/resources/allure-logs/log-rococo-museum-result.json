@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-museum",
+  "name": "LOG: Сервис Museum",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-museum-app.log",
+      "type": "text/plain",
+      "source": "rococo-museum-app.log"
+    }
+  ]
+}

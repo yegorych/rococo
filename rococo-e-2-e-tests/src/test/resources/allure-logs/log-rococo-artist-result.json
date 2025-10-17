@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-artist",
+  "name": "LOG: Сервис Artist",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-artist-app.log",
+      "type": "text/plain",
+      "source": "rococo-artist-app.log"
+    }
+  ]
+}

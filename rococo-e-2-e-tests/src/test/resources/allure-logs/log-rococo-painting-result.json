@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-painting",
+  "name": "LOG: Сервис Painting",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-painting-app.log",
+      "type": "text/plain",
+      "source": "rococo-painting-app.log"
+    }
+  ]
+}

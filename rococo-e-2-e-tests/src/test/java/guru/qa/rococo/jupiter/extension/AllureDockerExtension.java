@@ -64,21 +64,15 @@ public class AllureDockerExtension implements SuiteExtension {
         }
       }
 
-      Path sourceDir = Path.of("src/test/resources/allure-logs");
-      try {
-        Files.walk(sourceDir)
-                .filter(Files::isRegularFile)
-                .forEach(source -> {
-                  try {
-                    Path target = allureResultsDirectory.resolve(source.getFileName().toString());
-                    Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-                    log.info("Скопирован ресурс: {}", target);
-                  } catch (IOException e) {
-                    log.error("Ошибка при копировании ресурса {}: {}", source, e.getMessage(), e);
-                  }
-                });
+
+      ClassLoader classLoader = getClass().getClassLoader();
+      try (InputStream is = classLoader.getResourceAsStream("allure-logs/log-rococo-artist-result.json")) {
+        if (is != null) {
+          Path target = allureResultsDirectory.resolve("log-rococo-artist-result.json");
+          Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+        }
       } catch (IOException e) {
-          throw new RuntimeException(e);
+        log.error("Failed to copy allure logs : {}", e.getMessage(), e);
       }
 
 

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,48 +64,26 @@ public class AllureDockerExtension implements SuiteExtension {
         }
       }
 
-      for (String serviceName : serviceNames) {
-        try {
-          Path logFile = allureResultsDirectory.resolve(serviceName + "-app.log");
-          if (Files.exists(logFile) && Files.size(logFile) > 0) {
-            String uuid = "log-" + serviceName;
-            Path resultJson = allureResultsDirectory.resolve(uuid + "-result.json");
-
-            Map<String, Object> result = new LinkedHashMap<>();
-            result.put("uuid", uuid);
-            result.put("name", "Лог " + serviceName);
-            result.put("status", "passed");
-
-            Map<String, String> attachment = new LinkedHashMap<>();
-            attachment.put("name", serviceName + "-app.log");
-            attachment.put("type", "text/plain");
-            attachment.put("source", serviceName + "-app.log");
-
-            result.put("attachments", List.of(attachment));
-
-            mapper.writerWithDefaultPrettyPrinter().writeValue(resultJson.toFile(), result);
-            log.info("Generated result.json for log: {}", resultJson);
-          }
-        } catch (Exception e) {
-          log.error("Failed to generate result.json for {}: {}", serviceName, e.getMessage(), e);
-        }
+      Path sourceDir = Path.of("src/test/resources/allure-logs");
+      try {
+        Files.walk(sourceDir)
+                .filter(Files::isRegularFile)
+                .forEach(source -> {
+                  try {
+                    Path target = allureResultsDirectory.resolve(source.getFileName().toString());
+                    Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+                    log.info("Скопирован ресурс: {}", target);
+                  } catch (IOException e) {
+                    log.error("Ошибка при копировании ресурса {}: {}", source, e.getMessage(), e);
+                  }
+                });
+      } catch (IOException e) {
+          throw new RuntimeException(e);
       }
 
-      try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
-        List<DecodedAllureFile> filesToSend = new ArrayList<>();
-        for (String serviceName : serviceNames) {
-          final String path = String.format(CFG.logsDirectory() + "%s/app.log", serviceName);
-          try (InputStream is = Files.newInputStream(Path.of(path))) {
-            final String encoded = encoder.encodeToString(is.readAllBytes());
-            filesToSend.add(
-                    new DecodedAllureFile(
-                            serviceName + "-app.log",
-                            encoded
-                    )
-            );
-          }
-        }
 
+        try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
+        List<DecodedAllureFile> filesToSend = new ArrayList<>();
         for (Path allureResult : paths.toList()) {
           try (InputStream is = Files.newInputStream(allureResult)) {
             filesToSend.add(

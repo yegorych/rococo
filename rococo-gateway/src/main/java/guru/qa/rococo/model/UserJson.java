@@ -46,15 +46,4 @@ public record UserJson(
                 .setAvatar(ByteString.copyFromUtf8(photo))
                 .build();
     }
-
-    @Override
-    public String toString() {
-        return "UserJson{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", photo='" + (photo != null ? photo.substring(0, Math.min(photo.length(), 10)) + "..." : "null") + '\'' +
-                '}';
-    }
 }

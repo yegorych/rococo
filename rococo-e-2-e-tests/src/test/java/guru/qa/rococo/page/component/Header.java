@@ -1,9 +1,11 @@
 package guru.qa.rococo.page.component;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.rococo.model.Color;
 import guru.qa.rococo.page.*;
 import guru.qa.rococo.page.component.modal.ProfileModal;
 import io.qameta.allure.Step;
+import org.junit.jupiter.api.Assertions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,6 +24,7 @@ public class Header extends BaseComponent<Header> {
     private final SelenideElement artistBtn = self.$("a[href='/artist']");
     private final SelenideElement museumBtn = self.$("a[href='/museum']");
     private final SelenideElement rococoBtn = self.$("a[href='/']");
+    private final SelenideElement lightswitch = self.$(".lightswitch-track");
 
     public Header() {
         super($("header#shell-header"));
@@ -79,10 +82,17 @@ public class Header extends BaseComponent<Header> {
     }
 
     @Nonnull
-    @Step("go to Main page")
-    public MainPage toMainPage() {
+    @Step("click rococo button")
+    public MainPage clickRococoBtn() {
         rococoBtn.click();
         return new MainPage();
+    }
+
+    @Nonnull
+    @Step("click lightswitch")
+    public Header clickLightswitch() {
+        lightswitch.click();
+        return this;
     }
 
     @Nonnull
@@ -91,6 +101,14 @@ public class Header extends BaseComponent<Header> {
         profileIcon.shouldBe(image(expectedPhoto));
         return this;
     }
+
+    @Step("check buttons color")
+    public void checkButtonsColor(Color expectedColor) {
+        String rgbaLoginBtn = loginBtn.getCssValue("background-color");
+        Assertions.assertEquals(expectedColor.rgb, rgbaLoginBtn);
+    }
+
+
 
 
 

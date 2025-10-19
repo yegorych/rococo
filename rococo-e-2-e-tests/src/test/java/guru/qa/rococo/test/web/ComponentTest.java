@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.rococo.jupiter.annotation.ApiLogin;
 import guru.qa.rococo.jupiter.annotation.meta.WebTest;
 import guru.qa.rococo.model.Color;
+import guru.qa.rococo.page.ArtistPage;
 import guru.qa.rococo.page.MainPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,4 +60,29 @@ public class ComponentTest {
                 .submit(new MainPage())
                 .snackbar().checkSnackbarColor(Color.yellow);
     }
+
+    @Test
+    @ApiLogin
+    @DisplayName("Редирект на главную страницу по клику на название сайта Rococo")
+    void shouldBeRedirectedToMainPageWhenClickingSiteTitle() {
+        Selenide.open(ArtistPage.URL, ArtistPage.class)
+                .header()
+                .clickRococoBtn()
+                .checkThatPageLoaded();
+    }
+
+    @Test
+    @DisplayName("Кнопки в темной теме должны быть желтыми")
+    void shouldHaveYellowButtonsInDarkTheme() {
+        Selenide.open(MainPage.URL, MainPage.class)
+                .header()
+                .checkButtonsColor(Color.yellow);
+    }
+
+
+
+
+
+
+
 }

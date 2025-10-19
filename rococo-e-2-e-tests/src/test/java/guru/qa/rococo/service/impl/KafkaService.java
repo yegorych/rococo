@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.rococo.config.Config;
 import guru.qa.rococo.model.kafka.Event;
-import guru.qa.rococo.model.kafka.EventType;
 import guru.qa.rococo.model.rest.UserJson;
 import guru.qa.rococo.utils.MapWithWait;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -78,7 +78,6 @@ public class KafkaService implements Runnable {
             usersStore.put(userJson.username(), userJson);
           }
           if ("events".equals(record.topic())) {
-            System.out.println("ЛОГ СОБЫТИЯ " + value);
             try {
               Event event = om.readValue(value, Event.class);
               eventsStore.add(event);

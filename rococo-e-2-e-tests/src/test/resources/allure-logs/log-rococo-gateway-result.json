@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-gateway",
+  "name": "LOG: Сервис Gateway",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-gateway-app.log",
+      "type": "text/plain",
+      "source": "rococo-gateway-app.log"
+    }
+  ]
+}

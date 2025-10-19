@@ -20,8 +20,6 @@ public interface Config {
   @Nonnull
   String authJdbcUrl();
   @Nonnull
-  String userdataUrl();
-  @Nonnull
   String userdataJdbcUrl();
   @Nonnull
   String gatewayUrl();
@@ -56,6 +54,8 @@ public interface Config {
   default List<String> kafkaTopcis() {
     return List.of("users", "events");
   }
+  @Nonnull
+  String logsDirectory();
 
   default int museumGrpcPort() {
     return 9095;

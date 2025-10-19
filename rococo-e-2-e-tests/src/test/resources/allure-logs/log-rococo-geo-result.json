@@ -1,0 +1,12 @@
+{
+  "uuid": "service-logs-rococo-geo",
+  "name": "LOG: Сервис Geo",
+  "status": "skipped",
+  "attachments": [
+    {
+      "name": "rococo-geo-app.log",
+      "type": "text/plain",
+      "source": "rococo-geo-app.log"
+    }
+  ]
+}

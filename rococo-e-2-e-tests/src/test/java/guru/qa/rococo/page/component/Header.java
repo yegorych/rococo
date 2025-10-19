@@ -56,7 +56,7 @@ public class Header extends BaseComponent<Header> {
     @Nonnull
     @Step("go to Profile page")
     public ProfileModal clickProfile() {
-        profileIcon.click();
+        profileIcon.should(visible).click();
         return new ProfileModal();
     }
 

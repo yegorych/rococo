@@ -36,26 +36,9 @@ public class PaintingDbClient  implements PaintingClient {
     @Step("Create painting using SQL INSERT")
     public PaintingJson createPainting(PaintingJson painting) {
         return Objects.requireNonNull(
-                xaTransactionTemplate.execute(() -> {
-//                    MuseumJson museumJson = painting.museum().id() != null
-//                            ? painting.museum()
-//                            : museumClient.createMuseum(painting.museum());
-//
-//                    ArtistJson artistJson = painting.artist().id() != null
-//                            ? painting.artist()
-//                            : artistClient.createArtist(painting.artist());
-
-                    return PaintingJson.fromEntity(paintingRepository.create(PaintingEntity.fromJson(painting))
-//                                    new PaintingJson(
-//                                            painting.id(),
-//                                            painting.title(),
-//                                            painting.description(),
-//                                            painting.museum() != null ? new MuseumJson(painting.museum().id()) : null,
-//                                            new ArtistJson(painting.artist().id()),
-//                                            painting.content()))
-//                            )
-                    );//.addMuseum(museumJson).addArtist(artistJson);
-                })
+                xaTransactionTemplate.execute(() ->
+                        PaintingJson.fromEntity(paintingRepository.create(PaintingEntity.fromJson(painting)))
+                )
         );
     }
 

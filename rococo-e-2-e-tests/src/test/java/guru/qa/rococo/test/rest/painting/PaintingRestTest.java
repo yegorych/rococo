@@ -321,7 +321,7 @@ public class PaintingRestTest {
                 createdPainting.id(),
                 randomName(),
                 randomSentence(20),
-                new MuseumJson(createdPainting.id()),
+                new MuseumJson(createdPainting.museum().id()),
                 createdPainting.artist(),
                 ""
         );

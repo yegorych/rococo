@@ -40,7 +40,7 @@ public class GrpcMuseumService extends RococoMuseumServiceGrpc.RococoMuseumServi
     @Override
     public void getMuseum(IdRequest request, StreamObserver<Museum> responseObserver) {
         UUID id = parseUuidOrThrow(request.getId());
-        Museum museum = museumRepository.findById(UUID.fromString(id.toString()))
+        Museum museum = museumRepository.findById(id)
                 .map(MusuemEntity::toGrpcMessage)
                 .orElseThrow(() -> new MuseumNotFoundException(
                         String.format("Музей с ID %s не найден", id))

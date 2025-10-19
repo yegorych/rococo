@@ -11,6 +11,7 @@ import guru.qa.rococo.jupiter.annotation.meta.GrpcTest;
 import guru.qa.rococo.model.TestData;
 import guru.qa.rococo.model.rest.ArtistJson;
 import guru.qa.rococo.model.rest.MuseumJson;
+import guru.qa.rococo.model.rest.PaintingJson;
 import guru.qa.rococo.test.grpc.BaseGrpcTest;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
@@ -47,7 +48,7 @@ public class PaintingGrpcTest extends BaseGrpcTest {
     @DisplayName("Получение картины по ID")
     @guru.qa.rococo.jupiter.annotation.Painting
     void paintingShouldBeReturnedById(TestData data) {
-        var paintingJson = data.paintings().getFirst();
+        PaintingJson paintingJson = data.paintings().getFirst();
         Painting response = paintingStub.getPainting(IdRequest.newBuilder()
                 .setId(paintingJson.id().toString()).build());
         Assertions.assertEquals(paintingJson.title(), response.getTitle());

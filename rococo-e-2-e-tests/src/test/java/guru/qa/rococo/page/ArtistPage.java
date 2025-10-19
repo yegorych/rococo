@@ -5,6 +5,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.rococo.model.rest.ArtistJson;
+import guru.qa.rococo.page.component.Header;
 import guru.qa.rococo.page.component.Search;
 import guru.qa.rococo.page.component.modal.ArtistModal;
 import guru.qa.rococo.page.detailsPage.ArtistDetailsPage;
@@ -26,6 +27,7 @@ public class ArtistPage extends BasePage<ArtistPage> {
     public static final String URL = CFG.frontUrl() + "artist/";
     private final SelenideElement title = $("h2.m-4");
     private final Search search = new Search();
+    private final Header header = new Header();
     private final ElementsCollection artists = $$("main ul li");
     private final SelenideElement addArtistBtn = $("button[type='button'].variant-filled-primary");
 
@@ -44,18 +46,15 @@ public class ArtistPage extends BasePage<ArtistPage> {
         return new ArtistModal();
     }
 
-    @Nonnull
     @Step("check that Add artist button is displayed")
-    public ArtistPage checkAddArtistBtnIsDisplayed() {
+    public void checkAddArtistBtnIsDisplayed() {
         addArtistBtn.should(visible);
-        return this;
     }
 
     @Nonnull
     @Step("check that Add Artist button is not displayed")
-    public ArtistPage checkAddArtistBtnIsNotDisplayed() {
+    public void checkAddArtistBtnIsNotDisplayed() {
         addArtistBtn.shouldNot(visible);
-        return this;
     }
 
 
@@ -136,5 +135,9 @@ public class ArtistPage extends BasePage<ArtistPage> {
 
     public Search search() {
         return search;
+    }
+
+    public Header header() {
+        return header;
     }
 }

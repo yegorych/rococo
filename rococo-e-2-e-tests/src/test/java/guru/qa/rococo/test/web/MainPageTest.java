@@ -17,4 +17,37 @@ public class MainPageTest {
                 .header()
                 .checkLoginBtnIsVisible();
     }
+
+    @Test
+    @DisplayName("На главной странице отображается слоган")
+    void sloganOnMainPageShouldBeDisplayed() {
+        Selenide.open(MainPage.URL, MainPage.class)
+                .checkSlogan();
+    }
+
+    @Test
+    @DisplayName("Можно перейти на страницу с художниками с главной страницы")
+    void artistPageShouldBeOpenedFromMainPage() {
+        Selenide.open(MainPage.URL, MainPage.class)
+                .clickArtistsButton()
+                .checkThatPageLoaded();
+    }
+
+    @Test
+    @DisplayName("Можно перейти на страницу с картинами с главной страницы")
+    void paintingPageShouldBeOpenedFromMainPage() {
+        Selenide.open(MainPage.URL, MainPage.class)
+                .clickPaintingsButton()
+                .checkThatPageLoaded();
+    }
+
+    @Test
+    @DisplayName("Можно перейти на страницу с музеями с главной страницы")
+    void museumPageShouldBeOpenedFromMainPage() {
+        Selenide.open(MainPage.URL, MainPage.class)
+                .clickMuseumsButton()
+                .checkThatPageLoaded();
+    }
+
+
 }

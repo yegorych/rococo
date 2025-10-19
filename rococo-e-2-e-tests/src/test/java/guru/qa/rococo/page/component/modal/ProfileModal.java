@@ -26,7 +26,7 @@ public class ProfileModal extends BaseModal<ProfileModal> {
     @Nonnull
     @Step("click Log out button")
     public <T extends BasePage<?>> T logout(T expectedPage) {
-        logoutBtn.click();
+        logoutBtn.should(visible).click();
         return expectedPage;
     }
 

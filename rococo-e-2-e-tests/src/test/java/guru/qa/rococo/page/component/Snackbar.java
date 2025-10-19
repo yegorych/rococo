@@ -45,7 +45,7 @@ public class Snackbar extends BaseComponent<Snackbar> {
 
     @Step("check that snackbar has text: {0}")
     public void checkSnackbarHasText(String text) {
-        self.should(Condition.text(text));
+        self.should(visible).should(Condition.text(text));
     }
 
     @Step("check snackbar color")

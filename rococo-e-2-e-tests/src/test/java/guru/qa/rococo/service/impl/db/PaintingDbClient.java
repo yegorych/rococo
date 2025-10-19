@@ -20,8 +20,6 @@ import java.util.Objects;
 public class PaintingDbClient  implements PaintingClient {
 
   private static final Config CFG = Config.getInstance();
-  private final MuseumClient museumClient = new MuseumDbClient();
-  private final ArtistClient artistClient = new ArtistDbClient();
   private final PaintingRepository paintingRepository = PaintingRepository.getInstance();
 
   private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(

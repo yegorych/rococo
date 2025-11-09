@@ -88,5 +88,7 @@ docker volume create allure-results
 
 ## Сертификат
 <img width="3000" height="1720" alt="IMG_8908" src="https://github.com/user-attachments/assets/6e7ba28a-1ca8-4bd4-a5af-b7d4a9fd1538" />
+<img width="3000" height="1720" alt="IMG_8913" src="https://github.com/user-attachments/assets/36f4b7f4-5298-47a9-89cb-7f536ac9b804" />
+
 
 

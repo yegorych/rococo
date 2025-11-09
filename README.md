@@ -85,3 +85,8 @@ docker volume create allure-results
 
 ## CI/CD
 При каждом Pull request пересобираются все сервисы и запускаются тесты. После прогона в комменте pr будет отображен результат выполнения тестов и ссылка на allure отчет.
+
+## Сертификат
+<img width="3000" height="1720" alt="IMG_8908" src="https://github.com/user-attachments/assets/6e7ba28a-1ca8-4bd4-a5af-b7d4a9fd1538" />
+
+
